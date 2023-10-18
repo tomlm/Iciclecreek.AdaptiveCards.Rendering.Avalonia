@@ -26,7 +26,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             itemsPanelTemplate.VisualTree = factory;
             uiImageSet.ItemsPanel = itemsPanelTemplate;
 
-            uiImageSet.Style = context.GetStyle("Adaptive.ImageSet");
+            // uiImageSet.Style = context.GetStyle("Adaptive.ImageSet");
             foreach (var image in imageSet.Images)
             {
                 // Use the imageSize in imageSet for all images if present

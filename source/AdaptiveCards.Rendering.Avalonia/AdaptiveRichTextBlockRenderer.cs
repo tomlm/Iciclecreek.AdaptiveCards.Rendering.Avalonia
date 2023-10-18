@@ -52,7 +52,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             textRunSpan.Inlines.Add(text);
 
-            textRunSpan.Style = context.GetStyle($"Adaptive.{textRun.Type}");
+            // textRunSpan.Style = context.GetStyle($"Adaptive.{textRun.Type}");
 
             textRunSpan.FontFamily = new FontFamily(RendererUtil.GetFontFamilyFromList(context.Config.GetFontFamily(textRun.FontType)));
 
@@ -88,7 +88,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         private static TextBlock CreateControl(AdaptiveRichTextBlock richTB, AdaptiveRenderContext context)
         {
             TextBlock uiTextBlock = new TextBlock();
-            uiTextBlock.Style = context.GetStyle($"Adaptive.{richTB.Type}");
+            // uiTextBlock.Style = context.GetStyle($"Adaptive.{richTB.Type}");
             uiTextBlock.TextWrapping = TextWrapping.Wrap;
             uiTextBlock.TextTrimming = TextTrimming.CharacterEllipsis;
 

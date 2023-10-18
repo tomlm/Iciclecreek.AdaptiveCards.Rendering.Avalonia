@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 using Avalonia.Controls;
+using Avalonia.Media;
 using System;
 
 namespace AdaptiveCards.Rendering.Avalonia
@@ -40,7 +41,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 mask.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#00ffffff"), 1.0));
                 uiImage.OpacityMask = mask;
             }
-            uiImage.Style = context.GetStyle(style);
+            // uiImage.Style = context.GetStyle(style);
 
             if (image.PixelHeight == 0 && image.PixelWidth == 0)
             {

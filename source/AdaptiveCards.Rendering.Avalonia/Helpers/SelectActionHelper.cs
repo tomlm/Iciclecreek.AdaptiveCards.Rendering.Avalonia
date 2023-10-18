@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
+using Avalonia.Media;
 using System;
 
 
@@ -42,7 +45,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 }
                 uiButton.BorderThickness = new Thickness(0);
                 uiButton.Content = uiElement;
-                uiButton.Style = context.GetStyle("Adaptive.Action.Tap");
+                // uiButton.Style = context.GetStyle("Adaptive.Action.Tap");
 
                 return uiButton;
             }
@@ -53,7 +56,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         public static Control CreateShowCard(this AdaptiveShowCardAction showCardAction, AdaptiveRenderContext context, ActionsConfig actionsConfig)
         {
             Grid uiShowCardContainer = new Grid();
-            uiShowCardContainer.Style = context.GetStyle("Adaptive.Actions.ShowCard");
+            // uiShowCardContainer.Style = context.GetStyle("Adaptive.Actions.ShowCard");
             uiShowCardContainer.DataContext = showCardAction;
             uiShowCardContainer.Margin = new Thickness(0, actionsConfig.ShowCard.InlineTopMargin, 0, 0);
             uiShowCardContainer.Visibility = Visibility.Collapsed;

@@ -6,6 +6,7 @@
 
 
 using Avalonia.Controls;
+using Avalonia.Media;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
@@ -14,7 +15,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         public static Control Render(AdaptiveColumn column, AdaptiveRenderContext context)
         {
             var uiContainer = new Grid();
-            uiContainer.Style = context.GetStyle("Adaptive.Column");
+            // uiContainer.Style = context.GetStyle("Adaptive.Column");
             uiContainer.SetBackgroundSource(column.BackgroundImage, context);
 
             bool? previousContextRtl = context.Rtl;

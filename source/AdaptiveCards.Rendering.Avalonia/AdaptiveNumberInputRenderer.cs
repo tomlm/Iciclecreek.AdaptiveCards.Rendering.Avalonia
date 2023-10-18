@@ -19,7 +19,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 textBox.Text = input.Value.ToString();
             }
             textBox.SetPlaceholder(input.Placeholder);
-            textBox.Style = context.GetStyle($"Adaptive.Input.Text.Number");
+            // textBox.Style = context.GetStyle($"Adaptive.Input.Text.Number");
             textBox.SetContext(input);
 
             if ((!Double.IsNaN(input.Max) || !Double.IsNaN(input.Min) || input.IsRequired)

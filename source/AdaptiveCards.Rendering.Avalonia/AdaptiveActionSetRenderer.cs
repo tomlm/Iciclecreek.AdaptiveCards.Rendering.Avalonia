@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Layout;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +21,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             if (!context.Config.SupportsInteractivity)
                 return outerActionSet;
 
-            outerActionSet.Style = context.GetStyle("Adaptive.Container");
+            // outerActionSet.Style = context.GetStyle("Adaptive.Container");
 
             // Keep track of ContainerStyle.ForegroundColors before Container is rendered
             AdaptiveRenderArgs parentRenderArgs = context.RenderArgs;
@@ -49,7 +52,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
                 uiActionBar.HorizontalAlignment = (HorizontalAlignment)Enum.Parse(typeof(HorizontalAlignment), actionsConfig.ActionAlignment.ToString());
                 uiActionBar.VerticalAlignment = VerticalAlignment.Bottom;
-                uiActionBar.Style = context.GetStyle("Adaptive.Actions");
+                // uiActionBar.Style = context.GetStyle("Adaptive.Actions");
 
                 // For vertical, we want to subtract the top margin of the first button
                 int topMargin = actionsConfig.ActionsOrientation == ActionsOrientation.Horizontal
@@ -140,7 +143,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                             hasSeenInlineShowCard = true;
 
                             Grid uiShowCardContainer = new Grid();
-                            uiShowCardContainer.Style = context.GetStyle("Adaptive.Actions.ShowCard");
+                            // uiShowCardContainer.Style = context.GetStyle("Adaptive.Actions.ShowCard");
                             uiShowCardContainer.DataContext = showCardAction;
                             uiShowCardContainer.Visibility = Visibility.Collapsed;
                             var padding = context.Config.Spacing.Padding;

@@ -14,7 +14,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             uiToggle.Foreground =
                 context.GetColorBrush(context.Config.ContainerStyles.Default.ForegroundColors.Default.Default);
             uiToggle.SetState(input.Value == (input.ValueOn ?? "true"));
-            uiToggle.Style = context.GetStyle($"Adaptive.Input.Toggle");
+            // uiToggle.Style = context.GetStyle($"Adaptive.Input.Toggle");
             uiToggle.SetContext(input);
 
             if (input.IsRequired && string.IsNullOrEmpty(input.ErrorMessage))

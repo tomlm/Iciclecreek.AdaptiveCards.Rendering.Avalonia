@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using System;
 
 
@@ -31,24 +33,24 @@ namespace AdaptiveCards.Rendering.Avalonia
         {
             var uiButton = new Button
             {
-                Style = context.GetStyle($"Adaptive.{action.Type}"),
+//                Style = context.GetStyle($"Adaptive.{action.Type}"),
             };
 
-            if (!String.IsNullOrWhiteSpace(action.Style))
-            {
-                Style style = context.GetStyle($"Adaptive.Action.{action.Style}");
+            //if (!String.IsNullOrWhiteSpace(action.Style))
+            //{
+            //    Style style = context.GetStyle($"Adaptive.Action.{action.Style}");
 
-                if (style == null && String.Equals(action.Style, "positive", StringComparison.OrdinalIgnoreCase))
-                {
-                    style = context.GetStyle("PositiveActionDefaultStyle");
-                }
-                else if (style == null && String.Equals(action.Style, "destructive", StringComparison.OrdinalIgnoreCase))
-                {
-                    style = context.GetStyle("DestructiveActionDefaultStyle");
-                }
+            //    if (style == null && String.Equals(action.Style, "positive", StringComparison.OrdinalIgnoreCase))
+            //    {
+            //        style = context.GetStyle("PositiveActionDefaultStyle");
+            //    }
+            //    else if (style == null && String.Equals(action.Style, "destructive", StringComparison.OrdinalIgnoreCase))
+            //    {
+            //        style = context.GetStyle("DestructiveActionDefaultStyle");
+            //    }
 
-                uiButton.Style = style;
-            }
+            //    uiButton.Style = style;
+            //}
 
             var contentStackPanel = new StackPanel();
 
@@ -70,7 +72,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             {
                 Text = action.Title,
                 FontSize = context.Config.GetFontSize(AdaptiveFontType.Default, AdaptiveTextSize.Default),
-                Style = context.GetStyle($"Adaptive.Action.Title")
+                // Style = context.GetStyle($"Adaptive.Action.Title")
             };
 
             if (action.IconUrl != null)
@@ -104,7 +106,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                     int spacing = context.Config.GetSpacing(AdaptiveSpacing.Default);
                     var uiSep = new Grid
                     {
-                        Style = context.GetStyle($"Adaptive.VerticalSeparator"),
+                        // Style = context.GetStyle($"Adaptive.VerticalSeparator"),
                         VerticalAlignment = VerticalAlignment.Stretch,
                         Width = spacing,
                     };

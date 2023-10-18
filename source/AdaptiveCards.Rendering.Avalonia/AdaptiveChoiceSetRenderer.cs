@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.Layout;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,11 +22,11 @@ namespace AdaptiveCards.Rendering.Avalonia
             uiGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
             uiGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
 
-            uiComboBox.Style = context.GetStyle("Adaptive.Input.AdaptiveChoiceSetInput.ComboBox");
+            //uiComboBox.Style = context.GetStyle("Adaptive.Input.AdaptiveChoiceSetInput.ComboBox");
             uiComboBox.DataContext = input;
 
             uiChoices.DataContext = input;
-            uiChoices.Style = context.GetStyle("Adaptive.Input.AdaptiveChoiceSetInput");
+            //uiChoices.Style = context.GetStyle("Adaptive.Input.AdaptiveChoiceSetInput");
 
             foreach (var choice in input.Choices)
             {
@@ -35,7 +37,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                     SetContent(uiCheckbox, choice.Title, input.Wrap);
                     uiCheckbox.IsChecked = chosen.Contains(choice.Value);
                     uiCheckbox.DataContext = choice;
-                    uiCheckbox.Style = context.GetStyle("Adaptive.Input.AdaptiveChoiceSetInput.CheckBox");
+                    //uiCheckbox.Style = context.GetStyle("Adaptive.Input.AdaptiveChoiceSetInput.CheckBox");
                     uiChoices.Children.Add(uiCheckbox);
                 }
                 else
@@ -44,7 +46,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                     {
                         var uiComboItem = new ComboBoxItem();
                         uiComboItem.HorizontalAlignment = HorizontalAlignment.Stretch;
-                        uiComboItem.Style = context.GetStyle("Adaptive.Input.AdaptiveChoiceSetInput.ComboBoxItem");
+                      //  uiComboItem.Style = context.GetStyle("Adaptive.Input.AdaptiveChoiceSetInput.ComboBoxItem");
 
                         TextBlock content = SetContent(uiComboItem, choice.Title, input.Wrap);
                         // The content TextBlock is binded to the width of the comboBox container
@@ -77,7 +79,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                         }
                         uiRadio.GroupName = input.Id;
                         uiRadio.DataContext = choice;
-                        uiRadio.Style = context.GetStyle("Adaptive.Input.AdaptiveChoiceSetInput.Radio");
+                        // uiRadio.Style = context.GetStyle("Adaptive.Input.AdaptiveChoiceSetInput.Radio");
                         uiChoices.Children.Add(uiRadio);
                     }
                 }

@@ -89,7 +89,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             XmlReader xmlReader = XmlReader.Create(stringReader);
             var uiTextBlock = (TextBlock)XamlReader.Load(xmlReader);
-            uiTextBlock.Style = context.GetStyle($"Adaptive.{textBlock.Type}");
+            // uiTextBlock.Style = context.GetStyle($"Adaptive.{textBlock.Type}");
 
             uiTextBlock.TextWrapping = TextWrapping.NoWrap;
 

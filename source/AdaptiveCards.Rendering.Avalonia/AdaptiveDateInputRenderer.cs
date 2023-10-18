@@ -13,7 +13,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         {
             var textBox = new TextBox() { Text = input.Value };
             textBox.SetPlaceholder(input.Placeholder);
-            textBox.Style = context.GetStyle($"Adaptive.Input.Text.Date");
+            // textBox.Style = context.GetStyle($"Adaptive.Input.Text.Date");
             textBox.SetContext(input);
 
             DateTime maxDate, minDate;

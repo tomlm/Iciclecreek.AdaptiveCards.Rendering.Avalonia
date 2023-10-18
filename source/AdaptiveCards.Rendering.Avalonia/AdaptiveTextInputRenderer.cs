@@ -4,6 +4,10 @@
 
 
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
@@ -27,7 +31,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             }
 
             textBox.SetPlaceholder(input.Placeholder);
-            textBox.Style = context.GetStyle($"Adaptive.Input.Text.{input.Style}");
+            // textBox.Style = context.GetStyle($"Adaptive.Input.Text.{input.Style}");
             textBox.SetContext(input);
 
             if ((input.IsRequired || input.Regex != null) && string.IsNullOrEmpty(input.ErrorMessage))
@@ -71,7 +75,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             int spacing = context.Config.GetSpacing(AdaptiveSpacing.Default);
             var uiSep = new Grid
             {
-                Style = context.GetStyle($"Adaptive.Input.Text.InlineAction.Separator"),
+                // Style = context.GetStyle($"Adaptive.Input.Text.InlineAction.Separator"),
                 VerticalAlignment = VerticalAlignment.Stretch,
                 Width = spacing,
             };
@@ -80,11 +84,11 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             // adding button
             var uiButton = new Button();
-            Style style = context.GetStyle($"Adaptive.Input.Text.InlineAction.Button");
-            if (style != null)
-            {
-                uiButton.Style = style;
-            }
+            //Style style = context.GetStyle($"Adaptive.Input.Text.InlineAction.Button");
+            //if (style != null)
+            //{
+            //    uiButton.Style = style;
+            //}
 
             // this textblock becomes tooltip if icon url exists else becomes the tile for the button
             var uiTitle = new TextBlock
@@ -117,7 +121,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             else
             {
                 uiTitle.FontSize = context.Config.GetFontSize(AdaptiveFontType.Default, AdaptiveTextSize.Default);
-                uiTitle.Style = context.GetStyle($"Adaptive.Input.Text.InlineAction.Title");
+                // uiTitle.Style = context.GetStyle($"Adaptive.Input.Text.InlineAction.Title");
                 uiButton.Content = uiTitle;
             }
 
@@ -142,7 +146,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             textBox.KeyDown += (sender, e) =>
             {
-                if (e.Key == System.Windows.Input.Key.Enter)
+                if (e.Key == Key.Enter)
                 {
                     context.InvokeAction(uiButton, new AdaptiveActionEventArgs(input.InlineAction));
                     e.Handled = true;

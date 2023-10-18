@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -129,7 +131,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         public static Control RenderAdaptiveCardWrapper(AdaptiveCard card, AdaptiveRenderContext context)
         {
             var outerGrid = new Grid();
-            outerGrid.Style = context.GetStyle("Adaptive.Card");
+            // outerGrid.Style = context.GetStyle("Adaptive.Card");
 
             outerGrid.Background = context.GetColorBrush(context.Config.ContainerStyles.Default.BackgroundColor);
             outerGrid.SetBackgroundSource(card.BackgroundImage, context);
@@ -143,7 +145,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             context.RenderArgs.ParentStyle = AdaptiveContainerStyle.Default;
 
             var grid = new Grid();
-            grid.Style = context.GetStyle("Adaptive.InnerCard");
+            // grid.Style = context.GetStyle("Adaptive.InnerCard");
             grid.Margin = new Thickness(context.Config.Spacing.Padding);
 
             grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });

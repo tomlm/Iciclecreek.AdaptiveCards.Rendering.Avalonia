@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using System;
 
 
@@ -13,7 +15,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         public static Control Render(AdaptiveColumnSet columnSet, AdaptiveRenderContext context)
         {
             var uiColumnSet = new Grid();
-            uiColumnSet.Style = context.GetStyle($"Adaptive.{columnSet.Type}");
+            // uiColumnSet.Style = context.GetStyle($"Adaptive.{columnSet.Type}");
 
             // Keep track of ContainerStyle.ForegroundColors before Container is rendered
             var parentRenderArgs = context.RenderArgs;
@@ -71,7 +73,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                     if (uiColumnSet.ColumnDefinitions.Count > 0 && (column.Separator || column.Spacing != AdaptiveSpacing.None))
                     {
                         var uiSep = new Grid();
-                        uiSep.Style = context.GetStyle($"Adaptive.VerticalSeparator");
+                        // uiSep.Style = context.GetStyle($"Adaptive.VerticalSeparator");
 
                         uiSep.VerticalAlignment = VerticalAlignment.Stretch;
 

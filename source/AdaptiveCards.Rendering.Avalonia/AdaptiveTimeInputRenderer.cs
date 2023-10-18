@@ -13,7 +13,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         {
             var textBox = new TextBox() { Text = input.Value };
             textBox.SetPlaceholder(input.Placeholder);
-            textBox.Style = context.GetStyle("Adaptive.Input.Text.Time");
+            // textBox.Style = context.GetStyle("Adaptive.Input.Text.Time");
             textBox.SetContext(input);
 
             TimeSpan maxTime, minTime;

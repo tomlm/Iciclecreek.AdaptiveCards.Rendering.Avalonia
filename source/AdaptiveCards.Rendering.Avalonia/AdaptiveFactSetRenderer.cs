@@ -3,6 +3,7 @@
 
 
 
+using Avalonia;
 using Avalonia.Controls;
 
 namespace AdaptiveCards.Rendering.Avalonia
@@ -18,7 +19,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             var uiFactSet = new Grid();
             // grid.Margin = factSet.Theme.FactSetMargins;
-            uiFactSet.Style = context.GetStyle("Adaptive.FactSet");
+            // uiFactSet.Style = context.GetStyle("Adaptive.FactSet");
 
             uiFactSet.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
             uiFactSet.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
@@ -56,7 +57,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
                 if (uiTitle != null)
                 {
-                    uiTitle.Style = context.GetStyle("Adaptive.Fact.Title");
+                    // uiTitle.Style = context.GetStyle("Adaptive.Fact.Title");
                     uiTitle.Margin = new Thickness(left: 0, top: 0, right: context.Config.FactSet.Spacing, bottom: 0);
 
                     Grid.SetColumn(uiTitle, 0);
@@ -66,7 +67,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
                 if (uiValue != null)
                 {
-                    uiValue.Style = context.GetStyle("Adaptive.Fact.Value");
+                    // uiValue.Style = context.GetStyle("Adaptive.Fact.Value");
 
                     Grid.SetColumn(uiValue, 1);
                     Grid.SetRow(uiValue, iRow);

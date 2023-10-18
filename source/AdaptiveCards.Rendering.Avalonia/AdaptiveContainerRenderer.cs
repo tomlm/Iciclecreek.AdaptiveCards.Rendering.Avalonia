@@ -16,7 +16,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         public static Control Render(AdaptiveContainer container, AdaptiveRenderContext context)
         {
             var uiContainer = new Grid();
-            uiContainer.Style = context.GetStyle("Adaptive.Container");
+            // uiContainer.Style = context.GetStyle("Adaptive.Container");
             uiContainer.SetBackgroundSource(container.BackgroundImage, context);
 
             bool? previousContextRtl = context.Rtl;
@@ -255,7 +255,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             }
 
             var uiSpa = new Grid();
-            uiSpa.Style = context.GetStyle($"Adaptive.Spacing");
+            // uiSpa.Style = context.GetStyle($"Adaptive.Spacing");
 
             int pixelSpacing = context.Config.GetSpacing(spacing);
             uiSpa.SetHeight(pixelSpacing);
@@ -280,7 +280,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             }
 
             var uiSep = new Grid();
-            uiSep.Style = context.GetStyle($"Adaptive.Separator");
+            // uiSep.Style = context.GetStyle($"Adaptive.Separator");
             int spacing = context.Config.GetSpacing(element.Spacing);
 
             SeparatorConfig sepStyle = context.Config.Separator;
