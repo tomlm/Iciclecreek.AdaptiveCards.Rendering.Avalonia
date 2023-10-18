@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdaptiveCards.Rendering.Avalonia", "AdaptiveCards.Rendering.Avalonia\AdaptiveCards.Rendering.Avalonia.csproj", "{2765EA5B-CF79-4383-A419-82F8E3AD932C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdaptiveCards.Rendering.Avalonia", "AdaptiveCards.Rendering.Avalonia\AdaptiveCards.Rendering.Avalonia.csproj", "{2765EA5B-CF79-4383-A419-82F8E3AD932C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdaptiveCardViewer", "AdaptiveCardViewer\AdaptiveCardViewer.csproj", "{BA42F77E-D48E-4914-B6E3-530491255133}"
 EndProject
@@ -30,7 +30,6 @@ Global
 		{BA42F77E-D48E-4914-B6E3-530491255133}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA42F77E-D48E-4914-B6E3-530491255133}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B26B59B-0E3F-4A3C-BF00-8C7C25C218CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B26B59B-0E3F-4A3C-BF00-8C7C25C218CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B26B59B-0E3F-4A3C-BF00-8C7C25C218CA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{9B26B59B-0E3F-4A3C-BF00-8C7C25C218CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B26B59B-0E3F-4A3C-BF00-8C7C25C218CA}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -40,13 +39,11 @@ Global
 		{C187452F-1D0C-4BFD-A3B7-FB2278F108E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C187452F-1D0C-4BFD-A3B7-FB2278F108E8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C0776116-BBC4-47D2-91A7-F9490357D26B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C0776116-BBC4-47D2-91A7-F9490357D26B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0776116-BBC4-47D2-91A7-F9490357D26B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{C0776116-BBC4-47D2-91A7-F9490357D26B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0776116-BBC4-47D2-91A7-F9490357D26B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C0776116-BBC4-47D2-91A7-F9490357D26B}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{5F8AC6CE-D6E3-4880-BA92-2E8F79B166FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F8AC6CE-D6E3-4880-BA92-2E8F79B166FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F8AC6CE-D6E3-4880-BA92-2E8F79B166FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F8AC6CE-D6E3-4880-BA92-2E8F79B166FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
