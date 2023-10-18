@@ -160,7 +160,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             {
                 if (_colors.TryGetValue(color, out var brush))
                     return brush;
-                brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color));
+                brush = new SolidColorBrush(Color.Parse(color));
                 _colors[color] = brush;
                 return brush;
             }
