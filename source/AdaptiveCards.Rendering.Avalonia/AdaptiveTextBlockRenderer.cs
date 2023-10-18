@@ -5,8 +5,10 @@ using System.Globalization;
 using System.IO;
 
 using System.Xml;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Microsoft.MarkedNet;
 
@@ -39,12 +41,12 @@ namespace AdaptiveCards.Rendering.Avalonia
                 // using same style, fontWeight settings as original textblock
                 var measureBlock = new TextBlock()
                 {
-                    Style = uiTextBlock.Style,
+                    // Style = uiTextBlock.Style,
                     FontWeight = uiTextBlock.FontWeight,
                     FontSize = uiTextBlock.FontSize,
-                    Visibility = Visibility.Hidden,
+                    IsVisible = true,
                     TextWrapping = TextWrapping.NoWrap,
-                    HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+                    HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Top,
                     DataContext = textBlock.MaxLines
                 };
@@ -52,13 +54,13 @@ namespace AdaptiveCards.Rendering.Avalonia
                 measureBlock.Inlines.Add(uiTextBlock.Text);
 
                 // bind the real textBlock's Height => MeasureBlock.ActualHeight
-                uiTextBlock.SetBinding(Control.MaxHeightProperty, new Binding()
-                {
-                    Path = new PropertyPath("ActualHeight"),
-                    Source = measureBlock,
-                    Mode = BindingMode.OneWay,
-                    Converter = new MultiplyConverter(textBlock.MaxLines)
-                });
+                //uiTextBlock.Bind(Control.MaxHeightProperty, measureBlock.Bounds.Height.ToBind new Binding()
+                //{
+                //    Path = new PropertyPath("ActualHeight"),
+                //    Source = measureBlock,
+                //    Mode = BindingMode.OneWay,
+                //    Converter = new MultiplyConverter(textBlock.MaxLines)
+                //});
 
                 // Add both to a grid so they go as a unit
                 uiGrid.Children.Add(measureBlock);

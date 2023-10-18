@@ -145,7 +145,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                             Grid uiShowCardContainer = new Grid();
                             // uiShowCardContainer.Style = context.GetStyle("Adaptive.Actions.ShowCard");
                             uiShowCardContainer.DataContext = showCardAction;
-                            uiShowCardContainer.Visibility = Visibility.Collapsed;
+                            uiShowCardContainer.IsVisible = false;
                             var padding = context.Config.Spacing.Padding;
                             // set negative margin to expand the wrapper to the edge of outer most card
                             uiShowCardContainer.Margin = new Thickness(-padding, actionsConfig.ShowCard.InlineTopMargin, -padding, -padding);

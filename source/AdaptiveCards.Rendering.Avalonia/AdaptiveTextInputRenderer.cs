@@ -113,10 +113,10 @@ namespace AdaptiveCards.Rendering.Avalonia
                 // adjust height
                 textBox.Loaded += (sender, e) =>
                 {
-                    uiIcon.Height = textBox.ActualHeight;
+                    uiIcon.Height = textBox.Bounds.Height;
                 };
 
-                uiButton.ToolTip = uiTitle;
+                uiButton.SetValue(ToolTip.TipProperty, uiTitle);
             }
             else
             {

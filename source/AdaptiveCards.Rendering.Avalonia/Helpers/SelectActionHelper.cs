@@ -59,7 +59,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             // uiShowCardContainer.Style = context.GetStyle("Adaptive.Actions.ShowCard");
             uiShowCardContainer.DataContext = showCardAction;
             uiShowCardContainer.Margin = new Thickness(0, actionsConfig.ShowCard.InlineTopMargin, 0, 0);
-            uiShowCardContainer.Visibility = Visibility.Collapsed;
+            uiShowCardContainer.IsVisible = false;
 
             // render the card
             var uiShowCardWrapper = (Grid)context.Render(showCardAction.Card);

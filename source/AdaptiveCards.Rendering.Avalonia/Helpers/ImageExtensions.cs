@@ -116,18 +116,6 @@ namespace AdaptiveCards.Rendering.Avalonia
             }
         }
 
-        public static BitmapImage GetBitmapFromBase64(Uri dataUri)
-        {
-            var encodedData = dataUri.AbsoluteUri.Substring(dataUri.AbsoluteUri.LastIndexOf(',') + 1);
-
-            var decodedDataUri = Convert.FromBase64String(encodedData);
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.StreamSource = new MemoryStream(decodedDataUri);
-            bitmap.EndInit();
-
-            return bitmap;
-        }
 
         public static async void SetBackgroundSource(this Grid grid, AdaptiveBackgroundImage adaptiveBackgroundImage, AdaptiveRenderContext context)
         {
@@ -138,7 +126,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 return;
             }
 
-            BitmapImage bi = await context.ResolveImageSource(finalUri);
+            var bi = await context.ResolveImageSource(finalUri);
 
             if (bi != null)
             {
@@ -150,8 +138,8 @@ namespace AdaptiveCards.Rendering.Avalonia
                         grid.Background = new ImageBrush(bi)
                         {
                             TileMode = TileMode.Tile,
-                            Viewport = new Rect(0, 0, bi.PixelWidth, bi.PixelHeight),
-                            ViewportUnits = BrushMappingMode.Absolute
+                            //Viewport = new Rect(0, 0, bi.PixelWidth, bi.PixelHeight),
+                            //ViewportUnits = BrushMappingMode.Absolute
                         };
                         break;
                     case AdaptiveImageFillMode.RepeatHorizontally:
@@ -160,8 +148,8 @@ namespace AdaptiveCards.Rendering.Avalonia
                             TileMode = TileMode.FlipY,
                             Stretch = Stretch.Uniform,
                             AlignmentY = (AlignmentY) adaptiveBackgroundImage.VerticalAlignment,
-                            Viewport = new Rect(0, 0, bi.PixelWidth, grid.ActualHeight + 1),
-                            ViewportUnits = BrushMappingMode.Absolute
+                            //Viewport = new Rect(0, 0, bi.PixelWidth, grid.ActualHeight + 1),
+                            //ViewportUnits = BrushMappingMode.Absolute
                         };
                         break;
                     case AdaptiveImageFillMode.RepeatVertically:
@@ -170,8 +158,8 @@ namespace AdaptiveCards.Rendering.Avalonia
                             TileMode = TileMode.FlipX,
                             Stretch = Stretch.Uniform,
                             AlignmentX = (AlignmentX)adaptiveBackgroundImage.HorizontalAlignment,
-                            Viewport = new Rect(0, 0, grid.ActualWidth + 1, bi.PixelWidth),
-                            ViewportUnits = BrushMappingMode.Absolute
+                            //Viewport = new Rect(0, 0, grid.ActualWidth + 1, bi.PixelWidth),
+                            //ViewportUnits = BrushMappingMode.Absolute
                         };
                         break;
                     case AdaptiveImageFillMode.Cover:

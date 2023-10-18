@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Media;
 using System;
 using System.Collections.Generic;
@@ -301,29 +302,11 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         private static Thickness GetBleedMargin(AdaptiveRenderArgs parentRenderArgs, int padding)
         {
-            Thickness bleedMargin = new Thickness(0);
-
-            if ((parentRenderArgs.BleedDirection & BleedDirection.BleedLeft) != BleedDirection.BleedNone)
-            {
-                bleedMargin.Left = padding;
-            }
-
-            if ((parentRenderArgs.BleedDirection & BleedDirection.BleedRight) != BleedDirection.BleedNone)
-            {
-                bleedMargin.Right = padding;
-            }
-
-            if ((parentRenderArgs.BleedDirection & BleedDirection.BleedUp) != BleedDirection.BleedNone)
-            {
-                bleedMargin.Top = padding;
-            }
-
-            if ((parentRenderArgs.BleedDirection & BleedDirection.BleedDown) != BleedDirection.BleedNone)
-            {
-                bleedMargin.Bottom = padding;
-            }
-
-            return bleedMargin;
+            return new Thickness(
+                ((parentRenderArgs.BleedDirection & BleedDirection.BleedLeft) != BleedDirection.BleedNone) ? padding : 0,
+                ((parentRenderArgs.BleedDirection & BleedDirection.BleedUp) != BleedDirection.BleedNone) ? padding : 0,
+                ((parentRenderArgs.BleedDirection & BleedDirection.BleedRight) != BleedDirection.BleedNone) ? padding : 0,
+                ((parentRenderArgs.BleedDirection & BleedDirection.BleedDown) != BleedDirection.BleedNone) ? padding : 0);
         }
 
         // For applying bleeding, we must know if the element has padding, so both properties are applied in the same method
@@ -522,7 +505,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             {
                 Text = input.ErrorMessage,
                 TextWrapping = TextWrapping.Wrap,
-                Visibility = Visibility.Collapsed
+                IsVisible = false
             };
 
             // By default the color is set to attention

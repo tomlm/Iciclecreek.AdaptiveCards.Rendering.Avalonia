@@ -95,7 +95,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                     //Size the image to the textblock, wait until layout is complete (loaded event)
                     uiIcon.Loaded += (sender, e) =>
                     {
-                        uiIcon.Height = uiTitle.ActualHeight;
+                        uiIcon.Height = uiTitle.Bounds.Height;
                     };
                 }
                 contentStackPanel.Children.Add(uiIcon);
@@ -120,7 +120,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             }
             else
             {
-                uiButton.ToolTip = uiTitle;
+                uiButton.SetValue(ToolTip.TipProperty, uiTitle);
             }
 
             string name = context.GetType().Name.Replace("Action", String.Empty);

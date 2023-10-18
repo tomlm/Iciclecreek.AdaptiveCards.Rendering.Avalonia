@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+using AsyncImageLoader.Loaders;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -24,6 +25,8 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         protected Action<object, AdaptiveActionEventArgs> ActionCallback;
         protected Action<object, MissingInputEventArgs> missingDataCallback;
+
+        protected RamCachedWebImageLoader _imageLoader = new RamCachedWebImageLoader();
 
         public AdaptiveCardRenderer() : this(new AdaptiveHostConfig()) { }
 
@@ -126,7 +129,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public AdaptiveActionHandlers ActionHandlers { get; } = new AdaptiveActionHandlers();
 
-        public ResourceResolver ResourceResolvers { get; } = new ResourceResolver();
+//         public ResourceResolver ResourceResolvers { get; } = new ResourceResolver();
 
         public static Control RenderAdaptiveCardWrapper(AdaptiveCard card, AdaptiveRenderContext context)
         {
@@ -207,7 +210,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             var context = new AdaptiveRenderContext(ActionCallback, null, MediaClickCallback)
             {
-                ResourceResolvers = ResourceResolvers,
+                ImageLoader = _imageLoader,
                 ActionHandlers = ActionHandlers,
                 Config = HostConfig ?? new AdaptiveHostConfig(),
                 Resources = Resources,
@@ -258,12 +261,10 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             try
             {
-                var cardAssets = await LoadAssetsForCardAsync(card, cancellationToken);
 
                 var context = new AdaptiveRenderContext(null, null, null)
                 {
-                    CardAssets = cardAssets,
-                    ResourceResolvers = ResourceResolvers,
+                    ImageLoader = _imageLoader,
                     ActionHandlers = ActionHandlers,
                     Config = HostConfig ?? new AdaptiveHostConfig(),
                     Resources = Resources,
@@ -283,22 +284,5 @@ namespace AdaptiveCards.Rendering.Avalonia
             return renderCard;
         }
 
-
-        public async Task<IDictionary<Uri, MemoryStream>> LoadAssetsForCardAsync(AdaptiveCard card, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            var visitor = new PreFetchImageVisitor(ResourceResolvers);
-            await visitor.GetAllImages(card).WithCancellation(cancellationToken).ConfigureAwait(false);
-            return visitor.LoadedImages;
-        }
-
-        public void UseXceedElementRenderers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UseDefaultElementRenderers()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

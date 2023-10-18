@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using System;
@@ -31,14 +32,14 @@ namespace AdaptiveCards.Rendering.Avalonia
 
                 var mask = new RadialGradientBrush()
                 {
-                    GradientOrigin = new Point(0.5, 0.5),
-                    Center = new Point(0.5, 0.5),
-                    RadiusX = 0.5,
-                    RadiusY = 0.5,
-                    GradientStops = new GradientStopCollection()
+                    GradientOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative),
+                    Center = new RelativePoint(0.5, 0.5, RelativeUnit.Relative),
+                    //RadiusX = 0.5,
+                    //RadiusY = 0.5,
+                    //GradientStops = new GradientStopCollection()
                 };
-                mask.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#ffffffff"), 1.0));
-                mask.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#00ffffff"), 1.0));
+                mask.GradientStops.Add(new GradientStop(Color.Parse("#ffffffff"), 1.0));
+                mask.GradientStops.Add(new GradientStop(Color.Parse("#00ffffff"), 1.0));
                 uiImage.OpacityMask = mask;
             }
             // uiImage.Style = context.GetStyle(style);
@@ -51,7 +52,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             // If we have a background color, we'll create a border for the background and put the image on top
             if (!string.IsNullOrEmpty(image.BackgroundColor))
             {
-                Color color = (Color)ColorConverter.ConvertFromString(image.BackgroundColor);
+                Color color = Color.Parse(image.BackgroundColor);
                 if (color.A != 0)
                 {
                     uiBorder = new Border()

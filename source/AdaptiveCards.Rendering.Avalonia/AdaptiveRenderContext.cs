@@ -1,7 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+using AsyncImageLoader.Loaders;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,8 +18,6 @@ namespace AdaptiveCards.Rendering.Avalonia
     public class AdaptiveRenderContext
     {
         private readonly Dictionary<string, SolidColorBrush> _colors = new Dictionary<string, SolidColorBrush>();
-
-        public List<Task> AssetTasks { get; } = new List<Task>();
 
         public AdaptiveRenderContext(Action<object, AdaptiveActionEventArgs> actionCallback,
             Action<object, MissingInputEventArgs> missingDataCallback,
@@ -39,19 +39,18 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public AdaptiveElementRenderers<Control, AdaptiveRenderContext> ElementRenderers { get; set; }
 
+
         public ResourceDictionary Resources { get; set; }
 
         public AdaptiveActionHandlers ActionHandlers { get; set; }
 
         public AdaptiveFeatureRegistration FeatureRegistration { get; set; }
 
-        public ResourceResolver ResourceResolvers { get; set; }
+        public RamCachedWebImageLoader ImageLoader { get; set; }
 
         public bool IsRenderingSelectAction { get; set; }
 
         public bool? Rtl { get; set; }
-
-        public IDictionary<Uri, MemoryStream> CardAssets { get; set; } = new Dictionary<Uri, MemoryStream>();
 
         public IDictionary<string, Func<string>> InputBindings = new Dictionary<string, Func<string>>();
 
@@ -119,39 +118,9 @@ namespace AdaptiveCards.Rendering.Avalonia
         /// <summary>
         /// All remote assets should be resolved through this method for tracking
         /// </summary>
-        public async Task<BitmapImage> ResolveImageSource(Uri url)
+        public async Task<Bitmap> ResolveImageSource(Uri url)
         {
-            var completeTask = new TaskCompletionSource<object>();
-            AssetTasks.Add(completeTask.Task);
-
-            try
-            {
-                // Load the stream from the pre-populated CardAssets or try to load from the ResourceResolver
-                var streamTask = CardAssets.TryGetValue(url, out var s) ? Task.FromResult(s) : ResourceResolvers.LoadAssetAsync(url);
-
-                Debug.WriteLine($"ASSETS: Starting asset down task for {url}");
-
-                var source = new BitmapImage();
-
-                var stream = await streamTask;
-                if (stream != null)
-                {
-                    stream.Position = 0;
-                    source.BeginInit();
-                    source.CacheOption = BitmapCacheOption.OnLoad;
-                    source.StreamSource = stream;
-                    source.EndInit();
-                    Debug.WriteLine($"ASSETS: Finished loading asset for {url} ({stream.Length} bytes)");
-                }
-                completeTask.SetResult(new object());
-                return source;
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"ASSETS: Failed to load asset for {url}. {e.Message}");
-                completeTask.SetException(e);
-                return null;
-            }
+            return await this.ImageLoader.ProvideImageAsync(url.ToString());
         }
 
         public SolidColorBrush GetColorBrush(string color)
@@ -387,7 +356,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 return tagContent;
             }
             return null;
-        }       
+        }
 
         /// <summary>
         /// Changes the visibility of the specified elements as defined
@@ -405,7 +374,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 {
                     if (element != null && element is Control elementControl)
                     {
-                        bool isCurrentlyVisible = (elementControl.Visibility == Visibility.Visible);
+                        bool isCurrentlyVisible = (elementControl.IsVisible);
 
                         // if we read something with the format {"elementId": <id>", "isVisible": true} or
                         // we just read the id and the element is not visible;
@@ -465,7 +434,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             if (separator != null)
             {
-                separator.Visibility = isFirstVisible ? Visibility.Collapsed : Visibility.Visible;
+                separator.IsVisible= !isFirstVisible ;
             }
         }
 
@@ -478,7 +447,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             bool isFirstVisible = true;
             foreach (Control element in uiContainer.Children)
             {
-                if (element.Visibility == Visibility.Visible)
+                if (element.IsVisible)
                 {
                     TagContent tagContent = GetTagContent(element);
 
@@ -504,14 +473,14 @@ namespace AdaptiveCards.Rendering.Avalonia
             var peers = PeerShowCardsInActionSet[id];
             if (card != null && peers != null)
             {
-                var targetVisibility = card.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                var targetVisibility = !card.IsVisible;
                 // need to make sure we collapse all showcards before showing this one
                 foreach (var showCard in peers)
                 {
-                    showCard.Visibility = Visibility.Collapsed;
+                    showCard.IsVisible = false;
                 }
 
-                card.Visibility = targetVisibility;
+                card.IsVisible = targetVisibility;
             }
         }
 
@@ -591,7 +560,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         }
 
         // Dictionary where all the parent cards point to their parent cards, the parent for the main card must have ID = Invalid
-        public Dictionary<AdaptiveInternalID, AdaptiveInternalID> ParentCards { get; set; }  = new Dictionary<AdaptiveInternalID, AdaptiveInternalID>();
+        public Dictionary<AdaptiveInternalID, AdaptiveInternalID> ParentCards { get; set; } = new Dictionary<AdaptiveInternalID, AdaptiveInternalID>();
 
         // Dictionary where we tie every Action.Submit or Action.Exectute to the card where it is contained, this help us knowing where should we start validating from
         public Dictionary<AdaptiveAction, AdaptiveInternalID> SubmitActionCardId { get; set; } = new Dictionary<AdaptiveAction, AdaptiveInternalID>();

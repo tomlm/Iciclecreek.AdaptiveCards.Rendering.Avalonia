@@ -88,15 +88,15 @@ namespace AdaptiveCards.Rendering.Avalonia
                 return;
             }
 
-            bool elementIsCurrentlyVisible = (element.Visibility == Visibility.Visible);
+            bool elementIsCurrentlyVisible = element.IsVisible;
 
-            element.Visibility = desiredVisibility ? Visibility.Visible : Visibility.Collapsed;
+            element.IsVisible = desiredVisibility;
 
             // Hides the separator if any was rendered
             Grid separator = tagContent.Separator;
             if (separator != null)
             {
-                separator.Visibility = desiredVisibility ? Visibility.Visible : Visibility.Collapsed;
+                separator.IsVisible = desiredVisibility;
             }
 
             // Elements (Rows) with RowDefinition having stars won't hide so we have to set the width to auto

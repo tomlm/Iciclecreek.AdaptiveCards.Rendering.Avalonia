@@ -3,6 +3,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using System;
@@ -64,7 +65,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             var uiThumbnailButton = new Grid
             {
                 Name = "thumbnailButton",
-                Visibility = Visibility.Visible
+                IsVisible = true
             };
 
             /* Poster Image */
@@ -110,7 +111,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             {
                 // Media player is only created if inline playback is allowed
                 uiMediaPlayer = RenderMediaPlayer(context, mediaSource, uiMedia);
-                uiMediaPlayer.Visibility = Visibility.Collapsed;
+                uiMediaPlayer.IsVisible = false;
 
                 uiMedia.Children.Add(uiMediaPlayer);
             }
@@ -124,17 +125,17 @@ namespace AdaptiveCards.Rendering.Avalonia
                     {
                         // If media is audio, keep only the poster image (if present)
                         // and disable the thumbnail button to prevent further clicks
-                        uiPlayButton.Visibility = Visibility.Collapsed;
+                        uiPlayButton.IsVisible = false;
                         uiThumbnailButton.IsEnabled = false;
                     }
                     else
                     {
                         // Otherwise, collapse all the thumbnail button
-                        uiThumbnailButton.Visibility = Visibility.Collapsed;
+                        uiThumbnailButton.IsVisible = false;
                     }
 
                     // Show the media player to start
-                    uiMediaPlayer.Visibility = Visibility.Visible;
+                    uiMediaPlayer.IsVisible = true;
                 }
                 // Raise an event to send the media to host
                 else
@@ -409,7 +410,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 Foreground = _controlForegroundColor,
                 Margin = _marginThickness,
                 VerticalAlignment = VerticalAlignment.Center,
-                Visibility = Visibility.Collapsed,
+                IsVisible = false,
             };
             uiVolumeControlContainer.ColumnDefinitions.Add(new ColumnDefinition()
             {
@@ -441,14 +442,14 @@ namespace AdaptiveCards.Rendering.Avalonia
             // Volume control handlers
             void muteVolume(object sender, MouseEventArgs e)
             {
-                uiVolumeMuteButton.Visibility = Visibility.Collapsed;
-                uiVolumeUnmuteButton.Visibility = Visibility.Visible;
+                uiVolumeMuteButton.IsVisible = false;
+                uiVolumeUnmuteButton.IsVisible = true;
                 mediaElement.Volume = 0;
             }
             void unmuteVolume(object sender, RoutedEventArgs e)
             {
-                uiVolumeUnmuteButton.Visibility = Visibility.Collapsed;
-                uiVolumeMuteButton.Visibility = Visibility.Visible;
+                uiVolumeUnmuteButton.IsVisible = false;
+                uiVolumeMuteButton.IsVisible = true;
                 mediaElement.Volume = uiVolumeSlider.Value;
             }
 
@@ -474,20 +475,20 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             #region Other events
 
-            void showControlPanel(object sender, MouseEventArgs e) { uiControlPanel.Visibility = Visibility.Visible; }
-            void collapseControlPanel(object sender, MouseEventArgs e) { uiControlPanel.Visibility = Visibility.Collapsed; }
+            void showControlPanel(object sender, MouseEventArgs e) { uiControlPanel.IsVisible = true; }
+            void collapseControlPanel(object sender, MouseEventArgs e) { uiControlPanel.IsVisible = false; }
             void mediaStarted(object sender, RoutedEventArgs e)
             {
                 // Playback button visibility
                 currentMediaState = MediaState.IsPlaying;
-                uiBuffering.Visibility = Visibility.Collapsed;
+                uiBuffering.IsVisible = false;
                 HandlePlaybackButtonVisibility(currentMediaState, uiPauseButton, uiResumeButton, uiReplayButton);
 
                 // Control panel visibility
                 if (!IsAudio(mediaSource))
                 {
                     // Hide when the video starts playing
-                    uiControlPanel.Visibility = Visibility.Collapsed;
+                    uiControlPanel.IsVisible = false;
 
                     // Assign mouse hover events to avoid blocking the video
                     uiMediaPlayer.MouseEnter += showControlPanel;
@@ -504,7 +505,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 if (!IsAudio(mediaSource))
                 {
                     // Show when the video is complete
-                    uiControlPanel.Visibility = Visibility.Visible;
+                    uiControlPanel.IsVisible = true;
 
                     // Remove mouse hover events to always show controls
                     uiMediaPlayer.MouseEnter -= showControlPanel;
@@ -604,7 +605,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 Stretch = Stretch.Fill,
                 Margin = _marginThickness,
                 VerticalAlignment = VerticalAlignment.Center,
-                Visibility = Visibility.Collapsed,
+                IsVisible = false,
                 Child = new TextBlock()
                 {
                     Text = text,
@@ -622,22 +623,22 @@ namespace AdaptiveCards.Rendering.Avalonia
         private static void HandlePlaybackButtonVisibility(MediaState currentMediaState,
             Control pauseButton, Control resumeButton, Control replayButton)
         {
-            pauseButton.Visibility = Visibility.Collapsed;
-            resumeButton.Visibility = Visibility.Collapsed;
-            replayButton.Visibility = Visibility.Collapsed;
+            pauseButton.IsVisible = false;
+            resumeButton.IsVisible = false;
+            replayButton.IsVisible = false;
 
             if (currentMediaState == MediaState.IsPlaying)
             {
-                pauseButton.Visibility = Visibility.Visible;
+                pauseButton.IsVisible = true;
             }
             else if (currentMediaState == MediaState.IsPaused)
             {
-                resumeButton.Visibility = Visibility.Visible;
+                resumeButton.IsVisible = true;
             }
             else
             {
                 // Video is complete
-                replayButton.Visibility = Visibility.Visible;
+                replayButton.IsVisible = true;
             }
         }
 
