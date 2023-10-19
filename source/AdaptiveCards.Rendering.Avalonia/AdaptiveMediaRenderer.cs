@@ -3,9 +3,12 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
+using LibVLCSharp.Avalonia;
+using LibVLCSharp.Shared;
 using System;
 using System.Collections.Generic;
 
@@ -88,13 +91,13 @@ namespace AdaptiveCards.Rendering.Avalonia
             // Play button
             var uiPlayButton = RenderThumbnailPlayButton(context);
             uiThumbnailButton.Children.Add(uiPlayButton);
-            
+
             // Mouse hover handlers to signify playable media element
-            uiThumbnailButton.MouseEnter += (sender, e) =>
+            uiThumbnailButton.PointerEntered += (sender, e) =>
             {
                 uiPosterContainer.OpacityMask = _controlBackgroundColor;
             };
-            uiThumbnailButton.MouseLeave += (sender, e) =>
+            uiThumbnailButton.PointerExited += (sender, e) =>
             {
                 uiPosterContainer.OpacityMask = null;
             };
@@ -117,7 +120,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             }
 
             // Play the media
-            uiThumbnailButton.MouseUp += (sender, e) =>
+            uiThumbnailButton.PointerReleased += (sender, e) =>
             {
                 if (isInlinePlaybackPossible)
                 {
@@ -210,10 +213,19 @@ namespace AdaptiveCards.Rendering.Avalonia
         {
             var uiMediaPlayer = new Grid();
 
-            var mediaElement = new MediaElement()
+
+            LibVLC _libVlc = new LibVLC();
+            var mediaPlayer = new MediaPlayer(_libVlc);
+            var mediaElement = new VideoView()
             {
-                Stretch = Stretch.Fill,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                MediaPlayer = mediaPlayer
             };
+
+            using var media = new Media(_libVlc, new Uri(mediaSource.Url));
+            mediaPlayer.Play(media);
+
             uiMediaPlayer.Children.Add(mediaElement);
 
             // Add some height to keep the controls (timeline panel + playback panel)
@@ -300,35 +312,35 @@ namespace AdaptiveCards.Rendering.Avalonia
                 Height = _panelHeight,
             };
 
-            // Play trigger attached with the thumbnail button
-            var playTrigger = new EventTrigger(Control.MouseUpEvent)
-            {
-                SourceName = "thumbnailButton",
-            };
+            //// Play trigger attached with the thumbnail button
+            //var playTrigger = new EventTrigger(Control.PointerReleasedEvent)
+            //{
+            //    SourceName = "thumbnailButton",
+            //};
 
-            var mediaTimeline = new MediaTimeline()
-            {
-                // This URI was previously confirmed to be valid
-                Source = context.Config.ResolveFinalAbsoluteUri(mediaSource.Url),
-            };
-            Storyboard.SetTarget(mediaTimeline, mediaElement);
+            //var mediaTimeline = new MediaTimeline()
+            //{
+            //    // This URI was previously confirmed to be valid
+            //    Source = context.Config.ResolveFinalAbsoluteUri(mediaSource.Url),
+            //};
+            //Storyboard.SetTarget(mediaTimeline, mediaElement);
 
-            var storyboard = new Storyboard()
-            {
-                SlipBehavior = SlipBehavior.Slip,
-            };
-            storyboard.Children.Add(mediaTimeline);
-            var beginStoryboard = new BeginStoryboard()
-            {
-                // An arbitrary name is necessary for the storyboard to work correctly
-                Name = "beginStoryboard",
-                Storyboard = storyboard,
-            };
-            playTrigger.Actions.Add(beginStoryboard);
+            //var storyboard = new Storyboard()
+            //{
+            //    SlipBehavior = SlipBehavior.Slip,
+            //};
+            //storyboard.Children.Add(mediaTimeline);
+            //var beginStoryboard = new BeginStoryboard()
+            //{
+            //    // An arbitrary name is necessary for the storyboard to work correctly
+            //    Name = "beginStoryboard",
+            //    Storyboard = storyboard,
+            //};
+            //playTrigger.Actions.Add(beginStoryboard);
 
-            // The play trigger needs to be added to uiMedia since
-            // uiThumbnailButton is inside uiMedia
-            uiMedia.Triggers.Add(playTrigger);
+            //// The play trigger needs to be added to uiMedia since
+            //// uiThumbnailButton is inside uiMedia
+            //uiMedia.Triggers.Add(playTrigger);
 
             // Buffering signal
             var uiBuffering = new TextBlock()
@@ -354,15 +366,15 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             // Click events
             MediaState currentMediaState = MediaState.NotStarted;
-            uiPauseButton.MouseUp += (sender, e) =>
+            uiPauseButton.PointerReleased += (sender, e) =>
             {
-                storyboard.Pause(uiMedia);
+                mediaPlayer.Pause();
                 currentMediaState = MediaState.IsPaused;
                 HandlePlaybackButtonVisibility(currentMediaState, uiPauseButton, uiResumeButton, uiReplayButton);
             };
-            uiResumeButton.MouseUp += (sender, e) =>
+            uiResumeButton.PointerReleased += (sender, e) =>
             {
-                storyboard.Resume(uiMedia);
+                mediaPlayer.Play();
                 currentMediaState = MediaState.IsPlaying;
                 HandlePlaybackButtonVisibility(currentMediaState, uiPauseButton, uiResumeButton, uiReplayButton);
             };
@@ -426,8 +438,8 @@ namespace AdaptiveCards.Rendering.Avalonia
                 Width = 100,
 
                 Minimum = 0,
-                Maximum = 1,
-                Value = 0.5,
+                Maximum = 100,
+                Value = 50,
             };
             uiVolumeControlContainer.ColumnDefinitions.Add(new ColumnDefinition()
             {
@@ -437,24 +449,24 @@ namespace AdaptiveCards.Rendering.Avalonia
             uiVolumeControlContainer.Children.Add(uiVolumeSlider);
 
             // Initialize media volume to 0.5
-            mediaElement.Volume = uiVolumeSlider.Value;
+            mediaPlayer.Volume = Convert.ToInt32(uiVolumeSlider.Value);
 
             // Volume control handlers
-            void muteVolume(object sender, MouseEventArgs e)
+            void muteVolume(object sender, PointerReleasedEventArgs e)
             {
                 uiVolumeMuteButton.IsVisible = false;
                 uiVolumeUnmuteButton.IsVisible = true;
-                mediaElement.Volume = 0;
+                mediaPlayer.Volume = 0;
             }
             void unmuteVolume(object sender, RoutedEventArgs e)
             {
                 uiVolumeUnmuteButton.IsVisible = false;
                 uiVolumeMuteButton.IsVisible = true;
-                mediaElement.Volume = uiVolumeSlider.Value;
+                mediaPlayer.Volume = Convert.ToInt32(uiVolumeSlider.Value);
             }
 
-            uiVolumeMuteButton.MouseUp += muteVolume;
-            uiVolumeUnmuteButton.MouseUp += unmuteVolume;
+            uiVolumeMuteButton.PointerReleased += muteVolume;
+            uiVolumeUnmuteButton.PointerReleased += unmuteVolume;
             uiVolumeSlider.ValueChanged += unmuteVolume;
 
             #endregion
@@ -475,8 +487,8 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             #region Other events
 
-            void showControlPanel(object sender, MouseEventArgs e) { uiControlPanel.IsVisible = true; }
-            void collapseControlPanel(object sender, MouseEventArgs e) { uiControlPanel.IsVisible = false; }
+            void showControlPanel(object sender, PointerEventArgs e) { uiControlPanel.IsVisible = true; }
+            void collapseControlPanel(object sender, PointerEventArgs e) { uiControlPanel.IsVisible = false; }
             void mediaStarted(object sender, RoutedEventArgs e)
             {
                 // Playback button visibility
@@ -491,8 +503,8 @@ namespace AdaptiveCards.Rendering.Avalonia
                     uiControlPanel.IsVisible = false;
 
                     // Assign mouse hover events to avoid blocking the video
-                    uiMediaPlayer.MouseEnter += showControlPanel;
-                    uiMediaPlayer.MouseLeave += collapseControlPanel;
+                    uiMediaPlayer.PointerEntered += showControlPanel;
+                    uiMediaPlayer.PointerExited += collapseControlPanel;
                 }
             }
             void mediaEnded(object sender, EventArgs e)
@@ -508,60 +520,61 @@ namespace AdaptiveCards.Rendering.Avalonia
                     uiControlPanel.IsVisible = true;
 
                     // Remove mouse hover events to always show controls
-                    uiMediaPlayer.MouseEnter -= showControlPanel;
-                    uiMediaPlayer.MouseLeave -= collapseControlPanel;
+                    uiMediaPlayer.PointerEntered -= showControlPanel;
+                    uiMediaPlayer.PointerExited -= collapseControlPanel;
                 }
             }
 
-            mediaElement.MediaOpened += mediaStarted;
-            storyboard.Completed += mediaEnded;
-            uiReplayButton.MouseUp += (sender, e) =>
+            //mediaPlayer.MediaOpened += mediaStarted;
+            //storyboard.Completed += mediaEnded;
+            uiReplayButton.PointerReleased += (sender, e) =>
             {
                 // Seek to beginning
-                storyboard.Seek(uiMedia, new TimeSpan(0, 0, 0, 0, 0), TimeSeekOrigin.BeginTime);
+                mediaPlayer.SeekTo(new TimeSpan(0, 0, 0, 0, 0));
 
                 // And start the media as usual
                 mediaStarted(sender, e);
             };
 
-            // Timeline slider events
-            mediaElement.MediaOpened += (sender, e) =>
-            {
-                uiTimelineSlider.Maximum = mediaElement.NaturalDuration.TimeSpan.TotalMilliseconds;
-                uiTimelineSlider.IsEnabled = true;
+            //// Timeline slider events
+            //mediaElement.MediaOpened += (sender, e) =>
+            //{
+            //    uiTimelineSlider.Maximum = mediaElement.NaturalDuration.TimeSpan.TotalMilliseconds;
+            //    uiTimelineSlider.IsEnabled = true;
 
-                uiMaxTime.Text = mediaElement.NaturalDuration.TimeSpan.ToString(@"hh\:mm\:ss");
-            };
-            storyboard.CurrentTimeInvalidated += (sender, e) => {
-                uiTimelineSlider.Value = mediaElement.Position.TotalMilliseconds;
+            //    uiMaxTime.Text = mediaElement.NaturalDuration.TimeSpan.ToString(@"hh\:mm\:ss");
+            //};
+            //storyboard.CurrentTimeInvalidated += (sender, e) =>
+            //{
+            //    uiTimelineSlider.Value = mediaElement.Position.TotalMilliseconds;
 
-                uiCurrentTime.Text = mediaElement.Position.ToString(@"hh\:mm\:ss");
-            };
+            //    uiCurrentTime.Text = mediaElement.Position.ToString(@"hh\:mm\:ss");
+            //};
 
             // Thumb events
-            uiTimelineSlider.AddHandler(Thumb.DragStartedEvent, new DragStartedEventHandler((sender, e) =>
-            {
-                storyboard.Pause(uiMedia);
-            }));
-            uiTimelineSlider.AddHandler(Thumb.DragDeltaEvent, new DragDeltaEventHandler((sender, e) =>
-            {
-                int sliderValue = (int)uiTimelineSlider.Value;
+            //uiTimelineSlider.AddHandler(Thumb.DragStartedEvent, new DragStartedEventHandler((sender, e) =>
+            //{
+            //    storyboard.Pause(uiMedia);
+            //}));
+            //uiTimelineSlider.AddHandler(Thumb.DragDeltaEvent, new DragDeltaEventHandler((sender, e) =>
+            //{
+            //    int sliderValue = (int)uiTimelineSlider.Value;
 
-                TimeSpan selectedTimeSpan = new TimeSpan(0, 0, 0, 0, sliderValue);
+            //    TimeSpan selectedTimeSpan = new TimeSpan(0, 0, 0, 0, sliderValue);
 
-                uiCurrentTime.Text = selectedTimeSpan.ToString(@"hh\:mm\:ss");
-            }));
-            uiTimelineSlider.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler((sender, e) =>
-            {
-                int sliderValue = (int)uiTimelineSlider.Value;
-                storyboard.Seek(uiMedia, new TimeSpan(0, 0, 0, 0, sliderValue), TimeSeekOrigin.BeginTime);
+            //    uiCurrentTime.Text = selectedTimeSpan.ToString(@"hh\:mm\:ss");
+            //}));
+            //uiTimelineSlider.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler((sender, e) =>
+            //{
+            //    int sliderValue = (int)uiTimelineSlider.Value;
+            //    storyboard.Seek(uiMedia, new TimeSpan(0, 0, 0, 0, sliderValue), TimeSeekOrigin.BeginTime);
 
-                // Only resume playing if it's in playing mode
-                if (currentMediaState == MediaState.IsPlaying)
-                {
-                    storyboard.Resume(uiMedia);
-                }
-            }));
+            //    // Only resume playing if it's in playing mode
+            //    if (currentMediaState == MediaState.IsPlaying)
+            //    {
+            //        storyboard.Resume(uiMedia);
+            //    }
+            //}));
 
             #endregion
 

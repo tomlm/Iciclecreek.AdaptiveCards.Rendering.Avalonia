@@ -3,6 +3,7 @@
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.Media;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -50,11 +51,11 @@ namespace AdaptiveCards.Rendering.Avalonia
 
                         TextBlock content = SetContent(uiComboItem, choice.Title, input.Wrap);
                         // The content TextBlock is binded to the width of the comboBox container
-                        if (input.Wrap && content != null)
-                        {
-                            BindingOperations.SetBinding(content, TextBlock.MaxWidthProperty,
-                                new Binding("ActualWidth") { Source = uiComboBox });
-                        }
+                        //if (input.Wrap && content != null)
+                        //{
+                        //    BindingOperations.SetBinding(content, TextBlock.MaxWidthProperty,
+                        //        new Binding("ActualWidth") { Source = uiComboBox });
+                        //}
 
                         uiComboItem.DataContext = choice;
                         

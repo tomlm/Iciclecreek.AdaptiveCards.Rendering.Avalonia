@@ -3,8 +3,10 @@
 
 
 
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -22,7 +24,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 textBox.AcceptsReturn = true;
 
                 textBox.TextWrapping = TextWrapping.Wrap;
-                textBox.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                textBox.SetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled); //textBox.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
             }
 
             if (input.MaxLength > 0)

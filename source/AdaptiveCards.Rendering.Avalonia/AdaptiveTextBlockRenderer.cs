@@ -6,6 +6,7 @@ using System.IO;
 
 using System.Xml;
 using Avalonia;
+using Avalonia.Markup.Xaml;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
 using Avalonia.Layout;
@@ -87,23 +88,20 @@ namespace AdaptiveCards.Rendering.Avalonia
             
             string xaml = $"<TextBlock  xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">{text}</TextBlock>";
 
-            StringReader stringReader = new StringReader(xaml);
-
-            XmlReader xmlReader = XmlReader.Create(stringReader);
-            var uiTextBlock = (TextBlock)XamlReader.Load(xmlReader);
+            var uiTextBlock = AvaloniaRuntimeXamlLoader.Parse<TextBlock>(xaml);
             // uiTextBlock.Style = context.GetStyle($"Adaptive.{textBlock.Type}");
 
             uiTextBlock.TextWrapping = TextWrapping.NoWrap;
 
             uiTextBlock.FontFamily = new FontFamily(RendererUtil.GetFontFamilyFromList(context.Config.GetFontFamily(textBlock.FontType)));
-            uiTextBlock.FontWeight = FontWeight.FromOpenTypeWeight(context.Config.GetFontWeight(textBlock.FontType, textBlock.Weight));
+            uiTextBlock.FontWeight = (FontWeight)context.Config.GetFontWeight(textBlock.FontType, textBlock.Weight);
             uiTextBlock.FontSize = context.Config.GetFontSize(textBlock.FontType, textBlock.Size);
 
             uiTextBlock.TextTrimming = TextTrimming.CharacterEllipsis;
 
             if (textBlock.Italic)
             {
-                uiTextBlock.FontStyle = FontStyles.Italic;
+                uiTextBlock.FontStyle = FontStyle.Italic;
             }
 
             if (textBlock.Strikethrough)

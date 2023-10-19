@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 using Avalonia.Controls;
+using Avalonia.Controls.Documents;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
 using System;
@@ -26,23 +27,23 @@ namespace AdaptiveCards.Rendering.Avalonia
         private static void AddInlineTextRun(TextBlock uiRichTB, AdaptiveTextRun textRun, AdaptiveRenderContext context)
         {
             Span textRunSpan;
-            if (textRun.SelectAction != null && context.Config.SupportsInteractivity)
-            {
-                Hyperlink selectActionLink = new Hyperlink();
-                selectActionLink.Click += (sender, e) =>
-                {
-                    context.InvokeAction(uiRichTB, new AdaptiveActionEventArgs(textRun.SelectAction));
-                    e.Handled = true;
-                };
+            //if (textRun.SelectAction != null && context.Config.SupportsInteractivity)
+            //{
+            //    Hyperlink selectActionLink = new Hyperlink();
+            //    selectActionLink.Click += (sender, e) =>
+            //    {
+            //        context.InvokeAction(uiRichTB, new AdaptiveActionEventArgs(textRun.SelectAction));
+            //        e.Handled = true;
+            //    };
 
-                textRunSpan = selectActionLink as Span;
+            //    textRunSpan = selectActionLink as Span;
 
-                if (textRun.SelectAction.Title != null)
-                {
-                    AutomationProperties.SetName(textRunSpan, textRun.SelectAction.Title);
-                }
-            }
-            else
+            //    if (textRun.SelectAction.Title != null)
+            //    {
+            //        AutomationProperties.SetName(textRunSpan, textRun.SelectAction.Title);
+            //    }
+            //}
+            //else
             {
                 textRunSpan = new Span();
             }
@@ -56,23 +57,23 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             textRunSpan.FontFamily = new FontFamily(RendererUtil.GetFontFamilyFromList(context.Config.GetFontFamily(textRun.FontType)));
 
-            textRunSpan.FontWeight = FontWeight.FromOpenTypeWeight(context.Config.GetFontWeight(textRun.FontType, textRun.Weight));
+            textRunSpan.FontWeight = (FontWeight)context.Config.GetFontWeight(textRun.FontType, textRun.Weight);
             
             textRunSpan.FontSize = context.Config.GetFontSize(textRun.FontType, textRun.Size);
 
             if (textRun.Italic)
             {
-                textRunSpan.FontStyle = FontStyles.Italic;
+                textRunSpan.FontStyle = FontStyle.Italic;
             }
 
             if (textRun.Strikethrough)
             {
-                textRunSpan.TextDecorations.Add(TextDecorations.Strikethrough);
+                textRunSpan.TextDecorations.AddRange(TextDecorations.Strikethrough);
             }
             
             if (textRun.Underline)
             {
-                textRunSpan.TextDecorations.Add(TextDecorations.Underline);
+                textRunSpan.TextDecorations.AddRange(TextDecorations.Underline);
             }
 
             if (textRun.Highlight)

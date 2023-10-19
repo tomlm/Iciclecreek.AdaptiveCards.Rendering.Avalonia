@@ -3,6 +3,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
+using Avalonia.Layout;
 using Avalonia.Media;
 using System;
 
@@ -100,7 +101,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public static void SetFontWeight(this TextBlock textBlock, int weight)
         {
-            textBlock.FontWeight = FontWeight.FromOpenTypeWeight(weight);
+            textBlock.FontWeight = (FontWeight)weight;
         }
 
         public static void SetPlaceholder(this TextBox textBlock, string placeholder)

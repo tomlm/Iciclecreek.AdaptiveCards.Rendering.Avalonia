@@ -4,6 +4,7 @@ using AsyncImageLoader.Loaders;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.Markup.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -86,7 +87,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 {
                     using (var styleStream = File.OpenRead(ResourcesPath))
                     {
-                        _resources = (ResourceDictionary)XamlReader.Load(styleStream);
+                        _resources = (ResourceDictionary)AvaloniaRuntimeXamlLoader.Load(styleStream);
                     }
                 }
                 else
@@ -94,17 +95,18 @@ namespace AdaptiveCards.Rendering.Avalonia
                     _resources = new ResourceDictionary();
                 }
 
-                // Wrap this to avoid Console applications to crash because of this : https://github.com/Microsoft/AdaptiveCards/issues/2121
-                try
-                {
-                    var resource = new ResourceDictionary
-                    {
-                        Source = new Uri("/AdaptiveCards.Rendering.Avalonia;component/Themes/generic.xaml",
-                       UriKind.RelativeOrAbsolute)
-                    };
-                    _resources.MergedDictionaries.Add(resource);
-                }
-                catch { }
+                //// Wrap this to avoid Console applications to crash because of this : https://github.com/Microsoft/AdaptiveCards/issues/2121
+                //try
+                //{
+                //    var resource = new ResourceDictionary
+                //    {
+                         
+                //        Source = new Uri("/AdaptiveCards.Rendering.Avalonia;component/Themes/generic.xaml",
+                //       UriKind.RelativeOrAbsolute)
+                //    };
+                //    _resources.MergedDictionaries.Add(resource);
+                //}
+                //catch { }
 
                 return _resources;
             }
@@ -112,16 +114,16 @@ namespace AdaptiveCards.Rendering.Avalonia
             {
                 _resources = value;
 
-                // Wrap this to avoid Console applications to crash because of this : https://github.com/Microsoft/AdaptiveCards/issues/2121
-                try
-                {
-                    var resource = new ResourceDictionary
-                    {
-                        Source = new Uri("/AdaptiveCards.Rendering.Avalonia;component/Themes/generic.xaml", UriKind.RelativeOrAbsolute)
-                    };
-                    _resources.MergedDictionaries.Add(resource);
-                }
-                catch { }
+                //// Wrap this to avoid Console applications to crash because of this : https://github.com/Microsoft/AdaptiveCards/issues/2121
+                //try
+                //{
+                //    var resource = new ResourceDictionary
+                //    {
+                //        Source = new Uri("/AdaptiveCards.Rendering.Avalonia;component/Themes/generic.xaml", UriKind.RelativeOrAbsolute)
+                //    };
+                //    _resources.MergedDictionaries.Add(resource);
+                //}
+                //catch { }
 
             }
 
@@ -129,7 +131,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public AdaptiveActionHandlers ActionHandlers { get; } = new AdaptiveActionHandlers();
 
-//         public ResourceResolver ResourceResolvers { get; } = new ResourceResolver();
+        //         public ResourceResolver ResourceResolvers { get; } = new ResourceResolver();
 
         public static Control RenderAdaptiveCardWrapper(AdaptiveCard card, AdaptiveRenderContext context)
         {
@@ -139,7 +141,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             outerGrid.Background = context.GetColorBrush(context.Config.ContainerStyles.Default.BackgroundColor);
             outerGrid.SetBackgroundSource(card.BackgroundImage, context);
 
-            if(context.CardRoot == null)
+            if (context.CardRoot == null)
             {
                 context.CardRoot = outerGrid;
             }
@@ -283,6 +285,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             return renderCard;
         }
+
 
     }
 }

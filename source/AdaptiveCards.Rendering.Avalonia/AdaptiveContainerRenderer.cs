@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Documents;
 using Avalonia.Layout;
 using Avalonia.Media;
 using System;
@@ -375,7 +376,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                     }
                 }
 
-                AutomationProperties.SetIsRequiredForForm(GetVisualElementForAccessibility(context, inputElement) ?? elementForAccessibility, inputElement.IsRequired);
+                // AutomationProperties.SetIsRequiredForForm(GetVisualElementForAccessibility(context, inputElement) ?? elementForAccessibility, inputElement.IsRequired);
 
                 if ((!String.IsNullOrEmpty(inputElement.Label)) || (!String.IsNullOrEmpty(inputElement.ErrorMessage)))
                 {
@@ -484,11 +485,11 @@ namespace AdaptiveCards.Rendering.Avalonia
                 uiTextBlock.Inlines.Add(requiredHintInline);
             }
 
-            uiTextBlock.FontWeight = FontWeight.FromOpenTypeWeight(context.Config.GetFontWeight(AdaptiveFontType.Default, labelConfig.Weight));
+            uiTextBlock.FontWeight = (FontWeight)context.Config.GetFontWeight(AdaptiveFontType.Default, labelConfig.Weight);
             uiTextBlock.FontSize = context.Config.GetFontSize(AdaptiveFontType.Default, labelConfig.Size);
 
             // For Input.Text we render inline actions inside of a Grid, so we set the property
-            AutomationProperties.SetLabeledBy(GetVisualElementForAccessibility(context, input) ?? renderedInput, uiTextBlock);
+            //AutomationProperties.SetLabeledBy(GetVisualElementForAccessibility(context, input) ?? renderedInput, uiTextBlock);
 
             return uiTextBlock;
         }
@@ -512,7 +513,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             uiTextBlock.SetColor(AdaptiveTextColor.Attention, false /* isSubtle */, context);
 
             // Then we honour size and weight from hostconfig
-            uiTextBlock.FontWeight = FontWeight.FromOpenTypeWeight(context.Config.GetFontWeight(AdaptiveFontType.Default, context.Config.Inputs.ErrorMessage.Weight));
+            uiTextBlock.FontWeight = (FontWeight)context.Config.GetFontWeight(AdaptiveFontType.Default, context.Config.Inputs.ErrorMessage.Weight);
             uiTextBlock.FontSize = context.Config.GetFontSize(AdaptiveFontType.Default, context.Config.Inputs.ErrorMessage.Size);
 
             return uiTextBlock;
