@@ -58,7 +58,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             textRunSpan.FontFamily = new FontFamily(RendererUtil.GetFontFamilyFromList(context.Config.GetFontFamily(textRun.FontType)));
 
             textRunSpan.FontWeight = (FontWeight)context.Config.GetFontWeight(textRun.FontType, textRun.Weight);
-            
+
             textRunSpan.FontSize = context.Config.GetFontSize(textRun.FontType, textRun.Size);
 
             if (textRun.Italic)
@@ -66,11 +66,13 @@ namespace AdaptiveCards.Rendering.Avalonia
                 textRunSpan.FontStyle = FontStyle.Italic;
             }
 
+            if (textRunSpan.TextDecorations == null) textRunSpan.TextDecorations = new TextDecorationCollection();
+            
             if (textRun.Strikethrough)
             {
                 textRunSpan.TextDecorations.AddRange(TextDecorations.Strikethrough);
             }
-            
+
             if (textRun.Underline)
             {
                 textRunSpan.TextDecorations.AddRange(TextDecorations.Underline);

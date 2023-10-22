@@ -7,8 +7,8 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
-using LibVLCSharp.Avalonia;
-using LibVLCSharp.Shared;
+//using LibVLCSharp.Avalonia;
+//using LibVLCSharp.Shared;
 using System;
 using System.Collections.Generic;
 
@@ -213,370 +213,369 @@ namespace AdaptiveCards.Rendering.Avalonia
         {
             var uiMediaPlayer = new Grid();
 
-
-            LibVLC _libVlc = new LibVLC();
-            var mediaPlayer = new MediaPlayer(_libVlc);
-            var mediaElement = new VideoView()
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                MediaPlayer = mediaPlayer
-            };
-
-            using var media = new Media(_libVlc, new Uri(mediaSource.Url));
-            mediaPlayer.Play(media);
-
-            uiMediaPlayer.Children.Add(mediaElement);
-
-            // Add some height to keep the controls (timeline panel + playback panel)
-            if (!IsAudio(mediaSource))
-            {
-                uiMediaPlayer.MinHeight = _panelHeight * 2 + _childMargin * 4;
-            }
-
-            var uiControlPanel = new StackPanel()
-            {
-                VerticalAlignment = VerticalAlignment.Bottom,
-                Background = _controlBackgroundColor,
-            };
-
-            #region Timeline Panel
-
-            // Using Grid to stretch the timeline slider
-            var uiTimelinePanel = new Grid()
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                Height = _panelHeight,
-            };
-
-            TextBlock uiCurrentTime = new TextBlock()
-            {
-                Text = "00:00:00",
-                Foreground = _controlForegroundColor,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = _marginThickness,
-            };
-            uiTimelinePanel.ColumnDefinitions.Add(new ColumnDefinition()
-            {
-                Width = new GridLength(20, GridUnitType.Auto),
-            });
-            Grid.SetColumn(uiCurrentTime, 0);
-            uiTimelinePanel.Children.Add(uiCurrentTime);
-
-            Slider uiTimelineSlider = new Slider()
-            {
-                Margin = _marginThickness,
-                IsEnabled = false,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center,
-            };
-            uiTimelinePanel.ColumnDefinitions.Add(new ColumnDefinition()
-            {
-                Width = new GridLength(20, GridUnitType.Star),
-            });
-            Grid.SetColumn(uiTimelineSlider, 1);
-            uiTimelinePanel.Children.Add(uiTimelineSlider);
-
-            TextBlock uiMaxTime = new TextBlock()
-            {
-                Text = "00:00:00",
-                Foreground = _controlForegroundColor,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = _marginThickness,
-            };
-            uiTimelinePanel.ColumnDefinitions.Add(new ColumnDefinition()
-            {
-                Width = new GridLength(20, GridUnitType.Auto),
-            });
-            Grid.SetColumn(uiMaxTime, 2);
-            uiTimelinePanel.Children.Add(uiMaxTime);
-
-            #endregion
-
-            uiControlPanel.Children.Add(uiTimelinePanel);
-
-            #region Playback + Volume Panel
-
-            var uiPlaybackVolumePanel = new Grid()
-            {
-                Height = _panelHeight,
-            };
-
-            #region Create Playback Control Container
-
-            var uiPlaybackControlContainer = new StackPanel()
-            {
-                VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Orientation = Orientation.Horizontal,
-                Height = _panelHeight,
-            };
-
-            //// Play trigger attached with the thumbnail button
-            //var playTrigger = new EventTrigger(Control.PointerReleasedEvent)
+            //LibVLC _libVlc = new LibVLC();
+            //var mediaPlayer = new MediaPlayer(_libVlc);
+            //var mediaElement = new VideoView()
             //{
-            //    SourceName = "thumbnailButton",
+            //    HorizontalAlignment = HorizontalAlignment.Stretch,
+            //    VerticalAlignment = VerticalAlignment.Stretch,
+            //    MediaPlayer = mediaPlayer
             //};
 
-            //var mediaTimeline = new MediaTimeline()
+            //using var media = new Media(_libVlc, new Uri(mediaSource.Url));
+            //mediaPlayer.Play(media);
+
+            //uiMediaPlayer.Children.Add(mediaElement);
+
+            //// Add some height to keep the controls (timeline panel + playback panel)
+            //if (!IsAudio(mediaSource))
             //{
-            //    // This URI was previously confirmed to be valid
-            //    Source = context.Config.ResolveFinalAbsoluteUri(mediaSource.Url),
-            //};
-            //Storyboard.SetTarget(mediaTimeline, mediaElement);
+            //    uiMediaPlayer.MinHeight = _panelHeight * 2 + _childMargin * 4;
+            //}
 
-            //var storyboard = new Storyboard()
+            //var uiControlPanel = new StackPanel()
             //{
-            //    SlipBehavior = SlipBehavior.Slip,
-            //};
-            //storyboard.Children.Add(mediaTimeline);
-            //var beginStoryboard = new BeginStoryboard()
-            //{
-            //    // An arbitrary name is necessary for the storyboard to work correctly
-            //    Name = "beginStoryboard",
-            //    Storyboard = storyboard,
-            //};
-            //playTrigger.Actions.Add(beginStoryboard);
-
-            //// The play trigger needs to be added to uiMedia since
-            //// uiThumbnailButton is inside uiMedia
-            //uiMedia.Triggers.Add(playTrigger);
-
-            // Buffering signal
-            var uiBuffering = new TextBlock()
-            {
-                Text = "⏳ Buffering...",
-                Foreground = _controlForegroundColor,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = _marginThickness,
-            };
-            uiPlaybackControlContainer.Children.Add(uiBuffering);
-
-            // Pause button
-            var uiPauseButton = RenderPlaybackButton("⏸");
-            uiPlaybackControlContainer.Children.Add(uiPauseButton);
-
-            // Resume button
-            var uiResumeButton = RenderPlaybackButton("⏵");
-            uiPlaybackControlContainer.Children.Add(uiResumeButton);
-
-            // Replay button
-            var uiReplayButton = RenderPlaybackButton("🔄");
-            uiPlaybackControlContainer.Children.Add(uiReplayButton);
-
-            // Click events
-            MediaState currentMediaState = MediaState.NotStarted;
-            uiPauseButton.PointerReleased += (sender, e) =>
-            {
-                mediaPlayer.Pause();
-                currentMediaState = MediaState.IsPaused;
-                HandlePlaybackButtonVisibility(currentMediaState, uiPauseButton, uiResumeButton, uiReplayButton);
-            };
-            uiResumeButton.PointerReleased += (sender, e) =>
-            {
-                mediaPlayer.Play();
-                currentMediaState = MediaState.IsPlaying;
-                HandlePlaybackButtonVisibility(currentMediaState, uiPauseButton, uiResumeButton, uiReplayButton);
-            };
-
-            #endregion
-
-            // Add to control panel
-            uiPlaybackVolumePanel.ColumnDefinitions.Add(new ColumnDefinition()
-            {
-                Width = new GridLength(20, GridUnitType.Star),
-            });
-            Grid.SetColumn(uiPlaybackControlContainer, 0);
-            uiPlaybackVolumePanel.Children.Add(uiPlaybackControlContainer);
-
-            #region Create Volume Control Container
-
-            var uiVolumeControlContainer = new Grid()
-            {
-                Height = _panelHeight,
-                VerticalAlignment = VerticalAlignment.Center,
-            };
-
-            // 2 overlapping buttons to alternate between mute/unmute states
-            var uiVolumeMuteButton = new TextBlock()
-            {
-                Text = "🔊",
-                FontFamily = _symbolFontFamily,
-                FontSize = _childHeight,
-                Foreground = _controlForegroundColor,
-                Margin = _marginThickness,
-                VerticalAlignment = VerticalAlignment.Center,
-            };
-            uiVolumeControlContainer.ColumnDefinitions.Add(new ColumnDefinition()
-            {
-                Width = new GridLength(20, GridUnitType.Auto),
-            });
-            Grid.SetColumn(uiVolumeMuteButton, 0);
-            uiVolumeControlContainer.Children.Add(uiVolumeMuteButton);
-
-            var uiVolumeUnmuteButton = new TextBlock()
-            {
-                Text = "🔇",
-                FontFamily = _symbolFontFamily,
-                FontSize = _childHeight,
-                Foreground = _controlForegroundColor,
-                Margin = _marginThickness,
-                VerticalAlignment = VerticalAlignment.Center,
-                IsVisible = false,
-            };
-            uiVolumeControlContainer.ColumnDefinitions.Add(new ColumnDefinition()
-            {
-                Width = new GridLength(20, GridUnitType.Auto),
-            });
-            Grid.SetColumn(uiVolumeUnmuteButton, 0);
-            uiVolumeControlContainer.Children.Add(uiVolumeUnmuteButton);
-
-            Slider uiVolumeSlider = new Slider()
-            {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Center,
-                Width = 100,
-
-                Minimum = 0,
-                Maximum = 100,
-                Value = 50,
-            };
-            uiVolumeControlContainer.ColumnDefinitions.Add(new ColumnDefinition()
-            {
-                Width = new GridLength(20, GridUnitType.Auto),
-            });
-            Grid.SetColumn(uiVolumeSlider, 1);
-            uiVolumeControlContainer.Children.Add(uiVolumeSlider);
-
-            // Initialize media volume to 0.5
-            mediaPlayer.Volume = Convert.ToInt32(uiVolumeSlider.Value);
-
-            // Volume control handlers
-            void muteVolume(object sender, PointerReleasedEventArgs e)
-            {
-                uiVolumeMuteButton.IsVisible = false;
-                uiVolumeUnmuteButton.IsVisible = true;
-                mediaPlayer.Volume = 0;
-            }
-            void unmuteVolume(object sender, RoutedEventArgs e)
-            {
-                uiVolumeUnmuteButton.IsVisible = false;
-                uiVolumeMuteButton.IsVisible = true;
-                mediaPlayer.Volume = Convert.ToInt32(uiVolumeSlider.Value);
-            }
-
-            uiVolumeMuteButton.PointerReleased += muteVolume;
-            uiVolumeUnmuteButton.PointerReleased += unmuteVolume;
-            uiVolumeSlider.ValueChanged += unmuteVolume;
-
-            #endregion
-
-            // Add to control panel
-            uiPlaybackVolumePanel.ColumnDefinitions.Add(new ColumnDefinition()
-            {
-                Width = new GridLength(20, GridUnitType.Auto),
-            });
-            Grid.SetColumn(uiVolumeControlContainer, 1);
-            uiPlaybackVolumePanel.Children.Add(uiVolumeControlContainer);
-
-            #endregion
-
-            uiControlPanel.Children.Add(uiPlaybackVolumePanel);
-
-            uiMediaPlayer.Children.Add(uiControlPanel);
-
-            #region Other events
-
-            void showControlPanel(object sender, PointerEventArgs e) { uiControlPanel.IsVisible = true; }
-            void collapseControlPanel(object sender, PointerEventArgs e) { uiControlPanel.IsVisible = false; }
-            void mediaStarted(object sender, RoutedEventArgs e)
-            {
-                // Playback button visibility
-                currentMediaState = MediaState.IsPlaying;
-                uiBuffering.IsVisible = false;
-                HandlePlaybackButtonVisibility(currentMediaState, uiPauseButton, uiResumeButton, uiReplayButton);
-
-                // Control panel visibility
-                if (!IsAudio(mediaSource))
-                {
-                    // Hide when the video starts playing
-                    uiControlPanel.IsVisible = false;
-
-                    // Assign mouse hover events to avoid blocking the video
-                    uiMediaPlayer.PointerEntered += showControlPanel;
-                    uiMediaPlayer.PointerExited += collapseControlPanel;
-                }
-            }
-            void mediaEnded(object sender, EventArgs e)
-            {
-                // Playback button visibility
-                currentMediaState = MediaState.NotStarted;
-                HandlePlaybackButtonVisibility(currentMediaState, uiPauseButton, uiResumeButton, uiReplayButton);
-
-                // Control panel visibility
-                if (!IsAudio(mediaSource))
-                {
-                    // Show when the video is complete
-                    uiControlPanel.IsVisible = true;
-
-                    // Remove mouse hover events to always show controls
-                    uiMediaPlayer.PointerEntered -= showControlPanel;
-                    uiMediaPlayer.PointerExited -= collapseControlPanel;
-                }
-            }
-
-            //mediaPlayer.MediaOpened += mediaStarted;
-            //storyboard.Completed += mediaEnded;
-            uiReplayButton.PointerReleased += (sender, e) =>
-            {
-                // Seek to beginning
-                mediaPlayer.SeekTo(new TimeSpan(0, 0, 0, 0, 0));
-
-                // And start the media as usual
-                mediaStarted(sender, e);
-            };
-
-            //// Timeline slider events
-            //mediaElement.MediaOpened += (sender, e) =>
-            //{
-            //    uiTimelineSlider.Maximum = mediaElement.NaturalDuration.TimeSpan.TotalMilliseconds;
-            //    uiTimelineSlider.IsEnabled = true;
-
-            //    uiMaxTime.Text = mediaElement.NaturalDuration.TimeSpan.ToString(@"hh\:mm\:ss");
-            //};
-            //storyboard.CurrentTimeInvalidated += (sender, e) =>
-            //{
-            //    uiTimelineSlider.Value = mediaElement.Position.TotalMilliseconds;
-
-            //    uiCurrentTime.Text = mediaElement.Position.ToString(@"hh\:mm\:ss");
+            //    VerticalAlignment = VerticalAlignment.Bottom,
+            //    Background = _controlBackgroundColor,
             //};
 
-            // Thumb events
-            //uiTimelineSlider.AddHandler(Thumb.DragStartedEvent, new DragStartedEventHandler((sender, e) =>
-            //{
-            //    storyboard.Pause(uiMedia);
-            //}));
-            //uiTimelineSlider.AddHandler(Thumb.DragDeltaEvent, new DragDeltaEventHandler((sender, e) =>
-            //{
-            //    int sliderValue = (int)uiTimelineSlider.Value;
+            //#region Timeline Panel
 
-            //    TimeSpan selectedTimeSpan = new TimeSpan(0, 0, 0, 0, sliderValue);
-
-            //    uiCurrentTime.Text = selectedTimeSpan.ToString(@"hh\:mm\:ss");
-            //}));
-            //uiTimelineSlider.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler((sender, e) =>
+            //// Using Grid to stretch the timeline slider
+            //var uiTimelinePanel = new Grid()
             //{
-            //    int sliderValue = (int)uiTimelineSlider.Value;
-            //    storyboard.Seek(uiMedia, new TimeSpan(0, 0, 0, 0, sliderValue), TimeSeekOrigin.BeginTime);
+            //    HorizontalAlignment = HorizontalAlignment.Stretch,
+            //    Height = _panelHeight,
+            //};
 
-            //    // Only resume playing if it's in playing mode
-            //    if (currentMediaState == MediaState.IsPlaying)
+            //TextBlock uiCurrentTime = new TextBlock()
+            //{
+            //    Text = "00:00:00",
+            //    Foreground = _controlForegroundColor,
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //    Margin = _marginThickness,
+            //};
+            //uiTimelinePanel.ColumnDefinitions.Add(new ColumnDefinition()
+            //{
+            //    Width = new GridLength(20, GridUnitType.Auto),
+            //});
+            //Grid.SetColumn(uiCurrentTime, 0);
+            //uiTimelinePanel.Children.Add(uiCurrentTime);
+
+            //Slider uiTimelineSlider = new Slider()
+            //{
+            //    Margin = _marginThickness,
+            //    IsEnabled = false,
+            //    HorizontalAlignment = HorizontalAlignment.Stretch,
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //};
+            //uiTimelinePanel.ColumnDefinitions.Add(new ColumnDefinition()
+            //{
+            //    Width = new GridLength(20, GridUnitType.Star),
+            //});
+            //Grid.SetColumn(uiTimelineSlider, 1);
+            //uiTimelinePanel.Children.Add(uiTimelineSlider);
+
+            //TextBlock uiMaxTime = new TextBlock()
+            //{
+            //    Text = "00:00:00",
+            //    Foreground = _controlForegroundColor,
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //    Margin = _marginThickness,
+            //};
+            //uiTimelinePanel.ColumnDefinitions.Add(new ColumnDefinition()
+            //{
+            //    Width = new GridLength(20, GridUnitType.Auto),
+            //});
+            //Grid.SetColumn(uiMaxTime, 2);
+            //uiTimelinePanel.Children.Add(uiMaxTime);
+
+            //#endregion
+
+            //uiControlPanel.Children.Add(uiTimelinePanel);
+
+            //#region Playback + Volume Panel
+
+            //var uiPlaybackVolumePanel = new Grid()
+            //{
+            //    Height = _panelHeight,
+            //};
+
+            //#region Create Playback Control Container
+
+            //var uiPlaybackControlContainer = new StackPanel()
+            //{
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //    HorizontalAlignment = HorizontalAlignment.Left,
+            //    Orientation = Orientation.Horizontal,
+            //    Height = _panelHeight,
+            //};
+
+            ////// Play trigger attached with the thumbnail button
+            ////var playTrigger = new EventTrigger(Control.PointerReleasedEvent)
+            ////{
+            ////    SourceName = "thumbnailButton",
+            ////};
+
+            ////var mediaTimeline = new MediaTimeline()
+            ////{
+            ////    // This URI was previously confirmed to be valid
+            ////    Source = context.Config.ResolveFinalAbsoluteUri(mediaSource.Url),
+            ////};
+            ////Storyboard.SetTarget(mediaTimeline, mediaElement);
+
+            ////var storyboard = new Storyboard()
+            ////{
+            ////    SlipBehavior = SlipBehavior.Slip,
+            ////};
+            ////storyboard.Children.Add(mediaTimeline);
+            ////var beginStoryboard = new BeginStoryboard()
+            ////{
+            ////    // An arbitrary name is necessary for the storyboard to work correctly
+            ////    Name = "beginStoryboard",
+            ////    Storyboard = storyboard,
+            ////};
+            ////playTrigger.Actions.Add(beginStoryboard);
+
+            ////// The play trigger needs to be added to uiMedia since
+            ////// uiThumbnailButton is inside uiMedia
+            ////uiMedia.Triggers.Add(playTrigger);
+
+            //// Buffering signal
+            //var uiBuffering = new TextBlock()
+            //{
+            //    Text = "⏳ Buffering...",
+            //    Foreground = _controlForegroundColor,
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //    Margin = _marginThickness,
+            //};
+            //uiPlaybackControlContainer.Children.Add(uiBuffering);
+
+            //// Pause button
+            //var uiPauseButton = RenderPlaybackButton("⏸");
+            //uiPlaybackControlContainer.Children.Add(uiPauseButton);
+
+            //// Resume button
+            //var uiResumeButton = RenderPlaybackButton("⏵");
+            //uiPlaybackControlContainer.Children.Add(uiResumeButton);
+
+            //// Replay button
+            //var uiReplayButton = RenderPlaybackButton("🔄");
+            //uiPlaybackControlContainer.Children.Add(uiReplayButton);
+
+            //// Click events
+            //MediaState currentMediaState = MediaState.NotStarted;
+            //uiPauseButton.PointerReleased += (sender, e) =>
+            //{
+            //    mediaPlayer.Pause();
+            //    currentMediaState = MediaState.IsPaused;
+            //    HandlePlaybackButtonVisibility(currentMediaState, uiPauseButton, uiResumeButton, uiReplayButton);
+            //};
+            //uiResumeButton.PointerReleased += (sender, e) =>
+            //{
+            //    mediaPlayer.Play();
+            //    currentMediaState = MediaState.IsPlaying;
+            //    HandlePlaybackButtonVisibility(currentMediaState, uiPauseButton, uiResumeButton, uiReplayButton);
+            //};
+
+            //#endregion
+
+            //// Add to control panel
+            //uiPlaybackVolumePanel.ColumnDefinitions.Add(new ColumnDefinition()
+            //{
+            //    Width = new GridLength(20, GridUnitType.Star),
+            //});
+            //Grid.SetColumn(uiPlaybackControlContainer, 0);
+            //uiPlaybackVolumePanel.Children.Add(uiPlaybackControlContainer);
+
+            //#region Create Volume Control Container
+
+            //var uiVolumeControlContainer = new Grid()
+            //{
+            //    Height = _panelHeight,
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //};
+
+            //// 2 overlapping buttons to alternate between mute/unmute states
+            //var uiVolumeMuteButton = new TextBlock()
+            //{
+            //    Text = "🔊",
+            //    FontFamily = _symbolFontFamily,
+            //    FontSize = _childHeight,
+            //    Foreground = _controlForegroundColor,
+            //    Margin = _marginThickness,
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //};
+            //uiVolumeControlContainer.ColumnDefinitions.Add(new ColumnDefinition()
+            //{
+            //    Width = new GridLength(20, GridUnitType.Auto),
+            //});
+            //Grid.SetColumn(uiVolumeMuteButton, 0);
+            //uiVolumeControlContainer.Children.Add(uiVolumeMuteButton);
+
+            //var uiVolumeUnmuteButton = new TextBlock()
+            //{
+            //    Text = "🔇",
+            //    FontFamily = _symbolFontFamily,
+            //    FontSize = _childHeight,
+            //    Foreground = _controlForegroundColor,
+            //    Margin = _marginThickness,
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //    IsVisible = false,
+            //};
+            //uiVolumeControlContainer.ColumnDefinitions.Add(new ColumnDefinition()
+            //{
+            //    Width = new GridLength(20, GridUnitType.Auto),
+            //});
+            //Grid.SetColumn(uiVolumeUnmuteButton, 0);
+            //uiVolumeControlContainer.Children.Add(uiVolumeUnmuteButton);
+
+            //Slider uiVolumeSlider = new Slider()
+            //{
+            //    Orientation = Orientation.Horizontal,
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //    Width = 100,
+
+            //    Minimum = 0,
+            //    Maximum = 100,
+            //    Value = 50,
+            //};
+            //uiVolumeControlContainer.ColumnDefinitions.Add(new ColumnDefinition()
+            //{
+            //    Width = new GridLength(20, GridUnitType.Auto),
+            //});
+            //Grid.SetColumn(uiVolumeSlider, 1);
+            //uiVolumeControlContainer.Children.Add(uiVolumeSlider);
+
+            //// Initialize media volume to 0.5
+            //mediaPlayer.Volume = Convert.ToInt32(uiVolumeSlider.Value);
+
+            //// Volume control handlers
+            //void muteVolume(object sender, PointerReleasedEventArgs e)
+            //{
+            //    uiVolumeMuteButton.IsVisible = false;
+            //    uiVolumeUnmuteButton.IsVisible = true;
+            //    mediaPlayer.Volume = 0;
+            //}
+            //void unmuteVolume(object sender, RoutedEventArgs e)
+            //{
+            //    uiVolumeUnmuteButton.IsVisible = false;
+            //    uiVolumeMuteButton.IsVisible = true;
+            //    mediaPlayer.Volume = Convert.ToInt32(uiVolumeSlider.Value);
+            //}
+
+            //uiVolumeMuteButton.PointerReleased += muteVolume;
+            //uiVolumeUnmuteButton.PointerReleased += unmuteVolume;
+            //uiVolumeSlider.ValueChanged += unmuteVolume;
+
+            //#endregion
+
+            //// Add to control panel
+            //uiPlaybackVolumePanel.ColumnDefinitions.Add(new ColumnDefinition()
+            //{
+            //    Width = new GridLength(20, GridUnitType.Auto),
+            //});
+            //Grid.SetColumn(uiVolumeControlContainer, 1);
+            //uiPlaybackVolumePanel.Children.Add(uiVolumeControlContainer);
+
+            //#endregion
+
+            //uiControlPanel.Children.Add(uiPlaybackVolumePanel);
+
+            //uiMediaPlayer.Children.Add(uiControlPanel);
+
+            //#region Other events
+
+            //void showControlPanel(object sender, PointerEventArgs e) { uiControlPanel.IsVisible = true; }
+            //void collapseControlPanel(object sender, PointerEventArgs e) { uiControlPanel.IsVisible = false; }
+            //void mediaStarted(object sender, RoutedEventArgs e)
+            //{
+            //    // Playback button visibility
+            //    currentMediaState = MediaState.IsPlaying;
+            //    uiBuffering.IsVisible = false;
+            //    HandlePlaybackButtonVisibility(currentMediaState, uiPauseButton, uiResumeButton, uiReplayButton);
+
+            //    // Control panel visibility
+            //    if (!IsAudio(mediaSource))
             //    {
-            //        storyboard.Resume(uiMedia);
-            //    }
-            //}));
+            //        // Hide when the video starts playing
+            //        uiControlPanel.IsVisible = false;
 
-            #endregion
+            //        // Assign mouse hover events to avoid blocking the video
+            //        uiMediaPlayer.PointerEntered += showControlPanel;
+            //        uiMediaPlayer.PointerExited += collapseControlPanel;
+            //    }
+            //}
+            //void mediaEnded(object sender, EventArgs e)
+            //{
+            //    // Playback button visibility
+            //    currentMediaState = MediaState.NotStarted;
+            //    HandlePlaybackButtonVisibility(currentMediaState, uiPauseButton, uiResumeButton, uiReplayButton);
+
+            //    // Control panel visibility
+            //    if (!IsAudio(mediaSource))
+            //    {
+            //        // Show when the video is complete
+            //        uiControlPanel.IsVisible = true;
+
+            //        // Remove mouse hover events to always show controls
+            //        uiMediaPlayer.PointerEntered -= showControlPanel;
+            //        uiMediaPlayer.PointerExited -= collapseControlPanel;
+            //    }
+            //}
+
+            ////mediaPlayer.MediaOpened += mediaStarted;
+            ////storyboard.Completed += mediaEnded;
+            //uiReplayButton.PointerReleased += (sender, e) =>
+            //{
+            //    // Seek to beginning
+            //    mediaPlayer.SeekTo(new TimeSpan(0, 0, 0, 0, 0));
+
+            //    // And start the media as usual
+            //    mediaStarted(sender, e);
+            //};
+
+            ////// Timeline slider events
+            ////mediaElement.MediaOpened += (sender, e) =>
+            ////{
+            ////    uiTimelineSlider.Maximum = mediaElement.NaturalDuration.TimeSpan.TotalMilliseconds;
+            ////    uiTimelineSlider.IsEnabled = true;
+
+            ////    uiMaxTime.Text = mediaElement.NaturalDuration.TimeSpan.ToString(@"hh\:mm\:ss");
+            ////};
+            ////storyboard.CurrentTimeInvalidated += (sender, e) =>
+            ////{
+            ////    uiTimelineSlider.Value = mediaElement.Position.TotalMilliseconds;
+
+            ////    uiCurrentTime.Text = mediaElement.Position.ToString(@"hh\:mm\:ss");
+            ////};
+
+            //// Thumb events
+            ////uiTimelineSlider.AddHandler(Thumb.DragStartedEvent, new DragStartedEventHandler((sender, e) =>
+            ////{
+            ////    storyboard.Pause(uiMedia);
+            ////}));
+            ////uiTimelineSlider.AddHandler(Thumb.DragDeltaEvent, new DragDeltaEventHandler((sender, e) =>
+            ////{
+            ////    int sliderValue = (int)uiTimelineSlider.Value;
+
+            ////    TimeSpan selectedTimeSpan = new TimeSpan(0, 0, 0, 0, sliderValue);
+
+            ////    uiCurrentTime.Text = selectedTimeSpan.ToString(@"hh\:mm\:ss");
+            ////}));
+            ////uiTimelineSlider.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler((sender, e) =>
+            ////{
+            ////    int sliderValue = (int)uiTimelineSlider.Value;
+            ////    storyboard.Seek(uiMedia, new TimeSpan(0, 0, 0, 0, sliderValue), TimeSeekOrigin.BeginTime);
+
+            ////    // Only resume playing if it's in playing mode
+            ////    if (currentMediaState == MediaState.IsPlaying)
+            ////    {
+            ////        storyboard.Resume(uiMedia);
+            ////    }
+            ////}));
+
+            //#endregion
 
             return uiMediaPlayer;
         }

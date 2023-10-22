@@ -172,14 +172,14 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             outerGrid.Children.Add(grid);
 
-            AdaptiveInternalID parentCardId = context.RenderArgs.ContainerCardId;
-            context.ParentCards.Add(card.InternalID, parentCardId);
+            //AdaptiveInternalID parentCardId = context.RenderArgs.ContainerCardId;
+            //context.ParentCards.Add(card.InternalID, parentCardId);
             context.RenderArgs.ContainerCardId = card.InternalID;
 
             AdaptiveContainerRenderer.AddContainerElements(grid, card.Body, context);
             AdaptiveActionSetRenderer.AddRenderedActions(grid, card.Actions, context, card.InternalID);
 
-            context.RenderArgs.ContainerCardId = parentCardId;
+            // context.RenderArgs.ContainerCardId = parentCardId;
 
             if (card.SelectAction != null)
             {

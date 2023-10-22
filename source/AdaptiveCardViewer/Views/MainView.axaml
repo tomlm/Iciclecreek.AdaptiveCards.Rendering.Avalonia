@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:AdaptiveCardViewer.ViewModels"
+             xmlns:ac="using:AdaptiveCards.Rendering.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AdaptiveCardViewer.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -12,5 +13,41 @@
     <vm:MainViewModel />
   </Design.DataContext>
 
-  <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+
+  <Grid RowDefinitions="Auto, Auto, *">
+    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <ComboBox Grid.Row="1" SelectionChanged="ComboBox_SelectionChanged">
+      <ComboBoxItem>v1.0</ComboBoxItem>
+      <ComboBoxItem>v1.1</ComboBoxItem>
+      <ComboBoxItem>v1.2</ComboBoxItem>
+      <ComboBoxItem>v1.3</ComboBoxItem>
+      <ComboBoxItem>v1.4</ComboBoxItem>
+      <ComboBoxItem>v1.5</ComboBoxItem>
+      <ComboBoxItem>v1.6</ComboBoxItem>
+    </ComboBox>
+
+    <ScrollViewer Grid.Row="2" >
+      <ItemsControl ItemsSource="{Binding Cards}" >
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Grid Width="600" RowDefinitions="Auto, *" Margin="4">
+              <TextBlock Text="{Binding Name}" Margin="4" Padding="4" />
+              <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BoxShadow="5 5 10 0 Gray">
+                <Grid Width="600" >
+                  <ac:AdaptiveCardView Card="{Binding Card}" />
+                </Grid>
+              </Border>
+            </Grid>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Vertical" Width="640"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
+    </ScrollViewer>
+
+  </Grid>
 </UserControl>

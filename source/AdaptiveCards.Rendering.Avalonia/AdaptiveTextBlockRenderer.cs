@@ -86,7 +86,8 @@ namespace AdaptiveCards.Rendering.Avalonia
             text = marked.Parse(text);
             text = RendererUtilities.HandleHtmlSpaces(text);
             
-            string xaml = $"<TextBlock  xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">{text}</TextBlock>";
+            string xaml = $"<TextBlock  xmlns=\"https://github.com/avaloniaui\">{text}</TextBlock>";
+            // string xaml = $"<TextBlock >{text}</TextBlock>";
 
             var uiTextBlock = AvaloniaRuntimeXamlLoader.Parse<TextBlock>(xaml);
             // uiTextBlock.Style = context.GetStyle($"Adaptive.{textBlock.Type}");

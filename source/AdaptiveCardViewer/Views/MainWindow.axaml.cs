@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using AdaptiveCardViewer.ViewModels;
+using Avalonia.Controls;
 
 namespace AdaptiveCardViewer.Views;
 

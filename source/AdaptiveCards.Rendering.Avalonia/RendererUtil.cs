@@ -3,6 +3,7 @@
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Platform;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
@@ -15,25 +16,24 @@ namespace AdaptiveCards.Rendering.Avalonia
         /// <returns>First font in list that is installed, otherwise, default system font</returns>
         public static string GetFontFamilyFromList(string fontList)
         {
-            //var installedFonts = new InstalledFontCollection();
-            //string[] fontFamilies = fontList.Split(',');
 
-            //for (int i = 0; i < fontFamilies.Length; ++i)
-            //{
-            //    string fontFamily = fontFamilies[i].Trim('\'');
+            string[] fontFamilies = fontList.Split(',');
 
-            //    foreach (var installedFontFamily in installedFonts.Families)
-            //    {
-            //        if (installedFontFamily.Name == fontFamily)
-            //        {
-            //            return fontFamily;
-            //        }
-            //    }
-            //}
+            for (int i = 0; i < fontFamilies.Length; ++i)
+            {
+                string fontFamily = fontFamilies[i].Trim('\'');
 
-            //// If no valid font was found in list, return the system default font
-            //return SystemFonts.MessageFontFamily.ToString();
-            return FontFamily.Default.Name; 
+                foreach (var installedFontFamily in FontManager.Current.SystemFonts)
+                {
+                    if (installedFontFamily.Name == fontFamily)
+                    {
+                        return fontFamily;
+                    }
+                }
+            }
+
+            // If no valid font was found in list, return the system default font
+            return FontManager.Current.DefaultFontFamily.Name;
         }
 
         public static void ApplyVerticalContentAlignment(Control uiElement, AdaptiveCollectionElement element)
