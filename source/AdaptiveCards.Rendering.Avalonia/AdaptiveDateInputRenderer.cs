@@ -11,22 +11,37 @@ namespace AdaptiveCards.Rendering.Avalonia
     {
         public static Control Render(AdaptiveDateInput input, AdaptiveRenderContext context)
         {
-            var textBox = new TextBox() { Text = input.Value };
-            textBox.SetPlaceholder(input.Placeholder);
+            var datePicker = new DatePicker();
+            if (DateTimeOffset.TryParse(input.Value, out var date))
+            {
+                datePicker.SelectedDate = date;
+            }
+            // textBox.SetPlaceholder(input.Placeholder);
             // textBox.Style = context.GetStyle($"Adaptive.Input.Text.Date");
-            textBox.SetContext(input);
+            datePicker.SetContext(input);
 
-            DateTime maxDate, minDate;
-            if ((DateTime.TryParse(input.Max, out maxDate) || DateTime.TryParse(input.Min, out minDate) || input.IsRequired)
+            DateTimeOffset maxDate, minDate;
+            if (DateTimeOffset.TryParse(input.Min, out minDate))
+            {
+                datePicker.MinYear = minDate;
+            }
+            
+            if (DateTimeOffset.TryParse(input.Max, out maxDate))
+            {
+                datePicker.MaxYear = maxDate;
+            }
+
+
+            if ((DateTimeOffset.TryParse(input.Max, out maxDate) || DateTimeOffset.TryParse(input.Min, out minDate) || input.IsRequired)
                 && string.IsNullOrEmpty(input.ErrorMessage))
             {
                 context.Warnings.Add(new AdaptiveWarning((int)AdaptiveWarning.WarningStatusCode.NoErrorMessageForValidatedInput,
                     "Inputs with validation should include an ErrorMessage"));
             }
 
-            context.InputValues.Add(input.Id, new AdaptiveDateInputValue(input, textBox));
+            context.InputValues.Add(input.Id, new AdaptiveDateInputValue(input, datePicker));
 
-            return textBox;
+            return datePicker;
         }
     }
 }

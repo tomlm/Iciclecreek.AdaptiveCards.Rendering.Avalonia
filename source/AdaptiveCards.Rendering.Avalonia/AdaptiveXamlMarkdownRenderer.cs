@@ -75,7 +75,8 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public override string Link(string href, string title, string text)
         {
-            return $"<Hyperlink Command=\"NavigationCommands.GoToPage\" CommandParameter=\"{href}\">{text}</Hyperlink>";
+            return $"{text} ({href})";
+         //   return $"<Hyperlink Command=\"NavigationCommands.GoToPage\" CommandParameter=\"{href}\">{text}</Hyperlink>";
         }
 
         public override string List(string body, bool ordered, int start)

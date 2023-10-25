@@ -2,10 +2,6 @@
 // Licensed under the MIT License.
 using System;
 using System.Globalization;
-using System.IO;
-
-using System.Xml;
-using Avalonia;
 using Avalonia.Markup.Xaml;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
@@ -74,6 +70,16 @@ namespace AdaptiveCards.Rendering.Avalonia
             return uiTextBlock;
         }
 
+        private class ALink
+        {
+            public int Start { get; set; }
+
+            public string Original { get; set; }
+            public string Text { get; set; }
+            
+            public string Url { get; set; }
+        }
+
         private static TextBlock CreateControl(AdaptiveTextBlock textBlock, AdaptiveRenderContext context)
         {
             Marked marked = new Marked();
@@ -85,10 +91,9 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             text = marked.Parse(text);
             text = RendererUtilities.HandleHtmlSpaces(text);
-            
+
             string xaml = $"<TextBlock  xmlns=\"https://github.com/avaloniaui\">{text}</TextBlock>";
             // string xaml = $"<TextBlock >{text}</TextBlock>";
-
             var uiTextBlock = AvaloniaRuntimeXamlLoader.Parse<TextBlock>(xaml);
             // uiTextBlock.Style = context.GetStyle($"Adaptive.{textBlock.Type}");
 

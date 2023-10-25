@@ -30,7 +30,7 @@ public partial class MainViewModel : ViewModelBase
     {
         this.Cards.Add(new CardModel()
         {
-            Name = "test",
+            Name = "welcome.json",
             Card = JsonConvert.DeserializeObject<AdaptiveCard>(/*lang=json,strict*/ GreetingCard)
         });
 

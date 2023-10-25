@@ -11,11 +11,14 @@ namespace AdaptiveCards.Rendering.Avalonia
     {
         public static Control Render(AdaptiveTimeInput input, AdaptiveRenderContext context)
         {
-            var textBox = new TextBox() { Text = input.Value };
-            textBox.SetPlaceholder(input.Placeholder);
+            var timePicker = new TimePicker();
+            if (TimeSpan.TryParse(input.Value, out var time))
+            {
+                timePicker.SelectedTime = time;
+            }
+            // timePicker.SetPlaceholder(input.Placeholder);
             // textBox.Style = context.GetStyle("Adaptive.Input.Text.Time");
-            textBox.SetContext(input);
-
+            timePicker.SetContext(input);
             TimeSpan maxTime, minTime;
             if ((TimeSpan.TryParse(input.Max, out maxTime) || TimeSpan.TryParse(input.Min, out minTime) || input.IsRequired)
                 && string.IsNullOrEmpty(input.ErrorMessage))
@@ -23,10 +26,9 @@ namespace AdaptiveCards.Rendering.Avalonia
                 context.Warnings.Add(new AdaptiveWarning((int)AdaptiveWarning.WarningStatusCode.NoErrorMessageForValidatedInput,
                     "Inputs with validation should include an ErrorMessage"));
             }
+            context.InputValues.Add(input.Id, new AdaptiveTimeInputValue(input, timePicker));
 
-            context.InputValues.Add(input.Id, new AdaptiveTimeInputValue(input, textBox));
-
-            return textBox;
+            return timePicker;
         }
     }
 }

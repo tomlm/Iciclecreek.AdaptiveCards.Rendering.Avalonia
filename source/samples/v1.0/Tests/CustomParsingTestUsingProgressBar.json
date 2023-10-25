@@ -1,0 +1,31 @@
+{
+	"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+	"type": "AdaptiveCard",
+	"version": "1.0",
+	"body": [
+		{
+			"type": "TextBlock",
+			"text": "Custom parsing allows a custom type",
+			"wrap": true,
+			"horizontalAlignment": "center"
+		},
+		{
+			"type": "TextBlock",
+			"text": "**Progress Bar**",
+			"horizontalAlignment": "center"
+		},
+		{
+			"type": "ProgressBar",
+			"payload": [
+				{
+					"red":168,
+					"green":123,
+					"blue":180,
+					"alpha":1,
+					"progress":0.95,
+					"thickness":1
+				}
+			]
+		}
+	]
+}

@@ -26,7 +26,7 @@ public partial class MainView : UserControl
             if (!string.IsNullOrEmpty(ver))
             {
                 viewModel.Cards.Clear();
-                foreach (var path in Directory.EnumerateFiles(@$"c:\source\github\adaptivecards\samples\{ver}", "*.json", SearchOption.AllDirectories)
+                foreach (var path in Directory.EnumerateFiles(@$"..\..\..\..\samples\{ver}", "*.json", SearchOption.AllDirectories)
                     .Where(p => !p.ToLower().Contains("tests")))
                 {
                     Debug.WriteLine(path);
@@ -38,7 +38,7 @@ public partial class MainView : UserControl
                             var card = JsonConvert.DeserializeObject<AdaptiveCard>(json);
                             viewModel.Cards.Add(new CardModel()
                             {
-                                Name = path.Replace(@"c:\source\github\adaptivecards\samples", String.Empty),
+                                Name = Path.GetFileName(path),
                                 Card = card
                             });
                         }

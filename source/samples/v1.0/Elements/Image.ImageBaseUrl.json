@@ -1,0 +1,38 @@
+{
+	"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+	"type": "AdaptiveCard",
+	"version": "1.0",
+	"backgroundImage": "https://messagecardplayground.azurewebsites.net/assets/background.png",
+	"body": [
+		{
+			"type": "Image",
+			"url": "https://messagecardplayground.azurewebsites.net/assets/Adaptive10.png",
+			"altText": "Adaptive cards 1.0 logo"
+		}
+	],
+	"actions": [
+		{
+			"type": "Action.ShowCard",
+			"title": "Open Card",
+			"iconUrl": "https://messagecardplayground.azurewebsites.net/assets/Adaptive1.0.png",
+			"card": {
+				"type": "AdaptiveCard",
+				"body": [
+					{
+						"type": "Input.Text",
+						"id": "comment",
+						"isMultiline": true,
+						"placeholder": "Enter your comment"
+					}
+				],
+				"actions": [
+					{
+						"type": "Action.Submit",
+						"iconUrl": "https://messagecardplayground.azurewebsites.net/Assets/Adaptive10.png",
+						"title": "OK"
+					}
+				]
+			}
+		}
+	]
+}
