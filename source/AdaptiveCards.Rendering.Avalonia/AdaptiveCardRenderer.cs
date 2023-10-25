@@ -233,6 +233,8 @@ namespace AdaptiveCards.Rendering.Avalonia
             Resources["Adaptive.Action.Destructive.Button.MouseOver.Foreground"] = context.GetColorBrush(lighterAttentionColor);
 
             var element = context.Render(card);
+            
+            element.Classes.Add(nameof(AdaptiveCard));
 
             renderCard = new RenderedAdaptiveCard(element, card, context.Warnings, ref context.InputBindings);
 

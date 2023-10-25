@@ -273,6 +273,9 @@ namespace AdaptiveCards.Rendering.Avalonia
                         frameworkElementOut = rendered;
                     }
                 }
+
+                if (frameworkElementOut != null)
+                    frameworkElementOut.Classes.Add(element.GetType().Name);
             }
             catch (AdaptiveFallbackException)
             {

@@ -3,6 +3,8 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.Rendering;
+using Avalonia.Styling;
 using System;
 
 
@@ -31,26 +33,26 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public static Button CreateActionButton(AdaptiveAction action, AdaptiveRenderContext context)
         {
-            var uiButton = new Button
-            {
-//                Style = context.GetStyle($"Adaptive.{action.Type}"),
-            };
+            var uiButton = new Button();
 
-            //if (!String.IsNullOrWhiteSpace(action.Style))
-            //{
-            //    Style style = context.GetStyle($"Adaptive.Action.{action.Style}");
+            //                Style = context.GetStyle($"Adaptive.{action.Type}"),
+            uiButton.Classes.Add(action.Style);
 
-            //    if (style == null && String.Equals(action.Style, "positive", StringComparison.OrdinalIgnoreCase))
-            //    {
-            //        style = context.GetStyle("PositiveActionDefaultStyle");
-            //    }
-            //    else if (style == null && String.Equals(action.Style, "destructive", StringComparison.OrdinalIgnoreCase))
-            //    {
-            //        style = context.GetStyle("DestructiveActionDefaultStyle");
-            //    }
+            //            if (!String.IsNullOrWhiteSpace(action.Style))
+            //            {
+            ////                Style style = context.GetStyle($"Adaptive.Action.{action.Style}");
 
-            //    uiButton.Style = style;
-            //}
+            //                if (String.Equals(action.Style, "positive", StringComparison.OrdinalIgnoreCase))
+            //                {
+            //                    // style = context.GetStyle("PositiveActionDefaultStyle");
+            //                }
+            //                else if (String.Equals(action.Style, "destructive", StringComparison.OrdinalIgnoreCase))
+            //                {
+            //                    style = context.GetStyle("DestructiveActionDefaultStyle");
+            //                }
+
+            //                uiButton.Style = style;
+            //            }
 
             var contentStackPanel = new StackPanel();
 
@@ -124,6 +126,8 @@ namespace AdaptiveCards.Rendering.Avalonia
             }
 
             string name = context.GetType().Name.Replace("Action", String.Empty);
+
+            uiButton.Classes.Add(action.GetType().Name);
             return uiButton;
         }
 
