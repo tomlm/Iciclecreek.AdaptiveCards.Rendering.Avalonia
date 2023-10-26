@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:AdaptiveCardViewer.ViewModels"
              xmlns:ac="using:AdaptiveCards.Rendering.Avalonia"
+             xmlns:panels="using:Avalonia.Labs.Panels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AdaptiveCardViewer.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -34,16 +35,20 @@
             <Grid Width="600" RowDefinitions="Auto, *" Margin="4">
               <TextBlock Text="{Binding Name}" Margin="4" Padding="4" />
               <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BoxShadow="5 5 10 0 Gray">
-                <Grid Width="600" >
-                  <ac:AdaptiveCardView Card="{Binding Card}" />
-                </Grid>
+                <ac:AdaptiveCardView Card="{Binding Card}" />
               </Border>
             </Grid>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
-            <StackPanel Orientation="Vertical" Width="640"/>
+            <panels:FlexPanel Direction="Row"
+                                 JustifyContent="FlexStart"
+                                 AlignItems="Center"
+                                 AlignContent="FlexStart"
+                                 Wrap="Wrap"
+                                 ColumnSpacing="8"
+                                 RowSpacing="8" />
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
       </ItemsControl>

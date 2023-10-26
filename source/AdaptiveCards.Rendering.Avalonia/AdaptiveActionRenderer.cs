@@ -127,7 +127,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             string name = context.GetType().Name.Replace("Action", String.Empty);
 
-            uiButton.Classes.Add(action.GetType().Name);
+            uiButton.Classes.Add(typeof(AdaptiveAction).Name);
             return uiButton;
         }
 
