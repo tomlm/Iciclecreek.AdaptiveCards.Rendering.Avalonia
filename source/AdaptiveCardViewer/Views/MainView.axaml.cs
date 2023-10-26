@@ -6,6 +6,7 @@ using AdaptiveCards;
 using AdaptiveCardViewer.ViewModels;
 using Avalonia.Controls;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace AdaptiveCardViewer.Views;
 
@@ -25,12 +26,18 @@ public partial class MainView : UserControl
             var ver = item.Content as string;
             if (!string.IsNullOrEmpty(ver))
             {
+                ver = ver.Replace(".", "._");
                 viewModel.Cards.Clear();
-                foreach (var path in Directory.EnumerateFiles(@$"..\..\..\..\samples\{ver}", "*.json", SearchOption.AllDirectories)
-                    .Where(p => !p.ToLower().Contains("tests")))
+                foreach (var name in Assembly.GetExecutingAssembly().GetManifestResourceNames()
+                    .Where(p => p.Contains(ver) && !p.ToLower().Contains("tests")))
                 {
-                    Debug.WriteLine(path);
-                    var json = File.ReadAllText(path);
+                    Debug.WriteLine(name);
+                    string json = null;
+                    using(TextReader reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(name))) 
+                    {
+                        json = reader.ReadToEnd();
+                    }
+                        
                     if (json != null)
                     {
                         try
@@ -38,7 +45,7 @@ public partial class MainView : UserControl
                             var card = JsonConvert.DeserializeObject<AdaptiveCard>(json);
                             viewModel.Cards.Add(new CardModel()
                             {
-                                Name = Path.GetFileName(path),
+                                Name = Path.GetFileName(name),
                                 Card = card
                             });
                         }
