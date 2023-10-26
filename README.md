@@ -4,10 +4,9 @@ Adaptive Cards renderer for Avalonia (based on the WPF renderer)
 # Usage
 Sample Model
 ```c#
-    public class CardModel
-    {
-        public AdaptiveCard Card { get; set; }
-    }
+public class CardModel
+{
+    public AdaptiveCard Card { get; set; }
 }
 ```
 
