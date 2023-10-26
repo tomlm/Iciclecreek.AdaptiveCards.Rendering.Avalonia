@@ -32,7 +32,7 @@
       <ItemsControl ItemsSource="{Binding Cards}" >
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <Grid Width="600" RowDefinitions="Auto, *" Margin="4">
+            <Grid RowDefinitions="Auto, *" Margin="4"  Width="500">
               <TextBlock Text="{Binding Name}" Margin="4" Padding="4" />
               <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BoxShadow="5 5 10 0 Gray">
                 <ac:AdaptiveCardView Card="{Binding Card}" />
@@ -42,7 +42,8 @@
         </ItemsControl.ItemTemplate>
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
-            <panels:FlexPanel Direction="Row"
+            <panels:FlexPanel 
+                              Direction="Row"
                                  JustifyContent="FlexStart"
                                  AlignItems="Center"
                                  AlignContent="FlexStart"

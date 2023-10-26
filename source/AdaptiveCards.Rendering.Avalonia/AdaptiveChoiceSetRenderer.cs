@@ -47,18 +47,24 @@ namespace AdaptiveCards.Rendering.Avalonia
                     {
                         var uiComboItem = new ComboBoxItem();
                         uiComboItem.HorizontalAlignment = HorizontalAlignment.Stretch;
-                      //  uiComboItem.Style = context.GetStyle("Adaptive.Input.AdaptiveChoiceSetInput.ComboBoxItem");
+                        //  uiComboItem.Style = context.GetStyle("Adaptive.Input.AdaptiveChoiceSetInput.ComboBoxItem");
 
                         TextBlock content = SetContent(uiComboItem, choice.Title, input.Wrap);
                         // The content TextBlock is binded to the width of the comboBox container
-                        //if (input.Wrap && content != null)
-                        //{
-                        //    BindingOperations.SetBinding(content, TextBlock.MaxWidthProperty,
-                        //        new Binding("ActualWidth") { Source = uiComboBox });
-                        //}
+                        if (input.Wrap && content != null)
+                        {
+                            content.SetValue(TextBlock.MaxWidthProperty, new Binding()
+                            {
+                                Mode = BindingMode.OneWay,
+                                Path = "ActualWidth",
+                                Source = uiComboBox
+                            });
+                            //BindingOperations.SetBinding(content, TextBlock.MaxWidthProperty,
+                            //    new Binding("ActualWidth") { Source = uiComboBox });
+                        }
 
                         uiComboItem.DataContext = choice;
-                        
+
                         uiComboBox.Items.Add(uiComboItem);
 
                         // If multiple values are specified, no option is selected
@@ -87,7 +93,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             }
 
             AdaptiveChoiceSetInputValue inputValue = null;
-            
+
             if (!input.IsMultiSelect && input.Style == AdaptiveChoiceInputStyle.Compact)
             {
                 Grid.SetRow(uiComboBox, 1);
