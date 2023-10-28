@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+using AsyncImageLoader;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -583,7 +584,9 @@ namespace AdaptiveCards.Rendering.Avalonia
         /** Helper function to call async function from context */
         private static async void SetImageSource(this Image image, string urlString, AdaptiveRenderContext context)
         {
-            image.Source = await context.ResolveImageSource(context.Config.ResolveFinalAbsoluteUri(urlString));
+            // image.Source = await context.ResolveImageSource(context.Config.ResolveFinalAbsoluteUri(urlString));
+            var imageUrl = context.Config.ResolveFinalAbsoluteUri(urlString);
+            image.SetValue(ImageLoader.SourceProperty, imageUrl.ToString());
         }
 
         /** Get poster image from either card payload or host config */

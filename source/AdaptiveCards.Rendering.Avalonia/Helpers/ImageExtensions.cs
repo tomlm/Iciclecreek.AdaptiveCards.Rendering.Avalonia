@@ -1,13 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-using Avalonia;
+using AsyncImageLoader;
 using Avalonia.Controls;
-using Avalonia.Data;
 using Avalonia.Data.Converters;
-using Avalonia.Data.Core;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using System;
 using System.Globalization;
 using System.IO;
@@ -61,7 +57,9 @@ namespace AdaptiveCards.Rendering.Avalonia
             if (url == null)
                 return;
 
-            image.Source = await context.ResolveImageSource(url);
+            image.SetValue(ImageLoader.SourceProperty, url.ToString());
+
+            //image.Source = await context.ResolveImageSource(url);
 
             //var parameters = new AdaptiveConverterParameters(image, adaptiveImage, context);
             //var binding = new Binding()
@@ -126,7 +124,8 @@ namespace AdaptiveCards.Rendering.Avalonia
                 return;
             }
 
-            var bi = await context.ResolveImageSource(finalUri);
+            // var bi = await context.ResolveImageSource(finalUri);
+            var bi = await context.ImageLoader.ProvideImageAsync(finalUri.ToString());
 
             if (bi != null)
             {

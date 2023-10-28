@@ -5,10 +5,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
+using Avalonia.Styling;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,7 +34,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public AdaptiveCardRenderer(AdaptiveHostConfig hostConfig)
         {
-            HostConfig = hostConfig;
+            HostConfig = hostConfig ?? new AdaptiveHostConfig();
             SetObjectTypes();
         }
 
@@ -95,18 +96,11 @@ namespace AdaptiveCards.Rendering.Avalonia
                     _resources = new ResourceDictionary();
                 }
 
-                //// Wrap this to avoid Console applications to crash because of this : https://github.com/Microsoft/AdaptiveCards/issues/2121
-                //try
-                //{
-                //    var resource = new ResourceDictionary
-                //    {
-                         
-                //        Source = new Uri("/AdaptiveCards.Rendering.Avalonia;component/Themes/generic.xaml",
-                //       UriKind.RelativeOrAbsolute)
-                //    };
-                //    _resources.MergedDictionaries.Add(resource);
-                //}
-                //catch { }
+                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("AdaptiveCards.Rendering.Avalonia.Themes.generic.axaml"))
+                {
+                    var resource = (ResourceDictionary)AvaloniaRuntimeXamlLoader.Load(stream);
+                    _resources.MergedDictionaries.Add(resource);
+                }
 
                 return _resources;
             }
@@ -114,17 +108,11 @@ namespace AdaptiveCards.Rendering.Avalonia
             {
                 _resources = value;
 
-                //// Wrap this to avoid Console applications to crash because of this : https://github.com/Microsoft/AdaptiveCards/issues/2121
-                //try
-                //{
-                //    var resource = new ResourceDictionary
-                //    {
-                //        Source = new Uri("/AdaptiveCards.Rendering.Avalonia;component/Themes/generic.xaml", UriKind.RelativeOrAbsolute)
-                //    };
-                //    _resources.MergedDictionaries.Add(resource);
-                //}
-                //catch { }
-
+                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("AdaptiveCards.Rendering.Avalonia.Themes.generic.axaml"))
+                {
+                    var resource = (ResourceDictionary)AvaloniaRuntimeXamlLoader.Load(stream);
+                    _resources.MergedDictionaries.Add(resource);
+                }
             }
 
         }
@@ -172,14 +160,14 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             outerGrid.Children.Add(grid);
 
-            //AdaptiveInternalID parentCardId = context.RenderArgs.ContainerCardId;
-            //context.ParentCards.Add(card.InternalID, parentCardId);
+            AdaptiveInternalID parentCardId = context.RenderArgs.ContainerCardId;
+            context.ParentCards.Add(card.InternalID, parentCardId);
             context.RenderArgs.ContainerCardId = card.InternalID;
 
             AdaptiveContainerRenderer.AddContainerElements(grid, card.Body, context);
             AdaptiveActionSetRenderer.AddRenderedActions(grid, card.Actions, context, card.InternalID);
 
-            // context.RenderArgs.ContainerCardId = parentCardId;
+            context.RenderArgs.ContainerCardId = parentCardId;
 
             if (card.SelectAction != null)
             {
@@ -233,8 +221,19 @@ namespace AdaptiveCards.Rendering.Avalonia
             Resources["Adaptive.Action.Destructive.Button.MouseOver.Foreground"] = context.GetColorBrush(lighterAttentionColor);
 
             var element = context.Render(card);
-            
             element.Classes.Add(nameof(AdaptiveCard));
+
+            var style = new Style(selector => selector.OfType<Button>().Class("AdaptiveAction").Class("positive"));
+            style.Setters.Add(new Setter(Button.BackgroundProperty, context.GetColorBrush(accentColor)));
+            style.Setters.Add(new Setter(Button.BorderBrushProperty, context.GetColorBrush(lighterAccentColor)));
+            style.Setters.Add(new Setter(Button.ForegroundProperty, context.GetColorBrush(attentionColor)));
+            element.Styles.Add(style);
+
+            style = new Style(selector => selector.Is<Button>().Class("AdaptiveAction").Class("positive").Class("pointerover"));
+            style.Setters.Add(new Setter(Button.BackgroundProperty, context.GetColorBrush(lighterAccentColor)));
+            style.Setters.Add(new Setter(Button.BorderBrushProperty, context.GetColorBrush(attentionColor)));
+            style.Setters.Add(new Setter(Button.ForegroundProperty, context.GetColorBrush(accentColor)));
+            element.Styles.Add(style);
 
             renderCard = new RenderedAdaptiveCard(element, card, context.Warnings, ref context.InputBindings);
 

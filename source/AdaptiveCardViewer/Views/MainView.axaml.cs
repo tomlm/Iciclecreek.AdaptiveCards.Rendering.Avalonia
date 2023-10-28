@@ -7,6 +7,9 @@ using AdaptiveCardViewer.ViewModels;
 using Avalonia.Controls;
 using Newtonsoft.Json;
 using System.Reflection;
+using System.Runtime.ConstrainedExecution;
+using AdaptiveCards.Rendering;
+using System.Collections.Generic;
 
 namespace AdaptiveCardViewer.Views;
 
@@ -17,7 +20,26 @@ public partial class MainView : UserControl
         InitializeComponent();
     }
 
-    private void ComboBox_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
+    private void HostConfig_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
+    {
+        var viewModel = this.DataContext as MainViewModel;
+        if (viewModel != null)
+        {
+            var item = e.AddedItems[0] as ComboBoxItem;
+            var hostConfigName = item.Content as string;
+            viewModel.LoadHostConfig(hostConfigName);
+            var ver = ((ComboBoxItem)Schema?.SelectedItem)?.Content as string;
+            if (ver != null)
+            {
+                viewModel.LoadSchema(ver);
+            }
+            else
+            {
+            }
+        }
+    }
+
+    private void Schema_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
     {
         var viewModel = this.DataContext as MainViewModel;
         if (viewModel != null)
@@ -26,37 +48,7 @@ public partial class MainView : UserControl
             var ver = item.Content as string;
             if (!string.IsNullOrEmpty(ver))
             {
-                ver = ver.Replace(".", "._");
-                viewModel.Cards.Clear();
-                foreach (var name in Assembly.GetExecutingAssembly().GetManifestResourceNames()
-                    .Where(p => p.Contains(ver) && !p.ToLower().Contains("tests")))
-                {
-                    Debug.WriteLine(name);
-                    string json = null;
-                    using(TextReader reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(name))) 
-                    {
-                        json = reader.ReadToEnd();
-                    }
-                        
-                    if (json != null)
-                    {
-                        try
-                        {
-                            var card = JsonConvert.DeserializeObject<AdaptiveCard>(json);
-                            viewModel.Cards.Add(new CardModel()
-                            {
-                                Name = Path.GetFileName(name),
-                                Card = card
-                            });
-                        }
-                        catch (Exception err)
-                        {
-                            Debug.WriteLine(err);
-                        }
-                    }
-                }
-
-                // viewModel.CardText = File.ReadAllText(ver);
+                viewModel.LoadSchema(ver);
             }
         }
     }

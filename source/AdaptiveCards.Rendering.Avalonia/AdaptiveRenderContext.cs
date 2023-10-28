@@ -115,13 +115,13 @@ namespace AdaptiveCards.Rendering.Avalonia
             OnMediaClick?.Invoke(ui, args);
         }
 
-        /// <summary>
-        /// All remote assets should be resolved through this method for tracking
-        /// </summary>
-        public async Task<Bitmap> ResolveImageSource(Uri url)
-        {
-            return await this.ImageLoader.ProvideImageAsync(url.ToString());
-        }
+        ///// <summary>
+        ///// All remote assets should be resolved through this method for tracking
+        ///// </summary>
+        //public async Task<Bitmap> ResolveImageSource(Uri url)
+        //{
+        //    return await this.ImageLoader.ProvideImageAsync(url.ToString());
+        //}
 
         public SolidColorBrush GetColorBrush(string color)
         {

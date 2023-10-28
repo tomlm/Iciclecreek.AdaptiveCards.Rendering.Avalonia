@@ -16,33 +16,50 @@
 
 
 
-  <Grid RowDefinitions="Auto, Auto, *">
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-    <ComboBox Grid.Row="1" SelectionChanged="ComboBox_SelectionChanged">
-      <ComboBoxItem>v1.0</ComboBoxItem>
-      <ComboBoxItem>v1.1</ComboBoxItem>
-      <ComboBoxItem>v1.2</ComboBoxItem>
-      <ComboBoxItem>v1.3</ComboBoxItem>
-      <ComboBoxItem>v1.4</ComboBoxItem>
-      <ComboBoxItem>v1.5</ComboBoxItem>
-      <ComboBoxItem>v1.6</ComboBoxItem>
-    </ComboBox>
+  <Grid RowDefinitions="Auto, *">
+    <Border Grid.Row="0" BoxShadow="0 0 10 0 Gray" Padding="8">
+      <StackPanel Grid.Row="1" Orientation="Horizontal">
+        <TextBlock  Padding="4">Schema</TextBlock>
+        <ComboBox x:Name="Schema" Width="100" SelectionChanged="Schema_SelectionChanged">
+          <ComboBoxItem>v1.0</ComboBoxItem>
+          <ComboBoxItem>v1.1</ComboBoxItem>
+          <ComboBoxItem>v1.2</ComboBoxItem>
+          <ComboBoxItem>v1.3</ComboBoxItem>
+          <ComboBoxItem>v1.4</ComboBoxItem>
+          <ComboBoxItem>v1.5</ComboBoxItem>
+          <ComboBoxItem>v1.6</ComboBoxItem>
+        </ComboBox>
+        <TextBlock  Padding="4">HostConfig</TextBlock>
+        <ComboBox x:Name="HostConfig" SelectedItem="0" Width="200" SelectedIndex="0" SelectionChanged="HostConfig_SelectionChanged">
+          <ComboBoxItem>microsoft-teams-dark</ComboBoxItem>
+          <ComboBoxItem>microsoft-teams-light</ComboBoxItem>
+          <ComboBoxItem>outlook-desktop</ComboBoxItem>
+          <ComboBoxItem>skype</ComboBoxItem>
+          <ComboBoxItem>viva-connections-dark</ComboBoxItem>
+          <ComboBoxItem>viva-connections-light</ComboBoxItem>
+          <ComboBoxItem>webchat</ComboBoxItem>
+          <ComboBoxItem>widget-dark</ComboBoxItem>
+          <ComboBoxItem>widget-light</ComboBoxItem>
+        </ComboBox>
 
-    <ScrollViewer Grid.Row="2" >
+      </StackPanel>
+    </Border>
+
+    <ScrollViewer Grid.Row="1" >
       <ItemsControl ItemsSource="{Binding Cards}" >
         <ItemsControl.ItemTemplate>
           <DataTemplate>
             <Grid RowDefinitions="Auto, *" Margin="4"  Width="500">
               <TextBlock Text="{Binding Name}" Margin="4" Padding="4" />
               <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BoxShadow="5 5 10 0 Gray">
-                <ac:AdaptiveCardView Card="{Binding Card}" />
+                <ac:AdaptiveCardView Card="{Binding Card}" HostConfig="{Binding Path=((vm:MainViewModel)DataContext).HostConfig, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
               </Border>
             </Grid>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
-            <panels:FlexPanel 
+            <panels:FlexPanel
                               Direction="Row"
                                  JustifyContent="FlexStart"
                                  AlignItems="Center"
