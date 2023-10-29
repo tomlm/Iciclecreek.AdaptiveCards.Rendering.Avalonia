@@ -3,12 +3,8 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.Rendering;
-using Avalonia.Styling;
 using System;
-
-
-
+using System.Text;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
@@ -33,26 +29,42 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public static Button CreateActionButton(AdaptiveAction action, AdaptiveRenderContext context)
         {
-            var uiButton = new Button();
+            var sb = new StringBuilder(action.Style ?? "Default".ToLower());
+            sb[0] = Char.ToUpper(sb[0]);
+            var actionStyle = sb.ToString();
 
-            //                Style = context.GetStyle($"Adaptive.{action.Type}"),
-            uiButton.Classes.Add(action.Style);
+            ContainerStyleConfig? containerConfig = context.Config.ContainerStyles.Default;
+            var uiButton = new Button()
+            {
+                BorderThickness = new Thickness(1),
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                Padding = new Thickness(1),
+            };
+            switch (actionStyle)
+            {
+                case "Positive":
+                    containerConfig = context.Config.ContainerStyles.Accent;
+                    uiButton.Background = context.GetColorBrush(containerConfig.BackgroundColor);
+                    uiButton.Foreground = context.GetColorBrush(context.Config.ContainerStyles.Default.ForegroundColors.Accent.Default);
+                    uiButton.BorderBrush = context.GetColorBrush(context.Config.ContainerStyles.Default.ForegroundColors.Accent.Default);
+                    break;
+                case "Destructive":
+                    containerConfig = context.Config.ContainerStyles.Default;
+                    uiButton.Background = context.GetColorBrush(containerConfig.BackgroundColor);
+                    uiButton.Foreground = context.GetColorBrush(containerConfig.ForegroundColors.Attention.Default);
+                    uiButton.BorderBrush = context.GetColorBrush(containerConfig.ForegroundColors.Attention.Default);
+                    break;
+                default:
+                    containerConfig = context.Config.ContainerStyles.Default;
+                    uiButton.Background = context.GetColorBrush(containerConfig.BackgroundColor);
+                    uiButton.Foreground = context.GetColorBrush(containerConfig.ForegroundColors.Accent.Default);
+                    uiButton.BorderBrush = context.GetColorBrush(containerConfig.ForegroundColors.Accent.Default);
+                    break;
+            }
 
-            //            if (!String.IsNullOrWhiteSpace(action.Style))
-            //            {
-            ////                Style style = context.GetStyle($"Adaptive.Action.{action.Style}");
-
-            //                if (String.Equals(action.Style, "positive", StringComparison.OrdinalIgnoreCase))
-            //                {
-            //                    // style = context.GetStyle("PositiveActionDefaultStyle");
-            //                }
-            //                else if (String.Equals(action.Style, "destructive", StringComparison.OrdinalIgnoreCase))
-            //                {
-            //                    style = context.GetStyle("DestructiveActionDefaultStyle");
-            //                }
-
-            //                uiButton.Style = style;
-            //            }
+            // Style = context.GetStyle($"Adaptive.{action.Type}"),
+            uiButton.Classes.Add(actionStyle);
 
             var contentStackPanel = new StackPanel();
 

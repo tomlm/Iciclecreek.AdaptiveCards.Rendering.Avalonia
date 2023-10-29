@@ -96,11 +96,11 @@ namespace AdaptiveCards.Rendering.Avalonia
                     _resources = new ResourceDictionary();
                 }
 
-                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("AdaptiveCards.Rendering.Avalonia.Themes.generic.axaml"))
-                {
-                    var resource = (ResourceDictionary)AvaloniaRuntimeXamlLoader.Load(stream);
-                    _resources.MergedDictionaries.Add(resource);
-                }
+                //using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("AdaptiveCards.Rendering.Avalonia.Themes.generic.axaml"))
+                //{
+                //    var resource = (ResourceDictionary)AvaloniaRuntimeXamlLoader.Load(stream);
+                //    _resources.MergedDictionaries.Add(resource);
+                //}
 
                 return _resources;
             }
@@ -108,11 +108,11 @@ namespace AdaptiveCards.Rendering.Avalonia
             {
                 _resources = value;
 
-                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("AdaptiveCards.Rendering.Avalonia.Themes.generic.axaml"))
-                {
-                    var resource = (ResourceDictionary)AvaloniaRuntimeXamlLoader.Load(stream);
-                    _resources.MergedDictionaries.Add(resource);
-                }
+                //using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("AdaptiveCards.Rendering.Avalonia.Themes.generic.axaml"))
+                //{
+                //    var resource = (ResourceDictionary)AvaloniaRuntimeXamlLoader.Load(stream);
+                //    _resources.MergedDictionaries.Add(resource);
+                //}
             }
 
         }
@@ -210,30 +210,8 @@ namespace AdaptiveCards.Rendering.Avalonia
                 RenderArgs = new AdaptiveRenderArgs { ForegroundColors = (HostConfig != null) ? HostConfig.ContainerStyles.Default.ForegroundColors : new ContainerStylesConfig().Default.ForegroundColors }
             };
 
-            string accentColor = HostConfig.ContainerStyles.Default.ForegroundColors.Accent.Default;
-            string lighterAccentColor = ColorUtil.GenerateLighterColor(accentColor);
-            string attentionColor = HostConfig.ContainerStyles.Default.ForegroundColors.Attention.Default;
-            string lighterAttentionColor = ColorUtil.GenerateLighterColor(attentionColor);
-
-            Resources["Adaptive.Action.Positive.Button.Static.Background"] = context.GetColorBrush(accentColor);
-            Resources["Adaptive.Action.Positive.Button.MouseOver.Background"] = context.GetColorBrush(lighterAccentColor);
-            Resources["Adaptive.Action.Destructive.Button.Foreground"] = context.GetColorBrush(attentionColor);
-            Resources["Adaptive.Action.Destructive.Button.MouseOver.Foreground"] = context.GetColorBrush(lighterAttentionColor);
-
             var element = context.Render(card);
             element.Classes.Add(nameof(AdaptiveCard));
-
-            var style = new Style(selector => selector.OfType<Button>().Class("AdaptiveAction").Class("positive"));
-            style.Setters.Add(new Setter(Button.BackgroundProperty, context.GetColorBrush(accentColor)));
-            style.Setters.Add(new Setter(Button.BorderBrushProperty, context.GetColorBrush(lighterAccentColor)));
-            style.Setters.Add(new Setter(Button.ForegroundProperty, context.GetColorBrush(attentionColor)));
-            element.Styles.Add(style);
-
-            style = new Style(selector => selector.Is<Button>().Class("AdaptiveAction").Class("positive").Class("pointerover"));
-            style.Setters.Add(new Setter(Button.BackgroundProperty, context.GetColorBrush(lighterAccentColor)));
-            style.Setters.Add(new Setter(Button.BorderBrushProperty, context.GetColorBrush(attentionColor)));
-            style.Setters.Add(new Setter(Button.ForegroundProperty, context.GetColorBrush(accentColor)));
-            element.Styles.Add(style);
 
             renderCard = new RenderedAdaptiveCard(element, card, context.Warnings, ref context.InputBindings);
 

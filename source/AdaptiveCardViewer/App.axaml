@@ -2,9 +2,52 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AdaptiveCardViewer.App"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+  <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
-    <Application.Styles>
-        <FluentTheme />
-    </Application.Styles>
+  <Application.Styles>
+    <FluentTheme />
+
+    <!--<Style Selector="Button.AdaptiveAction.Positive">
+      --><!--<Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>--><!--
+      <Setter Property="Background" Value="{DynamicResource AdaptiveAction.Positive.Button.Static.Background}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource AdaptiveAction.Positive.Button.Static.Border}"/>
+      <Setter Property="Foreground" Value="{DynamicResource AdaptiveAction.Positive.Button.Static.Foreground}"/>
+    </Style>
+    <Style Selector="Button.Positive:pointerover">
+      <Setter Property="Background" Value="{DynamicResource AdaptiveAction.Positive.Button.MouseOver.Background}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource AdaptiveAction.Positive.Button.MouseOver.Border}"/>
+    </Style>
+    <Style Selector="Button.AdaptiveAction.Positive:pressed">
+      <Setter Property="Background" Value="{DynamicResource AdaptiveAction.Positive.Button.MouseOver.Background}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource AdaptiveAction.Positive.Button.MouseOver.Border}"/>
+    </Style>
+    <Style Selector="Button.AdaptiveAction.Positive:disabled">
+      <Setter Property="Background" Value="{DynamicResource AdaptiveAction.Positive.Button.MouseOver.Background}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource AdaptiveAction.Positive.Button.MouseOver.Border}"/>
+      <Setter Property="TextElement.Foreground" Value="{DynamicResource AdaptiveAction.Positive.Button.Foreground}"/>
+    </Style>
+
+    <Style Selector="Button.AdaptiveAction.Destructive">
+      --><!--<Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>--><!--
+      <Setter Property="Background" Value="{DynamicResource AdaptiveAction.Destructive.Button.Static.Background}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource AdaptiveAction.Destructive.Button.Static.Border}"/>
+      <Setter Property="Foreground" Value="{DynamicResource AdaptiveAction.Destructive.Button.Static.Foreground}"/>
+    </Style>
+    <Style Selector="Button.Destructive:pointerover">
+      <Setter Property="Foreground" Value="{DynamicResource AdaptiveAction.Destructive.Button.MouseOver.Foreground}"/>
+    </Style>
+    <Style Selector="Button.AdaptiveAction.Destructive:pressed">
+      <Setter Property="Foreground" Value="{DynamicResource AdaptiveAction.Destructive.Button.MouseOver.Foreground}"/>
+    </Style>
+    <Style Selector="Button.AdaptiveAction.Destructive:disabled">
+      <Setter Property="Foreground" Value="{DynamicResource AdaptiveAction.Destructive.Button.MouseOver.Foreground}"/>
+    </Style>
+
+    --><!--<Style x:Key="Adaptive.Input.Text.InlineAction.Button" TargetType="{x:Type Button}">
+    <Setter Property="Background" Value="#FFFFFFFF"/>
+    <Setter Property="BorderBrush" Value="#FFFFFFFF"/>
+  </Style>-->
+  </Application.Styles>
+
+ 
 </Application>

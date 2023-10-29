@@ -51,7 +51,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                     {
                         Body = new List<AdaptiveElement>()
                         {
-                            new AdaptiveTextBlock() { Text = err.Message.Replace("https://","https//"), Color = AdaptiveTextColor.Attention, }
+                            new AdaptiveTextBlock() { Text = $"```\n{err.Message}\n```", Color = AdaptiveTextColor.Attention, }
                        }
                     });
                     var renderer = new AdaptiveCardRenderer(/*config*/);

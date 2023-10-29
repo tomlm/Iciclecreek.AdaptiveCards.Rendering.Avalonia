@@ -325,6 +325,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         public Control CardRoot { get; set; }
 
         public AdaptiveRenderArgs RenderArgs { get; set; }
+
         public FontColorConfig GetForegroundColors(AdaptiveTextColor textColor)
         {
             switch (textColor)
