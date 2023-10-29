@@ -28,9 +28,11 @@ public partial class MainViewModel : ViewModelBase
 ";
     public MainViewModel()
     {
-        AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(GreetingCard);
+        var json = GreetingCard;
+        json = File.ReadAllText(@"..\..\..\..\AdaptiveCardViewer\samples\v1.2\elements\Action.ShowCard.Style.json");
 
-
+        AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
+        
         this.Cards.Add(new CardModel()
         {
             Name = "welcome.json",
