@@ -7,8 +7,8 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Media;
 
 namespace AdaptiveCards.Rendering.Avalonia
@@ -21,12 +21,12 @@ namespace AdaptiveCards.Rendering.Avalonia
             uiImageSet.BorderThickness = new Thickness(0);
             uiImageSet.Background = new SolidColorBrush(Colors.Transparent);
             ScrollViewer.SetHorizontalScrollBarVisibility(uiImageSet, ScrollBarVisibility.Disabled);
-            var itemsPanelTemplate = new ItemsPanelTemplate();
-            //var factory = new ControlFactory(typeof(WrapPanel));
-            //factory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
-            //itemsPanelTemplate.VisualTree = factory;
-            uiImageSet.ItemsPanel = itemsPanelTemplate;
-
+            uiImageSet.ItemsPanel = new FuncTemplate<Panel?>(() =>
+            {
+                var wrapPanel = new WrapPanel();
+                wrapPanel.Orientation = Orientation.Horizontal;
+                return wrapPanel;
+            });
             // uiImageSet.Style = context.GetStyle("Adaptive.ImageSet");
             foreach (var image in imageSet.Images)
             {
