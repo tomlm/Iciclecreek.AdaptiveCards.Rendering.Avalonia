@@ -50,6 +50,16 @@ namespace AdaptiveCards.Rendering.Avalonia
                 uiImage.SetImageProperties(image, context);
             }
 
+            if (image.PixelHeight > 0)
+            {
+                uiImage.Height = image.PixelHeight;
+            }
+            if (image.PixelWidth > 0)
+            {
+                uiImage.Width = image.PixelWidth;
+            }
+
+
             // If we have a background color, we'll create a border for the background and put the image on top
             if (!string.IsNullOrEmpty(image.BackgroundColor))
             {
