@@ -2,8 +2,11 @@
 // Licensed under the MIT License.
 using AsyncImageLoader;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Data.Converters;
+using Avalonia.Data.Core;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using System;
 using System.Globalization;
 using System.IO;
@@ -57,21 +60,26 @@ namespace AdaptiveCards.Rendering.Avalonia
             if (url == null)
                 return;
 
-            image.SetValue(ImageLoader.SourceProperty, url.ToString());
+            if (url.Scheme == "data")
+            {
+                var encodedData = url.AbsoluteUri.Substring(url.AbsoluteUri.LastIndexOf(',') + 1);
 
-            //image.Source = await context.ResolveImageSource(url);
+                var decodedDataUri = Convert.FromBase64String(encodedData);
+                image.SetValue(Image.SourceProperty, new Bitmap(new MemoryStream(decodedDataUri)));
+            }
+            else
+            {
+                image.SetValue(ImageLoader.SourceProperty, url.ToString());
+            }
 
-            //var parameters = new AdaptiveConverterParameters(image, adaptiveImage, context);
-            //var binding = new Binding()
-            //{
-            //    RelativeSource = new RelativeSource(RelativeSourceMode.Self),
-            //    Path = new PropertyPath("Parent.ActualWidth"),
-            //    Mode = BindingMode.OneWay,
-            //    Converter = new StretchConverter(),
-            //    ConverterParameter = parameters
-            //};
-
-            //image.SetBinding(Image.StretchProperty, binding);
+            var parameters = new AdaptiveConverterParameters(image, adaptiveImage, context);
+            image[!Image.StretchProperty] = new Binding($"Parent.ActualWidth")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.Self),
+                Mode = BindingMode.OneWay,
+                Converter = new StretchConverter(),
+                ConverterParameter = parameters
+            };
         }
 
         public class StretchConverter : IValueConverter
@@ -125,16 +133,26 @@ namespace AdaptiveCards.Rendering.Avalonia
             }
 
             // var bi = await context.ResolveImageSource(finalUri);
-            var bi = await context.ImageLoader.ProvideImageAsync(finalUri.ToString());
+            Bitmap bitmap = null;
+            if (finalUri.Scheme == "data")
+            {
+                var encodedData = finalUri.AbsoluteUri.Substring(finalUri.AbsoluteUri.LastIndexOf(',') + 1);
+                var decodedDataUri = Convert.FromBase64String(encodedData);
+                bitmap = new Bitmap(new MemoryStream(decodedDataUri));
+            }
+            else
+            {
+                bitmap = await context.ImageLoader.ProvideImageAsync(finalUri.ToString());
+            }
 
-            if (bi != null)
+            if (bitmap != null)
             {
                 // bi.Pixel{Width, Height}: dimensions of image
                 // grid.Actual{Width, Height}: dimensions of grid containing background image
                 switch (adaptiveBackgroundImage.FillMode)
                 {
                     case AdaptiveImageFillMode.Repeat:
-                        grid.Background = new ImageBrush(bi)
+                        grid.Background = new ImageBrush(bitmap)
                         {
                             TileMode = TileMode.Tile,
                             //Viewport = new Rect(0, 0, bi.PixelWidth, bi.PixelHeight),
@@ -142,7 +160,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                         };
                         break;
                     case AdaptiveImageFillMode.RepeatHorizontally:
-                        grid.Background = new ImageBrush(bi)
+                        grid.Background = new ImageBrush(bitmap)
                         {
                             TileMode = TileMode.FlipY,
                             Stretch = Stretch.Uniform,
@@ -152,7 +170,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                         };
                         break;
                     case AdaptiveImageFillMode.RepeatVertically:
-                        grid.Background = new ImageBrush(bi)
+                        grid.Background = new ImageBrush(bitmap)
                         {
                             TileMode = TileMode.FlipX,
                             Stretch = Stretch.Uniform,
@@ -163,7 +181,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                         break;
                     case AdaptiveImageFillMode.Cover:
                     default:
-                        grid.Background = new ImageBrush(bi)
+                        grid.Background = new ImageBrush(bitmap)
                         {
                             Stretch = Stretch.UniformToFill,
                             AlignmentY = (AlignmentY)adaptiveBackgroundImage.VerticalAlignment,

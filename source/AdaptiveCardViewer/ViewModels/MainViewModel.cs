@@ -1,5 +1,6 @@
 ﻿using AdaptiveCards;
 using AdaptiveCards.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
@@ -28,6 +29,7 @@ public partial class MainViewModel : ViewModelBase
 ";
     public MainViewModel()
     {
+        LoadHostConfig("microsoft-teams-dark");
         var json = GreetingCard;
         json = File.ReadAllText(@"..\..\..\..\AdaptiveCardViewer\samples\v1.2\elements\Action.ShowCard.Style.json");
 
@@ -36,9 +38,9 @@ public partial class MainViewModel : ViewModelBase
         this.Cards.Add(new CardModel()
         {
             Name = "welcome.json",
-            Card = parseResult.Card
+            Card = parseResult.Card,
+            HostConfig = this.HostConfig
         });
-        LoadHostConfig("microsoft-teams-dark");
     }
 
     public string Greeting => "Welcome to Avalonia!";
@@ -63,7 +65,9 @@ public partial class MainViewModel : ViewModelBase
         {
             try
             {
-                this.HostConfig = JsonConvert.DeserializeObject<AdaptiveHostConfig>(json);
+                this.HostConfig = AdaptiveHostConfig.FromJson(json);
+                foreach (var card in this.Cards)
+                    card.HostConfig = this.HostConfig;
             }
             catch (Exception err)
             {

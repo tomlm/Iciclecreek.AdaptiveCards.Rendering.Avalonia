@@ -52,7 +52,7 @@
             <Grid RowDefinitions="Auto, *" Margin="4"  Width="500">
               <TextBlock Text="{Binding Name}" Margin="4" Padding="4" />
               <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BoxShadow="5 5 10 0 Gray">
-                <ac:AdaptiveCardView Card="{Binding Card}" HostConfig="{Binding Path=((vm:MainViewModel)DataContext).HostConfig, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
+                <ac:AdaptiveCardView Card="{Binding Card}" HostConfig="{Binding HostConfig}"/>
               </Border>
             </Grid>
           </DataTemplate>

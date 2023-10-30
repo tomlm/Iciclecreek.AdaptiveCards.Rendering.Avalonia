@@ -6,7 +6,7 @@
 	"body": [
 		{
 			"type": "Image",
-			"url": "https://messagecardplayground.azurewebsites.net/assets/Adaptive10.png",
+			"url": "https://github.com/microsoft/AdaptiveCards/blob/main/assets/Adaptive1.0.png?raw=true",
 			"altText": "Adaptive cards 1.0 logo"
 		}
 	],
@@ -14,7 +14,7 @@
 		{
 			"type": "Action.ShowCard",
 			"title": "Open Card",
-			"iconUrl": "https://messagecardplayground.azurewebsites.net/assets/Adaptive1.0.png",
+			"iconUrl": "https://github.com/microsoft/AdaptiveCards/blob/main/assets/Adaptive1.0.png?raw=true",
 			"card": {
 				"type": "AdaptiveCard",
 				"body": [
@@ -28,7 +28,7 @@
 				"actions": [
 					{
 						"type": "Action.Submit",
-						"iconUrl": "https://messagecardplayground.azurewebsites.net/Assets/Adaptive10.png",
+						"iconUrl": "https://github.com/microsoft/AdaptiveCards/blob/main/assets/Adaptive1.0.png?raw=true",
 						"title": "OK"
 					}
 				]

@@ -22,7 +22,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             set
             {
                 SetAndRaise(HostConfigProperty, ref _hostConfig, value);
-                RaisePropertyChanged(CardProperty, _card, _card);
+                RenderCard();
             }
         }
 
@@ -32,32 +32,37 @@ namespace AdaptiveCards.Rendering.Avalonia
             get => _card;
             set
             {
-                try
-                {
-                    SetAndRaise(CardProperty, ref _card, value);
-                    if (_card != null)
-                    {
+                SetAndRaise(CardProperty, ref _card, value);
+                RenderCard();
+            }
+        }
 
-                        var renderer = new AdaptiveCardRenderer(_hostConfig);
-                        var renderedCard = renderer.RenderCard(_card);
-                        this.Content = renderedCard.Control;
-                    }
-                    else
-                        this.Content = null;
-                }
-                catch (Exception err)
+        private void RenderCard()
+        {
+            try
+            {
+                if (_card != null)
                 {
-                    SetAndRaise(CardProperty, ref _card, new AdaptiveCard(new AdaptiveSchemaVersion(1, 5))
-                    {
-                        Body = new List<AdaptiveElement>()
-                        {
-                            new AdaptiveTextBlock() { Text = $"```\n{err.Message}\n```", Color = AdaptiveTextColor.Attention, }
-                       }
-                    });
-                    var renderer = new AdaptiveCardRenderer(/*config*/);
+
+                    var renderer = new AdaptiveCardRenderer(_hostConfig);
                     var renderedCard = renderer.RenderCard(_card);
                     this.Content = renderedCard.Control;
                 }
+                else
+                    this.Content = null;
+            }
+            catch (Exception err)
+            {
+                SetAndRaise(CardProperty, ref _card, new AdaptiveCard(new AdaptiveSchemaVersion(1, 5))
+                {
+                    Body = new List<AdaptiveElement>()
+                        {
+                            new AdaptiveTextBlock() { Text = $"```\n{err.Message}\n```", Color = AdaptiveTextColor.Attention, }
+                       }
+                });
+                var renderer = new AdaptiveCardRenderer(/*config*/);
+                var renderedCard = renderer.RenderCard(_card);
+                this.Content = renderedCard.Control;
             }
         }
     }

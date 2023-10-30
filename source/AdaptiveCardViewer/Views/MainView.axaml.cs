@@ -28,14 +28,6 @@ public partial class MainView : UserControl
             var item = e.AddedItems[0] as ComboBoxItem;
             var hostConfigName = item.Content as string;
             viewModel.LoadHostConfig(hostConfigName);
-            var ver = ((ComboBoxItem)Schema?.SelectedItem)?.Content as string;
-            if (ver != null)
-            {
-                viewModel.LoadSchema(ver);
-            }
-            else
-            {
-            }
         }
     }
 
