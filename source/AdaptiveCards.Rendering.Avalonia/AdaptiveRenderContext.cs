@@ -204,7 +204,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                         RenderingFallback = true;
 
                         rendereableElement = GetRendereableElement(element.Fallback.Content);
-
+                        
                         RenderingFallback = false;
                     }
                 }
@@ -438,7 +438,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             if (separator != null)
             {
-                separator.IsVisible= !isFirstVisible ;
+                separator.IsVisible = !isFirstVisible;
             }
         }
 

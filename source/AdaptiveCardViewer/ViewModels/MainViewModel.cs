@@ -31,11 +31,13 @@ public partial class MainViewModel : ViewModelBase
     {
         LoadHostConfig("microsoft-teams-light");
         var json = GreetingCard;
+        string name = "Welcome";
         string path = null;
         if (Debugger.IsAttached)
         {
-            path = Path.GetFullPath(@"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.1\Elements\Image.Height.json");
+            path = Path.GetFullPath(@"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.2\Elements\ActionFallback.json");
             json = File.ReadAllText(path);
+            name = Path.GetFileName(path);
         }
 
         AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
@@ -43,7 +45,7 @@ public partial class MainViewModel : ViewModelBase
         this.Cards.Add(new CardModel()
         {
             Uri = $"file:{path}",
-            Name = "welcome.json",
+            Name = name,
             Card = parseResult.Card,
             HostConfig = this.HostConfig
         });

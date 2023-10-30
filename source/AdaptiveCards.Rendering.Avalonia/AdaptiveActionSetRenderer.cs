@@ -32,7 +32,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             return outerActionSet;
         }
 
-        public static void AddRenderedActions(Grid uiContainer, IList<AdaptiveAction> actions, AdaptiveRenderContext context,  AdaptiveInternalID actionSetId)
+        public static void AddRenderedActions(Grid uiContainer, IList<AdaptiveAction> actions, AdaptiveRenderContext context, AdaptiveInternalID actionSetId)
         {
             if (!context.Config.SupportsInteractivity)
                 return;
@@ -94,89 +94,93 @@ namespace AdaptiveCards.Rendering.Avalonia
                 {
                     var rendereableAction = context.GetRendereableElement(action);
 
-                    if ((rendereableAction is AdaptiveSubmitAction) ||
-                        (rendereableAction is AdaptiveExecuteAction))
+                    // if there is a renderable action then render it, else drop it.
+                    if (rendereableAction != null)
                     {
-                        context.SubmitActionCardId[rendereableAction as AdaptiveAction] = context.RenderArgs.ContainerCardId;
-                    }
-
-                    // add actions
-                    var uiAction = context.Render(rendereableAction) as Button;
-
-                    if (uiAction == null)
-                    {
-                        context.Warnings.Add(new AdaptiveWarning(-1, $"action failed to render" +
-                            $"and valid fallback wasn't present"));
-                        continue;
-                    }
-
-                    if (actionsConfig.ActionsOrientation == ActionsOrientation.Horizontal)
-                    {
-                        if (uiActionBar.Children.Count > 0) // don't apply left margin to the first item
-                            uiAction.Margin = new Thickness(actionsConfig.ButtonSpacing, 0, 0, 0);
-                    }
-                    else
-                    {
-                        uiAction.Margin = new Thickness(0, actionsConfig.ButtonSpacing, 0, 0);
-                    }
-
-                    if (actionsConfig.ActionsOrientation == ActionsOrientation.Horizontal)
-                        Grid.SetColumn(uiAction, iPos++);
-
-                    uiActionBar.Children.Add(uiAction);
-
-                    if (action is AdaptiveShowCardAction showCardAction && isInline)
-                    {
-                        if (actionSetId != null)
+                        if ((rendereableAction is AdaptiveSubmitAction) ||
+                            (rendereableAction is AdaptiveExecuteAction))
                         {
-                            // the button's context is used as key for retrieving the corresponding showcard
-                            uiAction.SetContext(actionSetId);
+                            context.SubmitActionCardId[rendereableAction as AdaptiveAction] = context.RenderArgs.ContainerCardId;
+                        }
 
-                            if (!hasSeenInlineShowCard)
-                            {
-                                // Define a new row to contain all the show cards
-                                uiContainer.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-                                // it's first showcard of the peers, create a new list
-                                context.PeerShowCardsInActionSet[actionSetId] = new List<Control>();
-                            }
+                        // add actions
+                        var uiAction = context.Render(rendereableAction) as Button;
 
-                            hasSeenInlineShowCard = true;
+                        if (uiAction == null)
+                        {
+                            context.Warnings.Add(new AdaptiveWarning(-1, $"action failed to render" +
+                                $"and valid fallback wasn't present"));
+                            continue;
+                        }
 
-                            Grid uiShowCardContainer = new Grid();
-                            // uiShowCardContainer.Style = context.GetStyle("Adaptive.Actions.ShowCard");
-                            uiShowCardContainer.DataContext = showCardAction;
-                            uiShowCardContainer.IsVisible = false;
-                            var padding = context.Config.Spacing.Padding;
-                            // set negative margin to expand the wrapper to the edge of outer most card
-                            uiShowCardContainer.Margin = new Thickness(-padding, actionsConfig.ShowCard.InlineTopMargin, -padding, -padding);
-                            var showCardStyleConfig = context.Config.ContainerStyles.GetContainerStyleConfig(actionsConfig.ShowCard.Style);
-                            uiShowCardContainer.Background = context.GetColorBrush(showCardStyleConfig.BackgroundColor);
-
-                            // before rendering the card, we save the current parent card id
-                            AdaptiveInternalID currentParentCardId = context.RenderArgs.ContainerCardId;
-
-                            // render the card
-                            var uiShowCardWrapper = (Grid)context.Render(showCardAction.Card);
-                            uiShowCardWrapper.Background = context.GetColorBrush("Transparent");
-                            uiShowCardWrapper.DataContext = showCardAction;
-
-                            // after rendering we re-establish the ContainerCardId as it may have been modified
-                            // while rendering other cards
-                            context.RenderArgs.ContainerCardId = currentParentCardId;
-
-                            uiShowCardContainer.Children.Add(uiShowCardWrapper);
-                            context.ActionShowCards.Add(uiAction, uiShowCardContainer);
-                            // added the rendered show card as a peer
-                            context.PeerShowCardsInActionSet[actionSetId].Add(uiShowCardContainer);
-                            // define where in the rows of the parent Grid the show card will occupy
-                            // and add it to the parent
-                            Grid.SetRow(uiShowCardContainer, uiContainer.RowDefinitions.Count - 1);
-                            uiContainer.Children.Add(uiShowCardContainer);
+                        if (actionsConfig.ActionsOrientation == ActionsOrientation.Horizontal)
+                        {
+                            if (uiActionBar.Children.Count > 0) // don't apply left margin to the first item
+                                uiAction.Margin = new Thickness(actionsConfig.ButtonSpacing, 0, 0, 0);
                         }
                         else
                         {
-                            context.Warnings.Add(new AdaptiveWarning(-1, $"button's corresponding showCard" +
-                                $" couldn't be added since the action set the button belongs to has null as internal id"));
+                            uiAction.Margin = new Thickness(0, actionsConfig.ButtonSpacing, 0, 0);
+                        }
+
+                        if (actionsConfig.ActionsOrientation == ActionsOrientation.Horizontal)
+                            Grid.SetColumn(uiAction, iPos++);
+
+                        uiActionBar.Children.Add(uiAction);
+
+                        if (action is AdaptiveShowCardAction showCardAction && isInline)
+                        {
+                            if (actionSetId != null)
+                            {
+                                // the button's context is used as key for retrieving the corresponding showcard
+                                uiAction.SetContext(actionSetId);
+
+                                if (!hasSeenInlineShowCard)
+                                {
+                                    // Define a new row to contain all the show cards
+                                    uiContainer.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                                    // it's first showcard of the peers, create a new list
+                                    context.PeerShowCardsInActionSet[actionSetId] = new List<Control>();
+                                }
+
+                                hasSeenInlineShowCard = true;
+
+                                Grid uiShowCardContainer = new Grid();
+                                // uiShowCardContainer.Style = context.GetStyle("Adaptive.Actions.ShowCard");
+                                uiShowCardContainer.DataContext = showCardAction;
+                                uiShowCardContainer.IsVisible = false;
+                                var padding = context.Config.Spacing.Padding;
+                                // set negative margin to expand the wrapper to the edge of outer most card
+                                uiShowCardContainer.Margin = new Thickness(-padding, actionsConfig.ShowCard.InlineTopMargin, -padding, -padding);
+                                var showCardStyleConfig = context.Config.ContainerStyles.GetContainerStyleConfig(actionsConfig.ShowCard.Style);
+                                uiShowCardContainer.Background = context.GetColorBrush(showCardStyleConfig.BackgroundColor);
+
+                                // before rendering the card, we save the current parent card id
+                                AdaptiveInternalID currentParentCardId = context.RenderArgs.ContainerCardId;
+
+                                // render the card
+                                var uiShowCardWrapper = (Grid)context.Render(showCardAction.Card);
+                                uiShowCardWrapper.Background = context.GetColorBrush("Transparent");
+                                uiShowCardWrapper.DataContext = showCardAction;
+
+                                // after rendering we re-establish the ContainerCardId as it may have been modified
+                                // while rendering other cards
+                                context.RenderArgs.ContainerCardId = currentParentCardId;
+
+                                uiShowCardContainer.Children.Add(uiShowCardWrapper);
+                                context.ActionShowCards.Add(uiAction, uiShowCardContainer);
+                                // added the rendered show card as a peer
+                                context.PeerShowCardsInActionSet[actionSetId].Add(uiShowCardContainer);
+                                // define where in the rows of the parent Grid the show card will occupy
+                                // and add it to the parent
+                                Grid.SetRow(uiShowCardContainer, uiContainer.RowDefinitions.Count - 1);
+                                uiContainer.Children.Add(uiShowCardContainer);
+                            }
+                            else
+                            {
+                                context.Warnings.Add(new AdaptiveWarning(-1, $"button's corresponding showCard" +
+                                    $" couldn't be added since the action set the button belongs to has null as internal id"));
+                            }
                         }
                     }
                 }
