@@ -85,6 +85,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             var uiTitle = new TextBlock
             {
                 Text = action.Title,
+                VerticalAlignment = VerticalAlignment.Center,
                 FontSize = context.Config.GetFontSize(AdaptiveFontType.Default, AdaptiveTextSize.Default),
                 // Style = context.GetStyle($"Adaptive.Action.Title")
             };
@@ -95,7 +96,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
                 var image = new AdaptiveImage(action.IconUrl)
                 {
-                    HorizontalAlignment = AdaptiveHorizontalAlignment.Center
+                    HorizontalAlignment = AdaptiveHorizontalAlignment.Center,
                 };
                 uiIcon = AdaptiveImageRenderer.Render(image, context);
                 if (actionsConfig.IconPlacement == IconPlacement.AboveTitle)
