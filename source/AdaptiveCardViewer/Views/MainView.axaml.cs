@@ -31,7 +31,7 @@ public partial class MainView : UserControl
         }
     }
 
-    private void Schema_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
+    private void Version_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
     {
         var viewModel = this.DataContext as MainViewModel;
         if (viewModel != null)
@@ -40,7 +40,7 @@ public partial class MainView : UserControl
             var ver = item.Content as string;
             if (!string.IsNullOrEmpty(ver))
             {
-                viewModel.LoadSchema(ver);
+                viewModel.LoadVersionSamples(ver);
             }
         }
     }

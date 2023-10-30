@@ -20,7 +20,7 @@
     <Border Grid.Row="0" BoxShadow="0 0 10 0 Gray" Padding="8">
       <StackPanel Grid.Row="1" Orientation="Horizontal">
         <TextBlock  Padding="4">Schema</TextBlock>
-        <ComboBox x:Name="Schema" Width="100" SelectionChanged="Schema_SelectionChanged">
+        <ComboBox x:Name="Version" Width="100" SelectionChanged="Version_SelectionChanged">
           <ComboBoxItem>v1.0</ComboBoxItem>
           <ComboBoxItem>v1.1</ComboBoxItem>
           <ComboBoxItem>v1.2</ComboBoxItem>
@@ -31,8 +31,8 @@
         </ComboBox>
         <TextBlock  Padding="4">HostConfig</TextBlock>
         <ComboBox x:Name="HostConfig" SelectedItem="0" Width="200" SelectedIndex="0" SelectionChanged="HostConfig_SelectionChanged">
-          <ComboBoxItem>microsoft-teams-dark</ComboBoxItem>
           <ComboBoxItem>microsoft-teams-light</ComboBoxItem>
+          <ComboBoxItem>microsoft-teams-dark</ComboBoxItem>
           <ComboBoxItem>outlook-desktop</ComboBoxItem>
           <ComboBoxItem>skype</ComboBoxItem>
           <ComboBoxItem>viva-connections-dark</ComboBoxItem>

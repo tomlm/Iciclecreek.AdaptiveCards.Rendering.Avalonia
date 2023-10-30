@@ -7,6 +7,8 @@ using Avalonia.Data.Converters;
 using Avalonia.Data.Core;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Svg;
+using SkiaSharp.Extended.Svg;
 using System;
 using System.Globalization;
 using System.IO;
@@ -63,13 +65,30 @@ namespace AdaptiveCards.Rendering.Avalonia
             if (url.Scheme == "data")
             {
                 var encodedData = url.AbsoluteUri.Substring(url.AbsoluteUri.LastIndexOf(',') + 1);
-
                 var decodedDataUri = Convert.FromBase64String(encodedData);
-                image.SetValue(Image.SourceProperty, new Bitmap(new MemoryStream(decodedDataUri)));
+                if (url.LocalPath.StartsWith("image/svg+xml;"))
+                {
+                    // ugh, not great, but it works
+                    var path = Path.Combine(Path.GetTempPath(), Path.GetTempFileName() + ".svg");
+                    File.WriteAllBytes(path, decodedDataUri);
+                    image.SetValue(Image.SourceProperty, new SvgImage() { Source = SvgSource.Load(path, null) });
+                    File.Delete(path);
+                }
+                else
+                {
+                    image.SetValue(Image.SourceProperty, new Bitmap(new MemoryStream(decodedDataUri)));
+                }
             }
             else
             {
-                image.SetValue(ImageLoader.SourceProperty, url.ToString());
+                if (url.AbsoluteUri.EndsWith(".svg"))
+                {
+                    image.SetValue(Image.SourceProperty, new SvgImage() { Source = SvgSource.Load(url.AbsoluteUri, null) });
+                }
+                else
+                {
+                    image.SetValue(ImageLoader.SourceProperty, url.ToString());
+                }
             }
 
             var parameters = new AdaptiveConverterParameters(image, adaptiveImage, context);

@@ -29,9 +29,9 @@ public partial class MainViewModel : ViewModelBase
 ";
     public MainViewModel()
     {
-        LoadHostConfig("microsoft-teams-dark");
+        LoadHostConfig("microsoft-teams-light");
         var json = GreetingCard;
-        json = File.ReadAllText(@"..\..\..\..\AdaptiveCardViewer\samples\v1.2\elements\Action.ShowCard.Style.json");
+        json = File.ReadAllText(@"..\..\..\..\AdaptiveCardViewer\samples\v1.5\Elements\Image.Svg.json");
 
         AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
         
@@ -76,7 +76,7 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    public void LoadSchema(string ver)
+    public void LoadVersionSamples(string ver)
     {
         ver = ver.Replace(".", "._");
         this.Cards.Clear();
@@ -99,7 +99,8 @@ public partial class MainViewModel : ViewModelBase
                     this.Cards.Add(new CardModel()
                     {
                         Name = Path.GetFileName(name),
-                        Card = parseResult.Card
+                        Card = parseResult.Card,
+                        HostConfig = this.HostConfig
                     });
                 }
                 catch (Exception err)
