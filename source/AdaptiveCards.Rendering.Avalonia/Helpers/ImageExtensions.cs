@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 using AsyncImageLoader;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
@@ -174,6 +175,9 @@ namespace AdaptiveCards.Rendering.Avalonia
                         grid.Background = new ImageBrush(bitmap)
                         {
                             TileMode = TileMode.Tile,
+                            AlignmentX = AlignmentX.Left,
+                            AlignmentY = AlignmentY.Top,
+                            DestinationRect = new RelativeRect(0, 0, bitmap.Size.Width, bitmap.Size.Height, RelativeUnit.Absolute),
                             //Viewport = new Rect(0, 0, bi.PixelWidth, bi.PixelHeight),
                             //ViewportUnits = BrushMappingMode.Absolute
                         };
@@ -184,6 +188,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                             TileMode = TileMode.FlipY,
                             Stretch = Stretch.Uniform,
                             AlignmentY = (AlignmentY)adaptiveBackgroundImage.VerticalAlignment,
+                            DestinationRect = new RelativeRect(0, 0, bitmap.Size.Width, grid.Bounds.Height + 1, RelativeUnit.Absolute),
                             //Viewport = new Rect(0, 0, bi.PixelWidth, grid.ActualHeight + 1),
                             //ViewportUnits = BrushMappingMode.Absolute
                         };
@@ -194,6 +199,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                             TileMode = TileMode.FlipX,
                             Stretch = Stretch.Uniform,
                             AlignmentX = (AlignmentX)adaptiveBackgroundImage.HorizontalAlignment,
+                            DestinationRect = new RelativeRect(0, 0, grid.Bounds.Width + 1, bitmap.Size.Height, RelativeUnit.Absolute),
                             //Viewport = new Rect(0, 0, grid.ActualWidth + 1, bi.PixelWidth),
                             //ViewportUnits = BrushMappingMode.Absolute
                         };

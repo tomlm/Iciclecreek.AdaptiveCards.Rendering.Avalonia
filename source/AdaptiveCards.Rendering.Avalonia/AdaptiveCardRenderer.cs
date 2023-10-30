@@ -67,56 +67,6 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public AdaptiveFeatureRegistration FeatureRegistration { get; } = new AdaptiveFeatureRegistration();
 
-        /// <summary>
-        /// A path to a XAML resource dictionary
-        /// </summary>
-        public string ResourcesPath { get; set; }
-
-        private ResourceDictionary _resources;
-
-        /// <summary>
-        /// Resource dictionary to use when rendering. Don't use this from a server, use <see cref="ResourcesPath"/> instead.
-        /// </summary>
-        public ResourceDictionary Resources
-        {
-            get
-            {
-                if (_resources != null)
-                    return _resources;
-
-                if (File.Exists(ResourcesPath))
-                {
-                    using (var styleStream = File.OpenRead(ResourcesPath))
-                    {
-                        _resources = (ResourceDictionary)AvaloniaRuntimeXamlLoader.Load(styleStream);
-                    }
-                }
-                else
-                {
-                    _resources = new ResourceDictionary();
-                }
-
-                //using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("AdaptiveCards.Rendering.Avalonia.Themes.generic.axaml"))
-                //{
-                //    var resource = (ResourceDictionary)AvaloniaRuntimeXamlLoader.Load(stream);
-                //    _resources.MergedDictionaries.Add(resource);
-                //}
-
-                return _resources;
-            }
-            set
-            {
-                _resources = value;
-
-                //using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("AdaptiveCards.Rendering.Avalonia.Themes.generic.axaml"))
-                //{
-                //    var resource = (ResourceDictionary)AvaloniaRuntimeXamlLoader.Load(stream);
-                //    _resources.MergedDictionaries.Add(resource);
-                //}
-            }
-
-        }
-
         public AdaptiveActionHandlers ActionHandlers { get; } = new AdaptiveActionHandlers();
 
         //         public ResourceResolver ResourceResolvers { get; } = new ResourceResolver();
@@ -203,7 +153,6 @@ namespace AdaptiveCards.Rendering.Avalonia
                 ImageLoader = _imageLoader,
                 ActionHandlers = ActionHandlers,
                 Config = HostConfig ?? new AdaptiveHostConfig(),
-                Resources = Resources,
                 ElementRenderers = ElementRenderers,
                 FeatureRegistration = FeatureRegistration,
                 Lang = card.Lang,
@@ -248,7 +197,6 @@ namespace AdaptiveCards.Rendering.Avalonia
                     ImageLoader = _imageLoader,
                     ActionHandlers = ActionHandlers,
                     Config = HostConfig ?? new AdaptiveHostConfig(),
-                    Resources = Resources,
                     ElementRenderers = ElementRenderers,
                     Lang = card.Lang,
                     RenderArgs = new AdaptiveRenderArgs { ForegroundColors = (HostConfig != null) ? HostConfig.ContainerStyles.Default.ForegroundColors : new ContainerStylesConfig().Default.ForegroundColors }

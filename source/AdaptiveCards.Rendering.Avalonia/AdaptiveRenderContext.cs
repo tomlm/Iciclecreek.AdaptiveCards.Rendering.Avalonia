@@ -39,9 +39,6 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public AdaptiveElementRenderers<Control, AdaptiveRenderContext> ElementRenderers { get; set; }
 
-
-        public ResourceDictionary Resources { get; set; }
-
         public AdaptiveActionHandlers ActionHandlers { get; set; }
 
         public AdaptiveFeatureRegistration FeatureRegistration { get; set; }
@@ -142,23 +139,6 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         // contains showcard peers in actions set, and the AdaptiveInternalID is internal id of the actions set
         public IDictionary<AdaptiveInternalID, List<Control>> PeerShowCardsInActionSet = new Dictionary<AdaptiveInternalID, List<Control>>();
-
-        //public virtual Style GetStyle(string styleName)
-        //{
-        //    while (!String.IsNullOrEmpty(styleName))
-        //    {
-        //        Style style = this.Resources.TryGetValue<Style>(styleName);
-        //        if (style != null)
-        //            return style;
-        //        var iPos = styleName.LastIndexOf('.');
-        //        if (iPos <= 0)
-        //            break;
-        //        styleName = styleName.Substring(0, iPos);
-        //    }
-
-        //    // Debug.WriteLine($"Unable to find Style {styleName} from the supplied ResourceDictionary");
-        //    return null;
-        //}
 
         public AdaptiveTypedElement GetRendereableElement(AdaptiveTypedElement element)
         {
