@@ -31,40 +31,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             if (textBlock.MaxLines > 0)
             {
-                var uiGrid = new Grid();
-                uiGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-
-                // create hidden textBlock with appropriate linebreaks that we can use to measure the ActualHeight
-                // using same style, fontWeight settings as original textblock
-                var measureBlock = new TextBlock()
-                {
-                    // Style = uiTextBlock.Style,
-                    FontWeight = uiTextBlock.FontWeight,
-                    FontSize = uiTextBlock.FontSize,
-                    IsVisible = true,
-                    TextWrapping = TextWrapping.NoWrap,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    DataContext = textBlock.MaxLines
-                };
-
-                measureBlock.Inlines.Add(uiTextBlock.Text);
-
-                // bind the real textBlock's Height => MeasureBlock.ActualHeight
-                //uiTextBlock.Bind(Control.MaxHeightProperty, measureBlock.Bounds.Height.ToBind new Binding()
-                //{
-                //    Path = new PropertyPath("ActualHeight"),
-                //    Source = measureBlock,
-                //    Mode = BindingMode.OneWay,
-                //    Converter = new MultiplyConverter(textBlock.MaxLines)
-                //});
-
-                // Add both to a grid so they go as a unit
-                uiGrid.Children.Add(measureBlock);
-
-                uiGrid.Children.Add(uiTextBlock);
-                return uiGrid;
-
+                uiTextBlock.MaxLines = textBlock.MaxLines;
             }
 
             return uiTextBlock;

@@ -31,12 +31,18 @@ public partial class MainViewModel : ViewModelBase
     {
         LoadHostConfig("microsoft-teams-light");
         var json = GreetingCard;
-        json = File.ReadAllText(@"..\..\..\..\AdaptiveCardViewer\samples\v1.5\Elements\Image.Svg.json");
+        string path = null;
+        if (Debugger.IsAttached)
+        {
+            path = Path.GetFullPath(@"..\..\..\..\AdaptiveCardViewer\samples\v1.5\Elements\Image.Svg.json");
+            json = File.ReadAllText(path);
+        }
 
         AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
-        
+
         this.Cards.Add(new CardModel()
         {
+            Uri = $"file:{path}",
             Name = "welcome.json",
             Card = parseResult.Card,
             HostConfig = this.HostConfig
@@ -95,10 +101,12 @@ public partial class MainViewModel : ViewModelBase
             {
                 try
                 {
+                    string fullPath = GetResourcePath(name);
                     AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
                     this.Cards.Add(new CardModel()
                     {
                         Name = Path.GetFileName(name),
+                        Uri = fullPath,
                         Card = parseResult.Card,
                         HostConfig = this.HostConfig
                     });
@@ -110,5 +118,16 @@ public partial class MainViewModel : ViewModelBase
             }
         }
 
+    }
+
+    private static string GetResourcePath(string? name)
+    {
+        var path = Path.GetFullPath(Path.Combine(@"..", "..", "..", "..", "AdaptiveCardViewer", "samples"));
+        var fullPath = name.Replace("AdaptiveCardViewer.samples.", path + Path.DirectorySeparatorChar)
+            .Replace("v1._", "v1.")
+            .Replace(".Elements.", $"{Path.DirectorySeparatorChar}Elements{Path.DirectorySeparatorChar}")
+            .Replace(".Scenarios.", $"{Path.DirectorySeparatorChar}Scenarios{Path.DirectorySeparatorChar}")
+            .Replace("/", $"{Path.DirectorySeparatorChar}");
+        return fullPath;
     }
 }
