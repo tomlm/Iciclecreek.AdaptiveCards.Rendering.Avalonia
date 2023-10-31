@@ -120,9 +120,10 @@ namespace AdaptiveCards.Rendering.Avalonia
                         case AdaptiveImageSize.Medium:
                         case AdaptiveImageSize.Small:
                             return Stretch.Uniform;
-                        case AdaptiveImageSize.Stretch:
+                        case AdaptiveImageSize.Stretch: //Image with both scale down and up to fit as needed.
                             return Stretch.Fill;
-                        case AdaptiveImageSize.Auto:
+                        
+                        case AdaptiveImageSize.Auto: // Images will scale down to fit if needed, but will not scale up to fill the area.
                         default:
                             if (adaptiveImage.PixelWidth != 0 || adaptiveImage.PixelHeight != 0)
                             {
