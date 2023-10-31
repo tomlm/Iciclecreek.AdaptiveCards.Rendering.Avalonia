@@ -39,7 +39,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         public override string GetValue()
         {
             var timePicker = this.RenderedInputElement as TimePicker;
-            return timePicker.SelectedTime.Value.ToString("hh\\:mm");
+            return timePicker.SelectedTime?.ToString("hh\\:mm");
         }
 
         public override bool Validate()

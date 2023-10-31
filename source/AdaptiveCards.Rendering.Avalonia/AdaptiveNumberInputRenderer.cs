@@ -22,9 +22,9 @@ namespace AdaptiveCards.Rendering.Avalonia
             // textBox.Style = context.GetStyle($"Adaptive.Input.Text.Number");
             uiInput.SetContext(input);
 
-            if (input.Min != 0)
+            if (!Double.IsNaN(input.Min))
                 uiInput.Minimum = (decimal)input.Min;
-            if (input.Max != 0)
+            if (!Double.IsNaN(input.Max))
                 uiInput.Maximum = (decimal)input.Max;
             
             if ((!Double.IsNaN(input.Max) || !Double.IsNaN(input.Min) || input.IsRequired)
@@ -46,7 +46,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public override string GetValue()
         {
-            return (RenderedInputElement as NumericUpDown).Value.ToString();
+            return (RenderedInputElement as NumericUpDown).Value?.ToString();
         }
 
         public override bool Validate()

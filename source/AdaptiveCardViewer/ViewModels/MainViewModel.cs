@@ -1,14 +1,11 @@
 ﻿using AdaptiveCards;
 using AdaptiveCards.Rendering;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Linq;
 
 namespace AdaptiveCardViewer.ViewModels;
 
@@ -36,7 +33,7 @@ public partial class MainViewModel : ViewModelBase
         string path = null;
         if (Debugger.IsAttached)
         {
-            path = Path.GetFullPath(@"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.3\Elements\Input.Number.json");
+            path = Path.GetFullPath(@"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.3\Elements\Input.Number.Label.json");
             json = File.ReadAllText(path);
             name = Path.GetFileName(path);
         }

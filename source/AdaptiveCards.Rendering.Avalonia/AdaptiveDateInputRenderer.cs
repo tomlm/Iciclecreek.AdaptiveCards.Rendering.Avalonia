@@ -52,7 +52,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         public override string GetValue()
         {
             var datePicker = this.RenderedInputElement as DatePicker;
-            return datePicker.SelectedDate.Value.ToString("yyyy-MM-dd");
+            return datePicker.SelectedDate?.ToString("yyyy-MM-dd");
         }
 
         public override bool Validate()
