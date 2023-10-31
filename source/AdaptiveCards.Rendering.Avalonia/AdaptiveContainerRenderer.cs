@@ -19,7 +19,6 @@ namespace AdaptiveCards.Rendering.Avalonia
         {
             var uiContainer = new Grid();
             // uiContainer.Style = context.GetStyle("Adaptive.Container");
-            uiContainer.SetBackgroundSource(container.BackgroundImage, context);
 
             bool? previousContextRtl = context.Rtl;
             bool? currentRtl = previousContextRtl;
@@ -95,6 +94,16 @@ namespace AdaptiveCards.Rendering.Avalonia
             if (updatedRtl)
             {
                 context.Rtl = previousContextRtl;
+            }
+            if (container.BackgroundImage != null)
+            {
+                uiContainer.SetBackgroundSource(container.BackgroundImage, context);
+                if (container.Items.Count == 0)
+                {
+                    // if we have background source and no children we need to have a 10x10 mid size to show background image (this is to align with
+                    // with html behavior, this is not documented anywhere.
+                    uiContainer.Children.Add(new Grid() { Margin = new Thickness(10,10,10,10) });
+                }
             }
 
             return RendererUtil.ApplySelectAction(border, container, context);

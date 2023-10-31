@@ -75,7 +75,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         {
             var outerGrid = new Grid();
             // outerGrid.Style = context.GetStyle("Adaptive.Card");
-
+            
             outerGrid.Background = context.GetColorBrush(context.Config.ContainerStyles.Default.BackgroundColor);
             outerGrid.SetBackgroundSource(card.BackgroundImage, context);
 
