@@ -105,7 +105,7 @@ public partial class MainViewModel : ViewModelBase
                     AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
                     this.Cards.Add(new CardModel()
                     {
-                        Name = Path.GetFileName(name),
+                        Name = Path.GetFileName(fullPath),
                         Uri = fullPath,
                         Card = parseResult.Card,
                         HostConfig = this.HostConfig
