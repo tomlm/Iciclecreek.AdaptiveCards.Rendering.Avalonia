@@ -12,16 +12,21 @@ namespace AdaptiveCards.Rendering.Avalonia
     {
         public static Control Render(AdaptiveNumberInput input, AdaptiveRenderContext context)
         {
-            var textBox = new TextBox();
+            var uiInput = new NumericUpDown();
 
             if (!Double.IsNaN(input.Value))
             {
-                textBox.Text = input.Value.ToString();
+                uiInput.Value = (decimal)input.Value;
             }
-            textBox.SetPlaceholder(input.Placeholder);
-            // textBox.Style = context.GetStyle($"Adaptive.Input.Text.Number");
-            textBox.SetContext(input);
 
+            // textBox.Style = context.GetStyle($"Adaptive.Input.Text.Number");
+            uiInput.SetContext(input);
+
+            if (input.Min != 0)
+                uiInput.Minimum = (decimal)input.Min;
+            if (input.Max != 0)
+                uiInput.Maximum = (decimal)input.Max;
+            
             if ((!Double.IsNaN(input.Max) || !Double.IsNaN(input.Min) || input.IsRequired)
                 && string.IsNullOrEmpty(input.ErrorMessage))
             {
@@ -29,9 +34,9 @@ namespace AdaptiveCards.Rendering.Avalonia
                     "Inputs with validation should include an ErrorMessage"));
             }
 
-            context.InputValues.Add(input.Id, new AdaptiveNumberInputValue(input, textBox));
+            context.InputValues.Add(input.Id, new AdaptiveNumberInputValue(input, uiInput));
 
-            return textBox;
+            return uiInput;
         }
     }
 }

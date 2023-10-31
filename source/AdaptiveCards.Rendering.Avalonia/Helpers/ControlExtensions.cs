@@ -106,7 +106,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public static void SetPlaceholder(this TextBox textBlock, string placeholder)
         {
-            //UWP doesnt have the concept of placeholder for TextBox
+            textBlock.Watermark = placeholder;
         }
     }
 }
