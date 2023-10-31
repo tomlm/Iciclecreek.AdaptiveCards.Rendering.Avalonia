@@ -8,6 +8,7 @@ using MsBox.Avalonia.Enums;
 using MsBox.Avalonia;
 using Avalonia.Interactivity;
 using MsBox.Avalonia.Dto;
+using Newtonsoft.Json.Linq;
 
 namespace AdaptiveCardViewer.Views;
 
@@ -80,12 +81,20 @@ public partial class MainView : UserControl
         //}
         else if (e.Action is AdaptiveSubmitAction submitAction)
         {
+            string payload = string.Empty;
             var inputs = e.UserInputs.AsJson();
-            inputs.Merge(submitAction.Data);
+            if (submitAction.Data is JObject jobj)
+            {
+                inputs.Merge(jobj);
+                payload = JsonConvert.SerializeObject(inputs, Formatting.Indented);
+            }
+            else
+                payload = JsonConvert.SerializeObject(submitAction.Data);
+
             var box = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams()
             {
                 ContentTitle = "Action.Submit",
-                ContentMessage = $"{JsonConvert.SerializeObject(inputs, Formatting.Indented)}",
+                ContentMessage = payload,
                 ButtonDefinitions = ButtonEnum.Ok,
                 MinWidth = 300,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -94,12 +103,20 @@ public partial class MainView : UserControl
         }
         else if (e.Action is AdaptiveExecuteAction executeAction)
         {
+            string payload = string.Empty;
             var inputs = e.UserInputs.AsJson();
-            inputs.Merge(executeAction.Data);
+            if (executeAction.Data is JObject jobj)
+            {
+                inputs.Merge(jobj);
+                payload = JsonConvert.SerializeObject(inputs, Formatting.Indented);
+            }
+            else
+                payload = JsonConvert.SerializeObject(executeAction.Data);
+            
             var box = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams()
             {
                 ContentTitle = "Action.Execute",
-                ContentMessage = $"{JsonConvert.SerializeObject(inputs, Formatting.Indented)}",
+                ContentMessage = payload,
                 ButtonDefinitions = ButtonEnum.Ok,
                 MinWidth = 300,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner

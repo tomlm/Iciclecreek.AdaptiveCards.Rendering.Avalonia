@@ -40,6 +40,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
                 Padding = new Thickness(1),
+                IsEnabled = action.IsEnabled
             };
             switch (actionStyle)
             {
