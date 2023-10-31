@@ -64,14 +64,15 @@
         </ItemsControl.ItemTemplate>
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
-            <panels:FlexPanel
+            <StackPanel Orientation="Vertical" />
+            <!--<panels:FlexPanel
                               Direction="Row"
                                  JustifyContent="FlexStart"
                                  AlignItems="Center"
                                  AlignContent="FlexStart"
                                  Wrap="Wrap"
                                  ColumnSpacing="8"
-                                 RowSpacing="8" />
+                                 RowSpacing="8" />-->
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
       </ItemsControl>

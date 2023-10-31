@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace AdaptiveCardViewer.ViewModels;
 
@@ -35,7 +36,7 @@ public partial class MainViewModel : ViewModelBase
         string path = null;
         if (Debugger.IsAttached)
         {
-            path = Path.GetFullPath(@"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.2\Elements\AdaptiveCard.BackgroundImage.FillMode.json");
+            path = Path.GetFullPath(@"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.2\Elements\Image.DataUri.json");
             json = File.ReadAllText(path);
             name = Path.GetFileName(path);
         }

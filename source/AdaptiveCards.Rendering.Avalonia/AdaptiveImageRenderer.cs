@@ -35,9 +35,10 @@ namespace AdaptiveCards.Rendering.Avalonia
                 {
                     GradientOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative),
                     Center = new RelativePoint(0.5, 0.5, RelativeUnit.Relative),
+                    Radius = 0.5,
                     //RadiusX = 0.5,
                     //RadiusY = 0.5,
-                    //GradientStops = new GradientStopCollection()
+                    GradientStops = new GradientStops()
                 };
                 mask.GradientStops.Add(new GradientStop(Color.Parse("#ffffffff"), 1.0));
                 mask.GradientStops.Add(new GradientStop(Color.Parse("#00ffffff"), 1.0));

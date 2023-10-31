@@ -1,43 +1,129 @@
 {
 	"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
 	"type": "AdaptiveCard",
-	"version": "1.0",
+	"version": "1.5",
 	"body": [
 		{
 			"type": "TextBlock",
 			"text": "size:small",
-			"weight": "bolder",
-			"size": "large"
+			"weight": "Bolder",
+			"size": "Large"
 		},
 		{
 			"type": "Image",
 			"url": "https://adaptivecards.io/content/cats/1.png",
 			"altText": "Small cat",
-			"size": "small"
+			"size": "Small"
 		},
 		{
 			"type": "TextBlock",
 			"text": "size:medium",
-			"weight": "bolder",
-			"size": "large"
+			"weight": "Bolder",
+			"size": "Large"
 		},
 		{
 			"type": "Image",
 			"url": "https://adaptivecards.io/content/cats/1.png",
 			"altText": "Medium cat",
-			"size": "medium"
+			"size": "Medium"
 		},
 		{
 			"type": "TextBlock",
 			"text": "size:large",
-			"weight": "bolder",
-			"size": "large"
+			"weight": "Bolder",
+			"size": "Large"
 		},
 		{
 			"type": "Image",
 			"url": "https://adaptivecards.io/content/cats/1.png",
 			"altText": "Large cat",
-			"size": "large"
+			"size": "Large"
+		},
+		{
+			"type": "TextBlock",
+			"text": "size:stretch",
+			"weight": "Bolder",
+			"size": "Large"
+		},
+		{
+			"type": "Image",
+			"url": "https://adaptivecards.io/content/cats/1.png",
+			"altText": "Large cat",
+			"size": "Stretch"
+		},
+		{
+			"type": "TextBlock",
+			"text": "size:Auto",
+			"weight": "Bolder",
+			"size": "Large"
+		},
+		{
+			"type": "Image",
+			"url": "https://adaptivecards.io/content/cats/1.png",
+			"altText": "Large cat"
+		},
+		{
+			"type": "ColumnSet",
+			"columns": [
+				{
+					"type": "Column",
+					"width": "200px",
+					"items": [
+						{
+							"type": "TextBlock",
+							"text": "size:Stretch",
+							"weight": "Bolder",
+							"size": "Large"
+						},
+						{
+							"type": "Image",
+							"url": "https://adaptivecards.io/content/cats/1.png",
+							"altText": "Large cat",
+							"size": "Stretch"
+						},
+						{
+							"type": "TextBlock",
+							"text": "size:Auto",
+							"weight": "Bolder",
+							"size": "Large"
+						},
+						{
+							"type": "Image",
+							"url": "https://adaptivecards.io/content/cats/1.png",
+							"altText": "Large cat"
+						}
+					]
+				},
+				{
+					"type": "Column",
+					"width": "stretch",
+					"items": [
+						{
+							"type": "TextBlock",
+							"text": "size:Stretch",
+							"weight": "Bolder",
+							"size": "Large"
+						},
+						{
+							"type": "Image",
+							"url": "https://adaptivecards.io/content/cats/1.png",
+							"altText": "Large cat",
+							"size": "Stretch"
+						},
+						{
+							"type": "TextBlock",
+							"text": "size:Auto",
+							"weight": "Bolder",
+							"size": "Large"
+						},
+						{
+							"type": "Image",
+							"url": "https://adaptivecards.io/content/cats/1.png",
+							"altText": "Large cat"
+						}
+					]
+				}
+			]
 		}
 	]
 }

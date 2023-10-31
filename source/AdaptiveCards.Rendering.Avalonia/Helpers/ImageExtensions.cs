@@ -93,47 +93,101 @@ namespace AdaptiveCards.Rendering.Avalonia
             }
 
             var parameters = new AdaptiveConverterParameters(image, adaptiveImage, context);
-            image[!Image.StretchProperty] = new Binding($"Parent.ActualWidth")
+            image.Bind(Image.StretchProperty, new Binding($"Source")
             {
                 RelativeSource = new RelativeSource(RelativeSourceMode.Self),
                 Mode = BindingMode.OneWay,
                 Converter = new StretchConverter(),
                 ConverterParameter = parameters
-            };
+            });
         }
 
         public class StretchConverter : IValueConverter
         {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
             {
-                var parentWidth = (double)value;
-                var adaptiveParameters = (AdaptiveConverterParameters)parameter;
-                var image = adaptiveParameters.Image;
-                var adaptiveImage = adaptiveParameters.AdaptiveImage;
-                var imageWidth = image.Source.Size.Width; // ((BitmapImage)image.Source)?.PixelWidth;
-                var imageHeight = image.Source.Size.Height; // ((BitmapImage)image.Source)?.PixelHeight;
-
-                if (adaptiveImage.PixelWidth != 0 || adaptiveImage.PixelHeight != 0)
+                if (value is Bitmap bitmap)
                 {
-                    if (adaptiveImage.PixelWidth == 0)
+                    var adaptiveParameters = (AdaptiveConverterParameters)parameter;
+                    var image = adaptiveParameters.Image;
+                    var adaptiveImage = adaptiveParameters.AdaptiveImage;
+                    var imageWidth = bitmap.Size.Width; // ((BitmapImage)image.Source)?.PixelWidth;
+                    var imageHeight = bitmap.Size.Height; // ((BitmapImage)image.Source)?.PixelHeight;
+
+                    switch (adaptiveImage.Size)
                     {
-                        adaptiveImage.PixelWidth = (uint)((imageWidth / (float)imageHeight) * adaptiveImage.PixelHeight);
+                        case AdaptiveImageSize.Large:
+                        case AdaptiveImageSize.Medium:
+                        case AdaptiveImageSize.Small:
+                            return Stretch.Uniform;
+                        case AdaptiveImageSize.Stretch:
+                            return Stretch.Fill;
+                        case AdaptiveImageSize.Auto:
+                        default:
+                            if (adaptiveImage.PixelWidth != 0 || adaptiveImage.PixelHeight != 0)
+                            {
+                                if (adaptiveImage.PixelWidth == 0)
+                                {
+                                    image.Width = (uint)((imageWidth / (float)imageHeight) * adaptiveImage.PixelHeight);
+                                }
+
+                                if (adaptiveImage.PixelHeight == 0)
+                                {
+                                    image.Height = (uint)((imageHeight / (float)imageWidth) * adaptiveImage.PixelWidth);
+                                }
+
+                                return Stretch.Uniform;
+                            }
+                            else
+                            {
+                                var panel = FindParentControlOfType<Panel>(image);
+                                if (panel != null)
+                                {
+                                    if (panel.Bounds.Width > 0 || panel.Bounds.Height > 0)
+                                    {
+                                        if (imageWidth > panel.Bounds.Width || imageHeight > panel.Bounds.Height)
+                                        {
+                                            double widthScale = 0, heightScale = 0;
+                                            if (imageWidth != 0)
+                                                widthScale = (double)panel.Bounds.Width / (double)imageWidth;
+                                            if (imageHeight != 0)
+                                                heightScale = (double)panel.Bounds.Height / (double)imageHeight;
+                                            double scale = Math.Max(widthScale, heightScale);
+                                            image.Width = (int)(imageWidth * scale);
+                                            image.Height = (int)(imageHeight * scale);
+                                            return Stretch.Uniform;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    image.Width = imageWidth;
+                                    image.Height = imageHeight;
+                                }
+
+                                return Stretch.None;
+                            }
+                            break;
+                    }
+                }
+                return Stretch.None;
+            }
+
+            private static T FindParentControlOfType<T>(Control control) where T : Control
+            {
+                Control parent = control.Parent as Control;
+
+                while (parent != null)
+                {
+                    if (parent is T)
+                    {
+                        return (T)parent;
                     }
 
-                    if (adaptiveImage.PixelHeight == 0)
-                    {
-                        adaptiveImage.PixelHeight = (uint)((imageHeight / (float)imageWidth) * adaptiveImage.PixelWidth);
-                    }
-
-                    image.Width = adaptiveImage.PixelWidth;
-                    image.Height = adaptiveImage.PixelHeight;
-
-                    return Stretch.Fill;
+                    parent = parent.Parent as Control;
                 }
-                else
-                {
-                    return Stretch.Uniform;
-                }
+
+                return null;
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
