@@ -135,7 +135,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             }
             else
             {
-                uiButton.SetValue(ToolTip.TipProperty, uiTitle);
+                uiButton.SetValue(ToolTip.TipProperty, action.Tooltip ?? action.Title);
             }
 
             string name = context.GetType().Name.Replace("Action", String.Empty);

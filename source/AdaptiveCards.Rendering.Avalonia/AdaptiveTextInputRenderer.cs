@@ -10,6 +10,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
+using System;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
@@ -137,7 +138,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                     uiIcon.Height = textBox.Bounds.Height;
                 };
 
-                uiButton.SetValue(ToolTip.TipProperty, uiTitle);
+                uiButton.SetValue(ToolTip.TipProperty, input.InlineAction.Tooltip ?? input.InlineAction.Title);
             }
             else
             {
