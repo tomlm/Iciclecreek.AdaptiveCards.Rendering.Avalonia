@@ -1,6 +1,6 @@
 ﻿using AdaptiveCardViewer.ViewModels;
 using AdaptiveCardViewer.Views;
-
+using AvaloniaWebView;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
@@ -37,5 +37,12 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+    public override void RegisterServices()
+    {
+        base.RegisterServices();
+
+        // if you use only WebView  
+        AvaloniaWebViewBuilder.Initialize(default);
     }
 }

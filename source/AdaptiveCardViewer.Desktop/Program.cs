@@ -1,6 +1,6 @@
 ﻿using System;
-
 using Avalonia;
+using Avalonia.WebView.Desktop;
 
 namespace AdaptiveCardViewer.Desktop;
 
@@ -18,6 +18,7 @@ class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
-            .LogToTrace();
+            .LogToTrace()
+            .UseDesktopWebView();
 
 }

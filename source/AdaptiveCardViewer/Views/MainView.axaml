@@ -53,7 +53,8 @@
             <Grid RowDefinitions="Auto,*"  Margin="4"  Width="500">
               <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
-                <Button x:Name="OpenFile" Content="Edit" Click="Edit_Click" Margin="4" Padding="4"/>
+                <Button x:Name="OpenFile" Content="Open" Click="Edit_Click" Margin="4" Padding="4"/>
+                <Button x:Name="Compare" Content="Compare" Click="Compare_Click" Margin="4" Padding="4"/>
               </StackPanel>
 
               <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BoxShadow="5 5 10 0 Gray">
@@ -63,7 +64,7 @@
           </DataTemplate>
         </ItemsControl.ItemTemplate>
         <ItemsControl.ItemsPanel>
-          <ItemsPanelTemplate>
+          <ItemsPanelTemplate> 
             <StackPanel Orientation="Vertical" />
             <!--<panels:FlexPanel
                               Direction="Row"

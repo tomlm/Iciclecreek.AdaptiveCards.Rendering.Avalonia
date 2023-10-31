@@ -1,6 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.iOS;
-
+using Avalonia.WebView.iOS;
 using Foundation;
 
 namespace AdaptiveCardViewer.iOS;
@@ -14,6 +14,7 @@ public partial class AppDelegate : AvaloniaAppDelegate<App>
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
         return base.CustomizeAppBuilder(builder)
-            .WithInterFont();
+            .WithInterFont()
+            .UseIosWebView();
     }
 }

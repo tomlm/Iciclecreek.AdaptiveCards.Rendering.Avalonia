@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Runtime.ConstrainedExecution;
 using AdaptiveCards.Rendering;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace AdaptiveCardViewer.Views;
 
@@ -54,5 +55,12 @@ public partial class MainView : UserControl
         {
             Process.Start(new ProcessStartInfo(cardModel.Uri) { UseShellExecute = true });
         }
+    }
+
+    private void Compare_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var dialog = new CompareView();
+        dialog.DataContext = ((Control)sender).DataContext;
+        dialog.Show();
     }
 }
