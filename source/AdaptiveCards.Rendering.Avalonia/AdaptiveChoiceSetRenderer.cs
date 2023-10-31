@@ -133,4 +133,80 @@ namespace AdaptiveCards.Rendering.Avalonia
             return null;
         }
     }
+
+    public class AdaptiveChoiceSetInputValue : AdaptiveInputValueNonEmptyValidation
+    {
+        private Control uIElement;
+
+        public AdaptiveChoiceSetInputValue(AdaptiveChoiceSetInput inputElement, Control renderedElement) : base(inputElement, renderedElement) { }
+
+        public AdaptiveChoiceSetInputValue(AdaptiveChoiceSetInput inputElement, Control renderedElement, Control uIElement) : base(inputElement, renderedElement, uIElement) { }
+
+        public override string GetValue()
+        {
+            AdaptiveChoiceSetInput input = InputElement as AdaptiveChoiceSetInput;
+
+            if (input.IsMultiSelect)
+            {
+                Panel uiChoices = RenderedInputElement as Panel;
+
+                string values = string.Empty;
+                foreach (var item in uiChoices.Children)
+                {
+                    CheckBox checkBox = (CheckBox)item;
+                    AdaptiveChoice adaptiveChoice = checkBox.DataContext as AdaptiveChoice;
+                    if (checkBox.IsChecked == true)
+                        values += (values == string.Empty ? "" : ",") + adaptiveChoice.Value;
+                }
+                return values;
+            }
+            else
+            {
+                ComboBox uiComboBox = RenderedInputElement as ComboBox;
+
+                if (input.Style == AdaptiveChoiceInputStyle.Compact)
+                {
+                    ComboBoxItem item = uiComboBox.SelectedItem as ComboBoxItem;
+                    if (item != null)
+                    {
+                        AdaptiveChoice adaptiveChoice = item.DataContext as AdaptiveChoice;
+                        return adaptiveChoice.Value;
+                    }
+                    return "";
+                }
+                else
+                {
+                    Panel uiChoices = RenderedInputElement as Panel;
+
+                    foreach (var item in uiChoices.Children)
+                    {
+                        RadioButton radioBox = (RadioButton)item;
+                        AdaptiveChoice adaptiveChoice = radioBox.DataContext as AdaptiveChoice;
+                        if (radioBox.IsChecked == true)
+                            return adaptiveChoice.Value;
+                    }
+                    return "";
+                }
+            }
+        }
+
+        public override void SetFocus()
+        {
+            // For expanded cases, the inputs are inserted into a panel,
+            // so we focus on the first element in the panel
+            if (RenderedInputElement is Panel)
+            {
+                Panel choicesContainer = RenderedInputElement as Panel;
+
+                if (choicesContainer.Children.Count > 0)
+                {
+                    choicesContainer.Children[0].Focus();
+                }
+            }
+            else
+            {
+                RenderedInputElement.Focus();
+            }
+        }
+    }
 }

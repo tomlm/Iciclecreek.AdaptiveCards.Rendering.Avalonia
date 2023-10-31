@@ -31,4 +31,59 @@ namespace AdaptiveCards.Rendering.Avalonia
             return timePicker;
         }
     }
+
+    public class AdaptiveTimeInputValue : AdaptiveTextBoxInputValue
+    {
+        public AdaptiveTimeInputValue(AdaptiveTimeInput inputElement, Control renderedElement) : base(inputElement, renderedElement) { }
+
+        public override string GetValue()
+        {
+            var timePicker = this.RenderedInputElement as TimePicker;
+            return timePicker.SelectedTime.Value.ToString("hh\\:mm");
+        }
+
+        public override bool Validate()
+        {
+            bool isValid = base.Validate();
+
+            AdaptiveTimeInput timeInput = InputElement as AdaptiveTimeInput;
+            string currentValue = GetValue();
+
+            // Check if our input is valid
+            TimeSpan inputValue;
+            if (TimeSpan.TryParse(currentValue, out inputValue))
+            {
+                TimeSpan minTime, maxTime;
+
+                if (!String.IsNullOrEmpty(timeInput.Min))
+                {
+                    // if min is a valid date, compare against it, otherwise ignore
+                    if (TimeSpan.TryParse(timeInput.Min, out minTime))
+                    {
+                        isValid = isValid && (inputValue >= minTime);
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(timeInput.Max))
+                {
+                    // if max is a valid date, compare against it, otherwise ignore
+                    if (TimeSpan.TryParse(timeInput.Max, out maxTime))
+                    {
+                        isValid = isValid && (inputValue <= maxTime);
+                    }
+                }
+            }
+            else
+            {
+                // if the input is not required and the string is empty, then proceed
+                // This is a fail safe as non xceed controls are rendered with a TextBox
+                if (!(!timeInput.IsRequired && String.IsNullOrEmpty(currentValue)))
+                {
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+    }
 }

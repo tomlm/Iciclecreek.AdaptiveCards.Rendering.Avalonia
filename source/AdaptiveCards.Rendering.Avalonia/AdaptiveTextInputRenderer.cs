@@ -11,6 +11,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using System;
+using System.Text.RegularExpressions;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
@@ -175,6 +176,30 @@ namespace AdaptiveCards.Rendering.Avalonia
                 }
             };
             return parentView;
+        }
+    }
+
+    public class AdaptiveTextInputValue : AdaptiveTextBoxInputValue
+    {
+        public AdaptiveTextInputValue(AdaptiveTextInput inputElement, Control renderedElement) : base(inputElement, renderedElement) { }
+
+        public override bool Validate()
+        {
+            bool isValid = base.Validate();
+
+            AdaptiveTextInput textInput = InputElement as AdaptiveTextInput;
+
+            if (!String.IsNullOrEmpty(textInput.Regex) && !String.IsNullOrEmpty(GetValue()))
+            {
+                isValid = isValid && Regex.IsMatch(GetValue(), textInput.Regex);
+            }
+
+            if (textInput.MaxLength != 0)
+            {
+                isValid = isValid && (GetValue().Length <= textInput.MaxLength);
+            }
+
+            return isValid;
         }
     }
 }

@@ -29,4 +29,34 @@ namespace AdaptiveCards.Rendering.Avalonia
         }
     }
 
+    public class AdaptiveToggleInputValue : AdaptiveInputValue
+    {
+        public AdaptiveToggleInputValue(AdaptiveToggleInput inputElement, Control renderedElement) : base(inputElement, renderedElement) { }
+
+        public override string GetValue()
+        {
+            CheckBox uiToggle = RenderedInputElement as CheckBox;
+            AdaptiveToggleInput toggleInput = InputElement as AdaptiveToggleInput;
+
+            return (uiToggle.GetState() == true ? toggleInput.ValueOn ?? "true" : toggleInput.ValueOff ?? "false");
+        }
+
+        public override void SetFocus()
+        {
+            RenderedInputElement.Focus();
+        }
+
+        public override bool Validate()
+        {
+            bool isValid = true;
+
+            if (InputElement.IsRequired)
+            {
+                AdaptiveToggleInput toggleInput = InputElement as AdaptiveToggleInput;
+                isValid = (GetValue() == toggleInput.ValueOn);
+            }
+
+            return isValid;
+        }
+    }
 }

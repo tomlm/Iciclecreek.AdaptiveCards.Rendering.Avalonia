@@ -1,14 +1,5 @@
 ﻿using AdaptiveCards;
 using AdaptiveCards.Rendering;
-using Avalonia.Controls.Shapes;
-using Avalonia.Styling;
-using DryIoc;
-using ExCSS;
-using System.Runtime.InteropServices;
-using System;
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
-using System.Xml.Linq;
 using Newtonsoft.Json;
 
 namespace AdaptiveCardViewer.ViewModels
@@ -64,7 +55,7 @@ var card = {JsonConvert.SerializeObject(Card)};
 // Create an AdaptiveCard instance
 var adaptiveCard = new AdaptiveCards.AdaptiveCard();
 adaptiveCard.hostConfig = new AdaptiveCards.HostConfig({JsonConvert.SerializeObject(HostConfig)});
-adaptiveCard.onExecuteAction = function(action) {{alert('Ow!'); }}
+adaptiveCard.onExecuteAction = function(action) {{alert(JSON.stringify(action)); }}
 
 AdaptiveCards.AdaptiveCard.onProcessMarkdown = function (text, result) {{
    result.outputHtml = markdownit().render(text);
