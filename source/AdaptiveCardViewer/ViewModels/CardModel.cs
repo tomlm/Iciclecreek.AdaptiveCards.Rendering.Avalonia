@@ -55,7 +55,7 @@ var card = {JsonConvert.SerializeObject(Card)};
 // Create an AdaptiveCard instance
 var adaptiveCard = new AdaptiveCards.AdaptiveCard();
 adaptiveCard.hostConfig = new AdaptiveCards.HostConfig({JsonConvert.SerializeObject(HostConfig)});
-adaptiveCard.onExecuteAction = function(action) {{alert(JSON.stringify(action)); }}
+adaptiveCard.onExecuteAction = function(action) {{alert(JSON.stringify(action.data)); }}
 
 AdaptiveCards.AdaptiveCard.onProcessMarkdown = function (text, result) {{
    result.outputHtml = markdownit().render(text);
