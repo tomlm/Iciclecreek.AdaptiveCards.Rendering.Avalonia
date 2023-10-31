@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 
@@ -18,7 +18,26 @@ namespace AdaptiveCards.Rendering.Avalonia
     {
         public static Control Render(AdaptiveTextInput input, AdaptiveRenderContext context)
         {
-            var textBox = new TextBox() { Text = input.Value };
+            TextBox textBox = null;
+
+            switch (input.Style)
+            {
+                case AdaptiveTextInputStyle.Tel:
+                    textBox = new MaskedTextBox() { Mask = "(000) 000-0000" };
+                    break;
+                case AdaptiveTextInputStyle.Password:
+                    textBox = new TextBox() { PasswordChar = '•' };
+                    break;
+                case AdaptiveTextInputStyle.Email:
+                case AdaptiveTextInputStyle.Url:
+                case AdaptiveTextInputStyle.Text:
+                default:
+                    textBox = new TextBox();
+                    break;
+            }
+
+            textBox.Text = input.Value;
+
             if (input.IsMultiline == true)
             {
                 textBox.AcceptsReturn = true;

@@ -36,7 +36,7 @@ public partial class MainViewModel : ViewModelBase
         string path = null;
         if (Debugger.IsAttached)
         {
-            path = Path.GetFullPath(@"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.0\Elements\Column.Width.json");
+            path = Path.GetFullPath(@"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.3\Elements\Input.Number.json");
             json = File.ReadAllText(path);
             name = Path.GetFileName(path);
         }
