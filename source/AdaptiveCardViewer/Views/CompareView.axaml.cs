@@ -40,8 +40,8 @@ namespace AdaptiveCardViewer.Views
                 inputs.Merge(submitAction.Data);
                 var box = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams()
                 {
-                    ContentTitle = "Action.Submit",
-                    ContentMessage = $"{JsonConvert.SerializeObject(inputs, Formatting.Indented)}",
+                    ContentTitle = $"Action.Submit:{submitAction.Id}",
+                    ContentMessage = JsonConvert.SerializeObject(inputs, Formatting.Indented),
                     ButtonDefinitions = ButtonEnum.Ok,
                     MinWidth = 300,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -54,8 +54,8 @@ namespace AdaptiveCardViewer.Views
                 inputs.Merge(executeAction.Data);
                 var box = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams()
                 {
-                    ContentTitle = "Action.Execute",
-                    ContentMessage = $"{JsonConvert.SerializeObject(inputs, Formatting.Indented)}",
+                    ContentTitle = $"Action.Submit:{executeAction.Id}",
+                    ContentMessage = JsonConvert.SerializeObject(inputs, Formatting.Indented),
                     ButtonDefinitions = ButtonEnum.Ok,
                     MinWidth = 300,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
