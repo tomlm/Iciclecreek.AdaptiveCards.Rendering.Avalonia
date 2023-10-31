@@ -6,25 +6,6 @@ using System.Collections.Generic;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
-    public class RoutedAdaptiveActionEventArgs : RoutedEventArgs
-    {
-        public RoutedAdaptiveActionEventArgs(RenderedAdaptiveCard source, AdaptiveAction action)
-            : base(AdaptiveCardView.ActionEvent, source)
-        {
-            Action = action;
-            UserInputs = source.UserInputs;
-            Card = source.OriginatingCard;
-        }
-
-        /// <summary>
-        /// The action that fired
-        /// </summary>
-        public AdaptiveAction Action { get; }
-
-        public RenderedAdaptiveCardInputs UserInputs { get; }
-
-        public AdaptiveCard Card { get; }
-    }
 
     public class AdaptiveCardView : UserControl
     {
@@ -66,7 +47,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         }
 
         /// <summary>
-        /// Action handler
+        /// Action handler, subscribe to handle action events
         /// </summary>
         public event EventHandler<RoutedAdaptiveActionEventArgs> Action
         {
