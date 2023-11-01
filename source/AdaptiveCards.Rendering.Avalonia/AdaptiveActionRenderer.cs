@@ -84,12 +84,12 @@ namespace AdaptiveCards.Rendering.Avalonia
                 // Only apply padding for normal card actions
                 uiButton.Padding = new Thickness(6, 4, 6, 4);
             }
-            else
-            {
-                // Remove any extra spacing for selectAction
-                uiButton.Padding = new Thickness(0, 0, 0, 0);
-                contentStackPanel.Margin = new Thickness(0, 0, 0, 0);
-            }
+            //else
+            //{
+            //    // Remove any extra spacing for selectAction
+            //    uiButton.Padding = new Thickness(0, 0, 0, 0);
+            //    contentStackPanel.Margin = new Thickness(0, 0, 0, 0);
+            //}
             uiButton.Content = contentStackPanel;
             Image uiIcon = null;
 

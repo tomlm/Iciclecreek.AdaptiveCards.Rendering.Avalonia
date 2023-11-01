@@ -44,9 +44,10 @@ namespace AdaptiveCards.Rendering.Avalonia
             var secondaryActions = actions.Where(action => action.Mode == AdaptiveActionMode.Secondary).ToList();
             if (primaryActions.Count > context.Config.Actions.MaxActions)
             {
-                secondaryActions = primaryActions.Skip(context.Config.Actions.MaxActions - 1).ToList();
-                secondaryActions.AddRange(secondaryActions);
-                primaryActions = primaryActions.Take(context.Config.Actions.MaxActions - 1).ToList();
+                var secondary2 = primaryActions.Skip(context.Config.Actions.MaxActions - 1).ToList();
+                primaryActions = primaryActions.Take(context.Config.Actions.MaxActions -1).ToList();  
+                secondary2.AddRange(secondaryActions);
+                secondaryActions = secondary2;
             }
 
             var uiActionBar = new UniformGrid();
