@@ -98,6 +98,7 @@ public partial class App : Application
                 Width = 500,
                 Height = 500
             };
+            e.Handled = true;
 
             dialog.ShowDialog(window);
         }
