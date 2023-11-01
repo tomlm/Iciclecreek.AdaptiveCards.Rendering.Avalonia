@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using System;
 using System.Collections.Generic;
 
@@ -13,12 +14,14 @@ namespace AdaptiveCards.Rendering.Avalonia
         public static readonly DirectProperty<AdaptiveCardView, AdaptiveHostConfig> HostConfigProperty = AvaloniaProperty.RegisterDirect<AdaptiveCardView, AdaptiveHostConfig>(nameof(HostConfig), o => o.HostConfig, (o, v) => o.HostConfig = v);
         public static readonly RoutedEvent<RoutedAdaptiveActionEventArgs> ActionEvent = RoutedEvent.Register<AdaptiveCardView, RoutedAdaptiveActionEventArgs>(nameof(Action), RoutingStrategies.Bubble);
 
+        private AdaptiveHostConfig _hostConfig;
+        private AdaptiveCard _card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 5));
+
         public AdaptiveCardView()
         {
             this.Content = new TextBlock() { Text = "inner" };
         }
 
-        private AdaptiveHostConfig _hostConfig;
         /// <summary>
         /// HostConfig to use to for rendendering
         /// </summary>
@@ -32,7 +35,6 @@ namespace AdaptiveCards.Rendering.Avalonia
             }
         }
 
-        private AdaptiveCard _card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 5));
         /// <summary>
         /// AdaptiveCard to render
         /// </summary>
@@ -70,7 +72,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                     var renderedCard = renderer.RenderCard(_card);
                     renderedCard.OnAction += (sender, e) =>
                     {
-                        RaiseEvent(new RoutedAdaptiveActionEventArgs(renderedCard, e.Action));
+                        RaiseEvent(new RoutedAdaptiveActionEventArgs(renderedCard, e.Action, _hostConfig));
                     };
 
                     this.Content = renderedCard.Control;

@@ -7,6 +7,8 @@ using MsBox.Avalonia.Enums;
 using MsBox.Avalonia;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using AdaptiveCards.Rendering;
+using Avalonia.VisualTree;
 
 namespace AdaptiveCardViewer.Views
 {
@@ -33,35 +35,35 @@ namespace AdaptiveCardViewer.Views
             if (e.Action is AdaptiveOpenUrlAction openUrlAction)
             {
                 Process.Start(new ProcessStartInfo(openUrlAction.Url.AbsoluteUri) { UseShellExecute = true });
+                e.Handled = true;
             }
-            else if (e.Action is AdaptiveSubmitAction submitAction)
+            else if (e.IsDataAction())
             {
-                var inputs = e.UserInputs.AsJson();
-                inputs.Merge(submitAction.Data);
                 var box = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams()
                 {
-                    ContentTitle = $"Action.Submit:{submitAction.Id}",
-                    ContentMessage = JsonConvert.SerializeObject(inputs, Formatting.Indented),
+                    ContentTitle = e.Action.GetType().Name.Replace("Adaptive", string.Empty),
+                    ContentMessage = JsonConvert.SerializeObject(e.GetActionPayload(), Formatting.Indented),
                     ButtonDefinitions = ButtonEnum.Ok,
                     MinWidth = 300,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 });
                 await box.ShowAsync();
+                e.Handled = true;
             }
-            else if (e.Action is AdaptiveExecuteAction executeAction)
+            else if (e.Action is AdaptiveShowCardAction showCardAction && e.HostConfig.Actions.ShowCard.ActionMode == ShowCardActionMode.Popup)
             {
-                var inputs = e.UserInputs.AsJson();
-                inputs.Merge(executeAction.Data);
-                var box = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams()
+                var dialog = new AdaptiveCardWindow()
                 {
-                    ContentTitle = $"Action.Submit:{executeAction.Id}",
-                    ContentMessage = JsonConvert.SerializeObject(inputs, Formatting.Indented),
-                    ButtonDefinitions = ButtonEnum.Ok,
-                    MinWidth = 300,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                });
-                await box.ShowAsync();
+                    Title = showCardAction.Title,
+                    Card = showCardAction.Card,
+                    HostConfig = e.HostConfig,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Width = 500,
+                    Height = 500
+                };
+                dialog.ShowDialog(this.FindAncestorOfType<Window>());
             }
+
         }
     }
 }

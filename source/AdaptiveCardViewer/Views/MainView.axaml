@@ -41,6 +41,7 @@
           <ComboBoxItem>webchat</ComboBoxItem>
           <ComboBoxItem>widget-dark</ComboBoxItem>
           <ComboBoxItem>widget-light</ComboBoxItem>
+          <ComboBoxItem>testVariantHostConfig</ComboBoxItem>
         </ComboBox>
 
       </StackPanel>

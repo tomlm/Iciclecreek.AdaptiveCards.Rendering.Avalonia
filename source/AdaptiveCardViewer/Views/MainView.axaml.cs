@@ -9,6 +9,8 @@ using MsBox.Avalonia;
 using Avalonia.Interactivity;
 using MsBox.Avalonia.Dto;
 using Newtonsoft.Json.Linq;
+using AdaptiveCards.Rendering;
+using Avalonia.VisualTree;
 
 namespace AdaptiveCardViewer.Views;
 
@@ -67,61 +69,34 @@ public partial class MainView : UserControl
         if (e.Action is AdaptiveOpenUrlAction openUrlAction)
         {
             Process.Start(new ProcessStartInfo(openUrlAction.Url.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true;
         }
-        //else if (args.Action is AdaptiveShowCardAction showCardAction)
-        //{
-        //    // Action.ShowCard can be rendered inline automatically
-        //    // ... but if you want to handle show card as a "popup", you handle this event
-        //    if (_myHostConfig.Actions.ShowCard.ActionMode == ShowCardActionMode.Popup)
-        //    {
-        //        var dialog = new ShowCardWindow(showCardAction.Title, showCardAction, Resources);
-        //        dialog.Owner = this;
-        //        dialog.ShowDialog();
-        //    }
-        //}
-        else if (e.Action is AdaptiveSubmitAction submitAction)
+        else if (e.IsDataAction())
         {
-            string payload = string.Empty;
-            var inputs = e.UserInputs.AsJson();
-            if (submitAction.Data is JObject jobj)
-            {
-                inputs.Merge(jobj);
-                payload = JsonConvert.SerializeObject(inputs, Formatting.Indented);
-            }
-            else
-                payload = JsonConvert.SerializeObject(submitAction.Data);
-
             var box = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams()
             {
-                ContentTitle = "Action.Submit",
-                ContentMessage = payload,
+                ContentTitle = e.Action.GetType().Name.Replace("Adaptive", string.Empty),
+                ContentMessage = JsonConvert.SerializeObject(e.GetActionPayload(), Formatting.Indented),
                 ButtonDefinitions = ButtonEnum.Ok,
                 MinWidth = 300,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             });
             await box.ShowAsync();
+            e.Handled = true;
         }
-        else if (e.Action is AdaptiveExecuteAction executeAction)
+        else if (e.Action is AdaptiveShowCardAction showCardAction && e.HostConfig.Actions.ShowCard.ActionMode == ShowCardActionMode.Popup)
         {
-            string payload = string.Empty;
-            var inputs = e.UserInputs.AsJson();
-            if (executeAction.Data is JObject jobj)
+            var dialog = new AdaptiveCardWindow()
             {
-                inputs.Merge(jobj);
-                payload = JsonConvert.SerializeObject(inputs, Formatting.Indented);
-            }
-            else
-                payload = JsonConvert.SerializeObject(executeAction.Data);
-            
-            var box = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams()
-            {
-                ContentTitle = "Action.Execute",
-                ContentMessage = payload,
-                ButtonDefinitions = ButtonEnum.Ok,
-                MinWidth = 300,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            });
-            await box.ShowAsync();
+                Title = showCardAction.Title,
+                Card = showCardAction.Card,
+                HostConfig = e.HostConfig,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Width = 500,
+                Height = 500
+            };
+            dialog.ShowDialog(this.FindAncestorOfType<Window>());
         }
     }
 }
+
