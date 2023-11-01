@@ -165,6 +165,23 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             string name = context.GetType().Name.Replace("Action", String.Empty);
 
+            // action alignment.
+            switch(actionsConfig.ActionAlignment)
+            {
+                case AdaptiveHorizontalAlignment.Stretch:
+                    uiButton.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    break;
+                case AdaptiveHorizontalAlignment.Left:
+                    uiButton.HorizontalAlignment = HorizontalAlignment.Left;
+                    break;
+                case AdaptiveHorizontalAlignment.Center:
+                    uiButton.HorizontalAlignment = HorizontalAlignment.Center;
+                    break;
+                case AdaptiveHorizontalAlignment.Right:
+                    uiButton.HorizontalAlignment = HorizontalAlignment.Right;
+                    break;
+            }
+
             uiButton.Classes.Add(typeof(AdaptiveAction).Name);
             return uiButton;
         }

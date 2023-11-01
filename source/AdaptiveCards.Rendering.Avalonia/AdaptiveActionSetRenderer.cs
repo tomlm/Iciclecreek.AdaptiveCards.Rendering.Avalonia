@@ -163,7 +163,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         {
             var uiFlyout = new Flyout()
             {
-                Placement = PlacementMode.Bottom,
+                Placement = PlacementMode.BottomEdgeAlignedLeft,
                 ShowMode = FlyoutShowMode.Standard,
             };
             var uiMenu = new UniformGrid()
@@ -221,10 +221,11 @@ namespace AdaptiveCards.Rendering.Avalonia
 
                     // vertical
                     uiAction.BorderThickness = new Thickness(0);
-                    uiAction.Margin = new Thickness(0, 0, 0, 0);
                     uiAction.HorizontalAlignment = HorizontalAlignment.Stretch;
                     uiAction.Background = context.GetColorBrush("Transparent");
                     uiAction.HorizontalContentAlignment = HorizontalAlignment.Left;
+                    uiAction.Margin = new Thickness(0, actionsConfig.ButtonSpacing, 0, 0);
+
                     Grid.SetRow(uiAction, iRow++);
                     uiMenu.Children.Add(uiAction);
 
