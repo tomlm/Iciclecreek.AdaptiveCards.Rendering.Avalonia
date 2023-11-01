@@ -64,6 +64,7 @@
 					"type": "Action.Submit",
 					"title": "Submit",
 					"tooltip": "Tooltip",
+					"iconUrl": "https://www.clipartmax.com/png/full/211-2118815_file-novosel-mushroom-svg-mario-mushroom-icon.png",
 					"data": {
 						"key": "Submit from primary action"
 					}

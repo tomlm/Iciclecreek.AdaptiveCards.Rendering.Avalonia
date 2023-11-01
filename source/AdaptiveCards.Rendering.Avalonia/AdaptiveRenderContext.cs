@@ -2,13 +2,10 @@
 // Licensed under the MIT License.
 using AsyncImageLoader.Loaders;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
@@ -46,6 +43,8 @@ namespace AdaptiveCards.Rendering.Avalonia
         public RamCachedWebImageLoader ImageLoader { get; set; }
 
         public bool IsRenderingSelectAction { get; set; }
+
+        public bool IsRenderingOverflowAction { get; set; }
 
         public bool? Rtl { get; set; }
 
@@ -97,6 +96,11 @@ namespace AdaptiveCards.Rendering.Avalonia
                         return;
                     }
                 }
+            }
+            else if (args.Action is AdaptiveOverflowAction overflowAction)
+            {
+                FlyoutBase.ShowAttachedFlyout(ui);
+                return;
             }
 
             OnAction?.Invoke(ui, args);
@@ -184,7 +188,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                         RenderingFallback = true;
 
                         rendereableElement = GetRendereableElement(element.Fallback.Content);
-                        
+
                         RenderingFallback = false;
                     }
                 }

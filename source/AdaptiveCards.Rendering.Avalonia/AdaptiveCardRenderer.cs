@@ -63,6 +63,8 @@ namespace AdaptiveCards.Rendering.Avalonia
             ElementRenderers.Set<AdaptiveToggleInput>(AdaptiveToggleInputRenderer.Render);
 
             ElementRenderers.Set<AdaptiveAction>(AdaptiveActionRenderer.Render);
+
+            ActionHandlers.AddSupportedAction<AdaptiveOverflowAction>();
         }
 
         public AdaptiveFeatureRegistration FeatureRegistration { get; } = new AdaptiveFeatureRegistration();

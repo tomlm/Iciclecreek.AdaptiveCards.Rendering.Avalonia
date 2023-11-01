@@ -58,7 +58,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             //return stream;
         }
 
-        public static async void SetSource(this Image image, AdaptiveImage adaptiveImage, Uri url, AdaptiveRenderContext context)
+        public static async void SetSource(this Image image, Uri url, AdaptiveRenderContext context)
         {
             if (url == null)
                 return;
@@ -91,6 +91,11 @@ namespace AdaptiveCards.Rendering.Avalonia
                     image.SetValue(ImageLoader.SourceProperty, url.ToString());
                 }
             }
+        }
+
+        public static async void SetSource(this Image image, AdaptiveImage adaptiveImage, Uri url, AdaptiveRenderContext context)
+        {
+            image.SetSource(url, context);
 
             var parameters = new AdaptiveConverterParameters(image, adaptiveImage, context);
             image.Bind(Image.StretchProperty, new Binding($"Source")
@@ -122,7 +127,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                             return Stretch.Uniform;
                         case AdaptiveImageSize.Stretch: //Image with both scale down and up to fit as needed.
                             return Stretch.Fill;
-                        
+
                         case AdaptiveImageSize.Auto: // Images will scale down to fit if needed, but will not scale up to fill the area.
                         default:
                             if (adaptiveImage.PixelWidth != 0 || adaptiveImage.PixelHeight != 0)

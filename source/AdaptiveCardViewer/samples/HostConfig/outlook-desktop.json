@@ -278,6 +278,7 @@
     },
     "actionsOrientation": "horizontal",
     "actionAlignment": "left",
+    "iconSize": 20,
     "iconPlacement": "leftOfTitle"
   },
   "adaptiveCard": {

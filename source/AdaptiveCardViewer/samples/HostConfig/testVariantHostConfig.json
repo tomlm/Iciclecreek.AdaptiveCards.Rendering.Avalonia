@@ -70,7 +70,9 @@
 			"inlineTopMargin": 10
 		},
 		"actionsOrientation": "vertical",
-		"actionAlignment": "left"
+		"actionAlignment": "left",
+		"iconSize": 20,
+		"iconPlacement": "aboveTitle"
 	},
 	"adaptiveCard": {
 		"allowCustomStyle": false

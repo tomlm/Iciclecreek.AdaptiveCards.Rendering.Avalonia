@@ -280,6 +280,7 @@
     "preExpandSingleShowCardAction": false,
     "actionsOrientation": "Horizontal",
     "actionAlignment": "Left",
+    "iconSize": 20,
     "iconPlacement": "leftOfTitle"
   },
   "adaptiveCard": {

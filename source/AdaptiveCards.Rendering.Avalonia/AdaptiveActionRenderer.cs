@@ -3,6 +3,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.Media;
 using System;
 using System.Text;
 
@@ -15,6 +16,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             if (context.Config.SupportsInteractivity && context.ActionHandlers.IsSupported(action.GetType()))
             {
                 var uiButton = CreateActionButton(action, context);
+
                 uiButton.Click += (sender, e) =>
                 {
                     context.InvokeAction(uiButton, new AdaptiveActionEventArgs(action));
@@ -22,6 +24,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                     // Prevent nested events from triggering
                     e.Handled = true;
                 };
+
                 return uiButton;
             }
             return null;
@@ -29,6 +32,8 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public static Button CreateActionButton(AdaptiveAction action, AdaptiveRenderContext context)
         {
+            int iRow = 0;
+            int iCol = 0;
             var sb = new StringBuilder(action.Style ?? "Default".ToLower());
             sb[0] = Char.ToUpper(sb[0]);
             var actionStyle = sb.ToString();
@@ -36,12 +41,13 @@ namespace AdaptiveCards.Rendering.Avalonia
             ContainerStyleConfig? containerConfig = context.Config.ContainerStyles.Default;
             var uiButton = new Button()
             {
-                BorderThickness = new Thickness(1),
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
+                IsEnabled = action.IsEnabled,
                 Padding = new Thickness(1),
-                IsEnabled = action.IsEnabled
+                BorderThickness = new Thickness(1)
             };
+
             switch (actionStyle)
             {
                 case "Positive":
@@ -67,9 +73,13 @@ namespace AdaptiveCards.Rendering.Avalonia
             // Style = context.GetStyle($"Adaptive.{action.Type}"),
             uiButton.Classes.Add(actionStyle);
 
-            var contentStackPanel = new StackPanel();
+            var contentStackPanel = new Grid()
+            {
+                ColumnDefinitions = new ColumnDefinitions("Auto,Auto,Auto"),
+                RowDefinitions = new RowDefinitions("Auto,Auto,Auto"),
+            };
 
-            if (!context.IsRenderingSelectAction)
+            if (!context.IsRenderingSelectAction && !context.IsRenderingOverflowAction)
             {
                 // Only apply padding for normal card actions
                 uiButton.Padding = new Thickness(6, 4, 6, 4);
@@ -81,7 +91,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 contentStackPanel.Margin = new Thickness(0, 0, 0, 0);
             }
             uiButton.Content = contentStackPanel;
-            Control uiIcon = null;
+            Image uiIcon = null;
 
             var uiTitle = new TextBlock
             {
@@ -91,34 +101,41 @@ namespace AdaptiveCards.Rendering.Avalonia
                 // Style = context.GetStyle($"Adaptive.Action.Title")
             };
 
+            var actionsConfig = context.Config.Actions;
             if (action.IconUrl != null)
             {
-                var actionsConfig = context.Config.Actions;
-
-                var image = new AdaptiveImage(action.IconUrl)
+                uiIcon = new Image()
                 {
-                    HorizontalAlignment = AdaptiveHorizontalAlignment.Center,
+                    Stretch = Stretch.Uniform,
                 };
-                uiIcon = AdaptiveImageRenderer.Render(image, context);
+
                 if (actionsConfig.IconPlacement == IconPlacement.AboveTitle)
                 {
-                    contentStackPanel.Orientation = Orientation.Vertical;
                     uiIcon.Height = (double)actionsConfig.IconSize;
                 }
                 else
                 {
-                    contentStackPanel.Orientation = Orientation.Horizontal;
+                    //var prop = uiIcon.GetObservable(Image.SourceProperty);
+                    //prop.Subscribe(new Observer<IImage>((value) => uiIcon.Height = uiTitle.Bounds.Height));
+
                     //Size the image to the textblock, wait until layout is complete (loaded event)
                     uiIcon.Loaded += (sender, e) =>
                     {
                         uiIcon.Height = uiTitle.Bounds.Height;
+                        uiIcon.Width = uiTitle.Bounds.Height;
                     };
                 }
-                contentStackPanel.Children.Add(uiIcon);
+
+                // Try to resolve the image URI
+                Uri finalUri = context.Config.ResolveFinalAbsoluteUri(action.IconUrl);
+                uiIcon.SetSource(finalUri, context);
 
                 // Add spacing for the icon for horizontal actions
                 if (actionsConfig.IconPlacement == IconPlacement.LeftOfTitle)
                 {
+                    Grid.SetColumn(uiIcon, iCol++);
+                    contentStackPanel.Children.Add(uiIcon);
+
                     int spacing = context.Config.GetSpacing(AdaptiveSpacing.Default);
                     var uiSep = new Grid
                     {
@@ -126,12 +143,22 @@ namespace AdaptiveCards.Rendering.Avalonia
                         VerticalAlignment = VerticalAlignment.Stretch,
                         Width = spacing,
                     };
+                    Grid.SetColumn(uiSep, iCol++);
                     contentStackPanel.Children.Add(uiSep);
+                }
+                else
+                {
+                    Grid.SetRow(uiIcon, iRow++);
+                    contentStackPanel.Children.Add(uiIcon);
                 }
             }
 
             if (!context.IsRenderingSelectAction)
             {
+                if (actionsConfig.IconPlacement == IconPlacement.LeftOfTitle)
+                    Grid.SetColumn(uiTitle, iCol++);
+                else
+                    Grid.SetRow(uiTitle, iRow++);
                 contentStackPanel.Children.Add(uiTitle);
             }
             else
@@ -146,4 +173,30 @@ namespace AdaptiveCards.Rendering.Avalonia
         }
 
     }
+
+    public class Observer<T> : IObserver<T>
+    {
+        Action<T> _action;
+        public Observer(Action<T> action)
+        {
+            _action = action;
+        }
+
+        public void OnCompleted()
+        {
+
+        }
+
+        public void OnError(Exception error)
+        {
+
+        }
+
+        public void OnNext(T value)
+        {
+            this._action(value);
+        }
+
+    }
 }
+
