@@ -115,9 +115,6 @@ namespace AdaptiveCards.Rendering.Avalonia
                 }
                 else
                 {
-                    //var prop = uiIcon.GetObservable(Image.SourceProperty);
-                    //prop.Subscribe(new Observer<IImage>((value) => uiIcon.Height = uiTitle.Bounds.Height));
-
                     //Size the image to the textblock, wait until layout is complete (loaded event)
                     uiIcon.Loaded += (sender, e) =>
                     {
