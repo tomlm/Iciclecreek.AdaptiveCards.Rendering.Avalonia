@@ -1,5 +1,4 @@
 # Adaptive Cards Rendering library for Avalonia UI
-Adaptive Cards renderer for Avalonia (based on the WPF renderer)
 
 # Usage
 Sample Model
