@@ -22,6 +22,7 @@
       <StackPanel Grid.Row="1" Orientation="Horizontal">
         <TextBlock VerticalAlignment="Center" Padding="4">Schema</TextBlock>
         <ComboBox x:Name="Version" Width="100" SelectionChanged="Version_SelectionChanged">
+          <ComboBoxItem>Scenarios</ComboBoxItem>
           <ComboBoxItem>v1.0</ComboBoxItem>
           <ComboBoxItem>v1.1</ComboBoxItem>
           <ComboBoxItem>v1.2</ComboBoxItem>

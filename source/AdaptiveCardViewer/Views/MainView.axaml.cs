@@ -3,6 +3,7 @@ using AdaptiveCards.Rendering.Avalonia;
 using AdaptiveCardViewer.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace AdaptiveCardViewer.Views;
 
@@ -33,7 +34,10 @@ public partial class MainView : UserControl
             var ver = item.Content as string;
             if (!string.IsNullOrEmpty(ver))
             {
-                viewModel.LoadVersionSamples(ver);
+                if (ver == "Scenarios")
+                    viewModel.LoadScenarios();
+                else
+                    viewModel.LoadVersionSamples(ver);
             }
         }
     }

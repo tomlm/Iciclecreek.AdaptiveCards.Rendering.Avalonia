@@ -82,6 +82,18 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
+    public void LoadScenarios()
+    {
+        this.Cards.Clear();
+
+        foreach (var name in Assembly.GetExecutingAssembly().GetManifestResourceNames()
+            .Where(p => p.ToLower().Contains("scenarios")))
+        {
+            LoadCardResource(name);
+        }
+
+    }
+
     public void LoadVersionSamples(string ver)
     {
         ver = ver.Replace(".", "._");
@@ -90,34 +102,38 @@ public partial class MainViewModel : ViewModelBase
         foreach (var name in Assembly.GetExecutingAssembly().GetManifestResourceNames()
             .Where(p => p.Contains(ver) && !p.ToLower().Contains("tests")))
         {
-            Debug.WriteLine(name);
-            string json = null;
-            using (TextReader reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(name)))
-            {
-                json = reader.ReadToEnd();
-            }
-
-            if (json != null)
-            {
-                try
-                {
-                    string fullPath = GetResourcePath(name);
-                    AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
-                    this.Cards.Add(new CardModel()
-                    {
-                        Name = Path.GetFileName(fullPath),
-                        Uri = fullPath,
-                        Card = parseResult.Card,
-                        HostConfig = this.HostConfig
-                    });
-                }
-                catch (Exception err)
-                {
-                    Debug.WriteLine(err);
-                }
-            }
+            LoadCardResource(name);
         }
 
+    }
+
+    private void LoadCardResource(string? name)
+    {
+        string json = null;
+        using (TextReader reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(name)))
+        {
+            json = reader.ReadToEnd();
+        }
+
+        if (json != null)
+        {
+            try
+            {
+                string fullPath = GetResourcePath(name);
+                AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
+                this.Cards.Add(new CardModel()
+                {
+                    Name = Path.GetFileName(fullPath),
+                    Uri = fullPath,
+                    Card = parseResult.Card,
+                    HostConfig = this.HostConfig
+                });
+            }
+            catch (Exception err)
+            {
+                Debug.WriteLine(err);
+            }
+        }
     }
 
     private static string GetResourcePath(string? name)

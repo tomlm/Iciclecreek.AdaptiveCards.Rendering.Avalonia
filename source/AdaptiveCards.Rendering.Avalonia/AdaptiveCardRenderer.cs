@@ -113,6 +113,8 @@ namespace AdaptiveCards.Rendering.Avalonia
             outerGrid.Children.Add(grid);
 
             AdaptiveInternalID parentCardId = context.RenderArgs.ContainerCardId;
+            if (card.InternalID == null)
+                card.InternalID = AdaptiveInternalID.Next();
             context.ParentCards.Add(card.InternalID, parentCardId);
             context.RenderArgs.ContainerCardId = card.InternalID;
 
