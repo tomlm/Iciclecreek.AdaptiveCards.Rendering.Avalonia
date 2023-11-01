@@ -8,7 +8,6 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AdaptiveCardViewer.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        ac:AdaptiveCardView.Action="OnAction"
         Title="AdaptiveCardViewer - Welcome to Avalonia!">
   
         <views:MainView />
