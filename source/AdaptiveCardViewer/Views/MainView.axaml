@@ -59,14 +59,13 @@
               </StackPanel>
 
               <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BoxShadow="0 0 10 0 Gray">
-                <ac:AdaptiveCardView Card="{Binding Card}" HostConfig="{Binding HostConfig}"
-                                     Action="OnAction"/>
+                <ac:AdaptiveCardView Card="{Binding Card}" HostConfig="{Binding HostConfig}"/>
               </Border>
             </Grid>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
         <ItemsControl.ItemsPanel>
-          <ItemsPanelTemplate> 
+          <ItemsPanelTemplate>
             <StackPanel Orientation="Vertical" />
             <!--<panels:FlexPanel
                               Direction="Row"

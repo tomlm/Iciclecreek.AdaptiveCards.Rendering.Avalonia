@@ -1,16 +1,8 @@
 ﻿using System.Diagnostics;
-using AdaptiveCards;
+using AdaptiveCards.Rendering.Avalonia;
 using AdaptiveCardViewer.ViewModels;
 using Avalonia.Controls;
-using Newtonsoft.Json;
-using AdaptiveCards.Rendering.Avalonia;
-using MsBox.Avalonia.Enums;
-using MsBox.Avalonia;
 using Avalonia.Interactivity;
-using MsBox.Avalonia.Dto;
-using Newtonsoft.Json.Linq;
-using AdaptiveCards.Rendering;
-using Avalonia.VisualTree;
 
 namespace AdaptiveCardViewer.Views;
 
@@ -64,39 +56,5 @@ public partial class MainView : UserControl
         dialog.Show();
     }
 
-    private async void OnAction(object? sender, RoutedAdaptiveActionEventArgs e)
-    {
-        if (e.Action is AdaptiveOpenUrlAction openUrlAction)
-        {
-            Process.Start(new ProcessStartInfo(openUrlAction.Url.AbsoluteUri) { UseShellExecute = true });
-            e.Handled = true;
-        }
-        else if (e.IsDataAction())
-        {
-            var box = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams()
-            {
-                ContentTitle = e.Action.GetType().Name.Replace("Adaptive", string.Empty),
-                ContentMessage = JsonConvert.SerializeObject(e.GetActionPayload(), Formatting.Indented),
-                ButtonDefinitions = ButtonEnum.Ok,
-                MinWidth = 300,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            });
-            await box.ShowAsync();
-            e.Handled = true;
-        }
-        else if (e.Action is AdaptiveShowCardAction showCardAction && e.HostConfig.Actions.ShowCard.ActionMode == ShowCardActionMode.Popup)
-        {
-            var dialog = new AdaptiveCardWindow()
-            {
-                Title = showCardAction.Title,
-                Card = showCardAction.Card,
-                HostConfig = e.HostConfig,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Width = 500,
-                Height = 500
-            };
-            dialog.ShowDialog(this.FindAncestorOfType<Window>());
-        }
-    }
 }
 

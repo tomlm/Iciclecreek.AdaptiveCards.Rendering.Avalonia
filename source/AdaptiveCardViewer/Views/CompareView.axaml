@@ -14,8 +14,7 @@
       <StackPanel Orientation="Vertical" Margin="8">
         <TextBlock FontSize="20">Avalonia Card</TextBlock>
         <Border BorderThickness="2" CornerRadius="3" BoxShadow="5 5 10 0 Gray" Width="500">
-          <ac:AdaptiveCardView Card="{Binding Card}" HostConfig="{Binding HostConfig}"
-                               Action="OnAction"/>
+          <ac:AdaptiveCardView Card="{Binding Card}" HostConfig="{Binding HostConfig}"/>
         </Border>
       </StackPanel>
     </ScrollViewer>

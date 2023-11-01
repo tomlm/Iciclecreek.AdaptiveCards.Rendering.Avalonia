@@ -59,10 +59,6 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         private void RenderCard()
         {
-            /*
-                var e = new RoutedEventArgs(ClickEvent);
-                RaiseEvent(e);
-            */
             try
             {
                 if (_card != null)
@@ -72,7 +68,8 @@ namespace AdaptiveCards.Rendering.Avalonia
                     var renderedCard = renderer.RenderCard(_card);
                     renderedCard.OnAction += (sender, e) =>
                     {
-                        RaiseEvent(new RoutedAdaptiveActionEventArgs(renderedCard, e.Action, _hostConfig));
+                        var evt = new RoutedAdaptiveActionEventArgs(renderedCard, e.Action, _hostConfig);
+                        RaiseEvent(evt);
                     };
 
                     this.Content = renderedCard.Control;
