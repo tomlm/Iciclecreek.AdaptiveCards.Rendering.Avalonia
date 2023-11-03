@@ -9,7 +9,10 @@
         x:DataType="vm:CardModel"
         Title="{Binding Uri}">
   <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,*">
-    <Button x:Name="OpenFile" Content="Open" Click="Edit_Click" Margin="4" Padding="4"/>
+    <StackPanel Orientation="Horizontal">
+      <Button x:Name="OpenFile" Content="Open" Click="Edit_Click" Margin="4" Padding="4"/>
+      <Button x:Name="Refresh" Content="Refresh" Click="Refresh_Click" Margin="4" Padding="4"/>
+    </StackPanel>
     <ScrollViewer Grid.Row="1" >
       <StackPanel Orientation="Vertical" Margin="8">
         <TextBlock FontSize="20">Avalonia Card</TextBlock>

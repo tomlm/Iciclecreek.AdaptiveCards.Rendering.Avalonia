@@ -1,3 +1,4 @@
+using AdaptiveCards;
 using AdaptiveCards.Rendering.Avalonia;
 using AdaptiveCardViewer.ViewModels;
 using Avalonia.Controls;
@@ -23,6 +24,14 @@ namespace AdaptiveCardViewer.Views
             {
                 Process.Start(new ProcessStartInfo(cardModel.Uri) { UseShellExecute = true });
             }
+        }
+
+        private void Refresh_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var cardModel = ((Button)e.Source).DataContext as CardModel;
+            var card = cardModel.Card;
+            cardModel.Card = new AdaptiveCard();
+            cardModel.Card = card;
         }
     }
 }
