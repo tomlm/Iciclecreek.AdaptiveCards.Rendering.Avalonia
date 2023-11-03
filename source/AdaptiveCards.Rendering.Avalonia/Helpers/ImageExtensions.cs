@@ -19,18 +19,7 @@ namespace AdaptiveCards.Rendering.Avalonia
     public static class ImageExtensions
     {
 
-        public class AdaptiveConverterParameters
-        {
-            public AdaptiveConverterParameters(Image image, AdaptiveImage adaptiveImage, AdaptiveRenderContext context)
-            {
-                Image = image;
-                AdaptiveImage = adaptiveImage;
-                AdaptiveContext = context;
-            }
-            public Image Image { get; set; }
-            public AdaptiveImage AdaptiveImage { get; set; }
-            public AdaptiveRenderContext AdaptiveContext { get; set; }
-        }
+
         /// <summary>
         /// Renders the element to a bitmap
         /// </summary>
@@ -117,53 +106,59 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             if (bitmap != null)
             {
-                // bi.Pixel{Width, Height}: dimensions of image
-                // grid.Actual{Width, Height}: dimensions of grid containing background image
-                switch (adaptiveBackgroundImage.FillMode)
+                grid.GetObservable(Grid.BoundsProperty).Subscribe((value) =>
                 {
-                    case AdaptiveImageFillMode.Repeat:
-                        grid.Background = new ImageBrush(bitmap)
-                        {
-                            TileMode = TileMode.Tile,
-                            AlignmentX = AlignmentX.Left,
-                            AlignmentY = AlignmentY.Top,
-                            DestinationRect = new RelativeRect(0, 0, bitmap.Size.Width, bitmap.Size.Height, RelativeUnit.Absolute),
-                            //Viewport = new Rect(0, 0, bi.PixelWidth, bi.PixelHeight),
-                            //ViewportUnits = BrushMappingMode.Absolute
-                        };
-                        break;
-                    case AdaptiveImageFillMode.RepeatHorizontally:
-                        grid.Background = new ImageBrush(bitmap)
-                        {
-                            TileMode = TileMode.Tile,
-                            Stretch = Stretch.Uniform,
-                            AlignmentY = (AlignmentY)adaptiveBackgroundImage.VerticalAlignment,
-                            DestinationRect = new RelativeRect(0, 0, bitmap.Size.Width, grid.Bounds.Height + 1, RelativeUnit.Absolute),
-                            //Viewport = new Rect(0, 0, bi.PixelWidth, grid.ActualHeight + 1),
-                            //ViewportUnits = BrushMappingMode.Absolute
-                        };
-                        break;
-                    case AdaptiveImageFillMode.RepeatVertically:
-                        grid.Background = new ImageBrush(bitmap)
-                        {
-                            TileMode = TileMode.Tile,
-                            Stretch = Stretch.Uniform,
-                            AlignmentX = (AlignmentX)adaptiveBackgroundImage.HorizontalAlignment,
-                            DestinationRect = new RelativeRect(0, 0, grid.Bounds.Width + 1, bitmap.Size.Height, RelativeUnit.Absolute),
-                            //Viewport = new Rect(0, 0, grid.ActualWidth + 1, bi.PixelWidth),
-                            //ViewportUnits = BrushMappingMode.Absolute
-                        };
-                        break;
-                    case AdaptiveImageFillMode.Cover:
-                    default:
-                        grid.Background = new ImageBrush(bitmap)
-                        {
-                            Stretch = Stretch.UniformToFill,
-                            AlignmentY = (AlignmentY)adaptiveBackgroundImage.VerticalAlignment,
-                            AlignmentX = (AlignmentX)adaptiveBackgroundImage.HorizontalAlignment
-                        };
-                        break;
-                }
+
+                    // bi.Pixel{Width, Height}: dimensions of image
+                    // grid.Actual{Width, Height}: dimensions of grid containing background image
+                    switch (adaptiveBackgroundImage.FillMode)
+                    {
+                        case AdaptiveImageFillMode.Repeat:
+                            grid.Background = new ImageBrush(bitmap)
+                            {
+                                TileMode = TileMode.Tile,
+                                AlignmentX = AlignmentX.Left,
+                                AlignmentY = AlignmentY.Top,
+                                DestinationRect = new RelativeRect(0, 0, bitmap.Size.Width, bitmap.Size.Height, RelativeUnit.Absolute),
+                                //Viewport = new Rect(0, 0, bi.PixelWidth, bi.PixelHeight),
+                                //ViewportUnits = BrushMappingMode.Absolute
+                            };
+                            break;
+                        case AdaptiveImageFillMode.RepeatHorizontally:
+                            grid.Background = new ImageBrush(bitmap)
+                            {
+                                TileMode = TileMode.Tile,
+                                Stretch = Stretch.Uniform,
+                                AlignmentX = AlignmentX.Left,
+                                AlignmentY = (AlignmentY)adaptiveBackgroundImage.VerticalAlignment,
+                                DestinationRect = new RelativeRect(0, 0, bitmap.Size.Width, value.Height, RelativeUnit.Absolute),
+                                //Viewport = new Rect(0, 0, bi.PixelWidth, grid.ActualHeight + 1),
+                                //ViewportUnits = BrushMappingMode.Absolute
+                            };
+                            break;
+                        case AdaptiveImageFillMode.RepeatVertically:
+                            grid.Background = new ImageBrush(bitmap)
+                            {
+                                TileMode = TileMode.Tile,
+                                Stretch = Stretch.Uniform,
+                                AlignmentX = (AlignmentX)adaptiveBackgroundImage.HorizontalAlignment,
+                                AlignmentY = AlignmentY.Top,
+                                DestinationRect = new RelativeRect(0, 0, value.Width, bitmap.Size.Height, RelativeUnit.Absolute),
+                                //Viewport = new Rect(0, 0, grid.ActualWidth + 1, bi.PixelWidth),
+                                //ViewportUnits = BrushMappingMode.Absolute
+                            };
+                            break;
+                        case AdaptiveImageFillMode.Cover:
+                        default:
+                            grid.Background = new ImageBrush(bitmap)
+                            {
+                                Stretch = Stretch.UniformToFill,
+                                AlignmentY = (AlignmentY)adaptiveBackgroundImage.VerticalAlignment,
+                                AlignmentX = (AlignmentX)adaptiveBackgroundImage.HorizontalAlignment
+                            };
+                            break;
+                    }
+                });
             }
         }
 

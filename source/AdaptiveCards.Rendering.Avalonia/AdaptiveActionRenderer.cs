@@ -188,29 +188,6 @@ namespace AdaptiveCards.Rendering.Avalonia
 
     }
 
-    public class Observer<T> : IObserver<T>
-    {
-        Action<T> _action;
-        public Observer(Action<T> action)
-        {
-            _action = action;
-        }
-
-        public void OnCompleted()
-        {
-
-        }
-
-        public void OnError(Exception error)
-        {
-
-        }
-
-        public void OnNext(T value)
-        {
-            this._action(value);
-        }
-
-    }
+   
 }
 
