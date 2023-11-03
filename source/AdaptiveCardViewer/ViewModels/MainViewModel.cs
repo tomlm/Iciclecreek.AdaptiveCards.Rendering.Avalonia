@@ -11,42 +11,11 @@ namespace AdaptiveCardViewer.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    private const string GreetingCard = @"
-{
-  ""$schema"": ""http://adaptivecards.io/schemas/adaptive-card.json"",
-  ""type"": ""AdaptiveCard"",
-  ""version"": ""1.0"",
-  ""body"": [
-    {
-      ""type"": ""TextBlock"",
-      ""text"": ""Welcome to AdaptiveCards on Avalonia "",
-      ""size"": ""large""
-    }
-  ]
-}
-";
+
     public MainViewModel()
     {
         LoadHostConfig("microsoft-teams-light");
-        var json = GreetingCard;
-        string name = "Welcome";
-        string path = null;
-        if (Debugger.IsAttached)
-        {
-            path = Path.GetFullPath(@"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.2\Elements\Action.OpenUrl.Style.json");
-            json = File.ReadAllText(path);
-            name = Path.GetFileName(path);
-        }
-
-        AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
-
-        this.Cards.Add(new CardModel()
-        {
-            Uri = $"file:{path}",
-            Name = name,
-            Card = parseResult.Card,
-            HostConfig = this.HostConfig
-        });
+        LoadCardResource("AdaptiveCardViewer.samples.Welcome.json");
     }
 
     public string Greeting => "Welcome to Avalonia!";

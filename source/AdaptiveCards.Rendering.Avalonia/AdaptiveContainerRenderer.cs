@@ -100,7 +100,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 uiContainer.SetBackgroundSource(container.BackgroundImage, context);
                 if (container.Items.Count == 0)
                 {
-                    // if we have background source and no children we need to have a 10x10 mid size to show background image (this is to align with
+                    // if we have background source and no children we need to have a 10x10 min size to show background image (this is to align with
                     // with html behavior, this is not documented anywhere.
                     uiContainer.Children.Add(new Grid() { Margin = new Thickness(10,10,10,10) });
                 }

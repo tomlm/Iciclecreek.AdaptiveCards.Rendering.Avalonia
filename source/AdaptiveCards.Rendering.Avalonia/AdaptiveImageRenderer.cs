@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-using AsyncImageLoader;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using System;
 
 namespace AdaptiveCards.Rendering.Avalonia
@@ -22,7 +22,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 return uiImage;
             }
 
-            uiImage.SetSource(image, finalUri, context);
+            uiImage.SetUrlSource(finalUri, context);
 
             uiImage.SetHorizontalAlignment(image.HorizontalAlignment);
 
@@ -48,18 +48,53 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             if (image.PixelHeight == 0 && image.PixelWidth == 0)
             {
-                uiImage.SetImageProperties(image, context);
+                switch (image.Size)
+                {
+                    case AdaptiveImageSize.Auto:
+                        uiImage.GetObservable(Image.SourceProperty).Subscribe(value =>
+                        {
+                            if (value is Bitmap bitmap)
+                            {
+                                uiImage.MaxWidth = bitmap.Size.Width;
+                                uiImage.MaxHeight = bitmap.Size.Height;
+                            }
+                        });
+                        //uiImage.Bind(Image.StretchProperty, new Binding($"Source")
+                        //{
+                        //    RelativeSource = new RelativeSource(RelativeSourceMode.Self),
+                        //    Mode = BindingMode.OneWay,
+                        //    Converter = new AutoStretchConverter(),
+                        //    ConverterParameter = new AdaptiveConverterParameters(uiImage, image, context)
+                        //});
+                        uiImage.Stretch = Stretch.Uniform;
+                        break;
+                    case AdaptiveImageSize.Stretch:
+                        uiImage.Stretch = Stretch.Uniform;
+                        break;
+                    case AdaptiveImageSize.Small:
+                        uiImage.Width = context.Config.ImageSizes.Small;
+                        uiImage.Height = context.Config.ImageSizes.Small;
+                        break;
+                    case AdaptiveImageSize.Medium:
+                        uiImage.Width = context.Config.ImageSizes.Medium;
+                        uiImage.Height = context.Config.ImageSizes.Medium;
+                        break;
+                    case AdaptiveImageSize.Large:
+                        uiImage.Width = context.Config.ImageSizes.Large;
+                        uiImage.Height = context.Config.ImageSizes.Large;
+                        break;
+                }
             }
 
             if (image.PixelHeight > 0)
             {
                 uiImage.Height = image.PixelHeight;
             }
+
             if (image.PixelWidth > 0)
             {
                 uiImage.Width = image.PixelWidth;
             }
-
 
             // If we have a background color, we'll create a border for the background and put the image on top
             if (!string.IsNullOrEmpty(image.BackgroundColor))

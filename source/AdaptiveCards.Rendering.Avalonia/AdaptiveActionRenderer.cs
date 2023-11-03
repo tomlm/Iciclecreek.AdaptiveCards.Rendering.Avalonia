@@ -125,7 +125,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
                 // Try to resolve the image URI
                 Uri finalUri = context.Config.ResolveFinalAbsoluteUri(action.IconUrl);
-                uiIcon.SetSource(finalUri, context);
+                uiIcon.SetUrlSource(finalUri, context);
 
                 // Add spacing for the icon for horizontal actions
                 if (actionsConfig.IconPlacement == IconPlacement.LeftOfTitle)
