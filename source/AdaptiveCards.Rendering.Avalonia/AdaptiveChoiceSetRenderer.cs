@@ -13,7 +13,18 @@ namespace AdaptiveCards.Rendering.Avalonia
     {
         public static Control Render(AdaptiveChoiceSetInput input, AdaptiveRenderContext context)
         {
-            return RenderHelper(new Grid(), new ComboBox(), new StackPanel(), input, context);
+            if (input.Style == AdaptiveChoiceInputStyle.Filtered)
+            {
+                AutoCompleteBox uiAutoComplete = new AutoCompleteBox();
+                uiAutoComplete.ItemsSource = input.Choices.Select(choice => choice.Title);
+                AdaptiveChoiceSetInputValue inputValue = new AdaptiveChoiceSetInputValue(input, uiAutoComplete);
+                context.InputValues.Add(input.Id, inputValue);
+                return uiAutoComplete;
+            }
+            else
+            {
+                return RenderHelper(new Grid(), new ComboBox(), new StackPanel(), input, context);
+            }
         }
 
         public static Control RenderHelper(Grid uiGrid, ComboBox uiComboBox, StackPanel uiChoices, AdaptiveChoiceSetInput input, AdaptiveRenderContext context)
@@ -144,48 +155,58 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public override string GetValue()
         {
-            AdaptiveChoiceSetInput input = InputElement as AdaptiveChoiceSetInput;
+            AdaptiveChoiceSetInput choiceSet = InputElement as AdaptiveChoiceSetInput;
 
-            if (input.IsMultiSelect)
+            if (choiceSet.Style == AdaptiveChoiceInputStyle.Filtered)
             {
-                Panel uiChoices = RenderedInputElement as Panel;
+                var uiAutoCompleteBox = RenderedInputElement as AutoCompleteBox;
 
-                string values = string.Empty;
-                foreach (var item in uiChoices.Children)
-                {
-                    CheckBox checkBox = (CheckBox)item;
-                    AdaptiveChoice adaptiveChoice = checkBox.DataContext as AdaptiveChoice;
-                    if (checkBox.IsChecked == true)
-                        values += (values == string.Empty ? "" : ",") + adaptiveChoice.Value;
-                }
-                return values;
+                var value = choiceSet.Choices.Where(choice => string.Compare(uiAutoCompleteBox.Text, choice.Title, ignoreCase: true) == 0).Select(choice => choice.Value).FirstOrDefault();
+                return value ?? string.Empty;
             }
             else
             {
-                ComboBox uiComboBox = RenderedInputElement as ComboBox;
-
-                if (input.Style == AdaptiveChoiceInputStyle.Compact)
-                {
-                    ComboBoxItem item = uiComboBox.SelectedItem as ComboBoxItem;
-                    if (item != null)
-                    {
-                        AdaptiveChoice adaptiveChoice = item.DataContext as AdaptiveChoice;
-                        return adaptiveChoice.Value;
-                    }
-                    return "";
-                }
-                else
+                if (choiceSet.IsMultiSelect)
                 {
                     Panel uiChoices = RenderedInputElement as Panel;
 
+                    string values = string.Empty;
                     foreach (var item in uiChoices.Children)
                     {
-                        RadioButton radioBox = (RadioButton)item;
-                        AdaptiveChoice adaptiveChoice = radioBox.DataContext as AdaptiveChoice;
-                        if (radioBox.IsChecked == true)
-                            return adaptiveChoice.Value;
+                        CheckBox checkBox = (CheckBox)item;
+                        AdaptiveChoice adaptiveChoice = checkBox.DataContext as AdaptiveChoice;
+                        if (checkBox.IsChecked == true)
+                            values += (values == string.Empty ? "" : ",") + adaptiveChoice.Value;
                     }
-                    return "";
+                    return values;
+                }
+                else
+                {
+                    ComboBox uiComboBox = RenderedInputElement as ComboBox;
+
+                    if (choiceSet.Style == AdaptiveChoiceInputStyle.Compact)
+                    {
+                        ComboBoxItem item = uiComboBox.SelectedItem as ComboBoxItem;
+                        if (item != null)
+                        {
+                            AdaptiveChoice adaptiveChoice = item.DataContext as AdaptiveChoice;
+                            return adaptiveChoice.Value;
+                        }
+                        return "";
+                    }
+                    else
+                    {
+                        Panel uiChoices = RenderedInputElement as Panel;
+
+                        foreach (var item in uiChoices.Children)
+                        {
+                            RadioButton radioBox = (RadioButton)item;
+                            AdaptiveChoice adaptiveChoice = radioBox.DataContext as AdaptiveChoice;
+                            if (radioBox.IsChecked == true)
+                                return adaptiveChoice.Value;
+                        }
+                        return "";
+                    }
                 }
             }
         }
