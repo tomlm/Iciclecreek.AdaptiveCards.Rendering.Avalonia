@@ -3,18 +3,10 @@
 using AsyncImageLoader.Loaders;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Layout;
-using Avalonia.Markup.Xaml;
-using Avalonia.Styling;
 using System;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-
-
-
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
@@ -22,7 +14,7 @@ namespace AdaptiveCards.Rendering.Avalonia
     {
         protected override AdaptiveSchemaVersion GetSupportedSchemaVersion()
         {
-            return new AdaptiveSchemaVersion(1, 5);
+            return new AdaptiveSchemaVersion(1, 6);
         }
 
         protected Action<object, AdaptiveActionEventArgs> ActionCallback;
@@ -64,6 +56,9 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             ElementRenderers.Set<AdaptiveAction>(AdaptiveActionRenderer.Render);
 
+            ElementRenderers.Set<AdaptiveTable>(AdaptiveTableRenderer.Render);
+            ElementRenderers.Set<AdaptiveTableCell>(AdaptiveTableCellRenderer.Render);
+
             ActionHandlers.AddSupportedAction<AdaptiveOverflowAction>();
         }
 
@@ -95,18 +90,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
 
-            switch (card.VerticalContentAlignment)
-            {
-                case AdaptiveVerticalContentAlignment.Center:
-                    grid.VerticalAlignment = VerticalAlignment.Center;
-                    break;
-                case AdaptiveVerticalContentAlignment.Bottom:
-                    grid.VerticalAlignment = VerticalAlignment.Bottom;
-                    break;
-                case AdaptiveVerticalContentAlignment.Top:
-                default:
-                    break;
-            }
+            RendererUtil.ApplyVerticalContentAlignment(grid, card.VerticalContentAlignment);
 
             outerGrid.MinHeight = card.PixelMinHeight;
 

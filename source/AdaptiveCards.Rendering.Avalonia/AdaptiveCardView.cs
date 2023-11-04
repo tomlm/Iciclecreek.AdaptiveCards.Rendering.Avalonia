@@ -14,7 +14,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         public static readonly RoutedEvent<RoutedAdaptiveActionEventArgs> ActionEvent = RoutedEvent.Register<AdaptiveCardView, RoutedAdaptiveActionEventArgs>(nameof(Action), RoutingStrategies.Bubble);
 
         private AdaptiveHostConfig _hostConfig;
-        private AdaptiveCard _card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 5));
+        private AdaptiveCard _card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 7));
 
         public AdaptiveCardView()
         {

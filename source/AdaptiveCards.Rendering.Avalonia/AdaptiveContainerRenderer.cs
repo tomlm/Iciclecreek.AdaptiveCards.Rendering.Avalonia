@@ -47,7 +47,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             Border border = new Border();
             border.Child = uiOuterContainer;
 
-            RendererUtil.ApplyVerticalContentAlignment(uiContainer, container);
+            RendererUtil.ApplyVerticalContentAlignment(uiContainer, container.VerticalContentAlignment);
             uiContainer.MinHeight = container.PixelMinHeight;
 
             bool inheritsStyleFromParent = !container.Style.HasValue;
@@ -63,18 +63,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 childRenderArgs.ForegroundColors = containerStyle.ForegroundColors;
             }
 
-            switch (container.VerticalContentAlignment)
-            {
-                case AdaptiveVerticalContentAlignment.Center:
-                    uiContainer.VerticalAlignment = VerticalAlignment.Center;
-                    break;
-                case AdaptiveVerticalContentAlignment.Bottom:
-                    uiContainer.VerticalAlignment = VerticalAlignment.Bottom;
-                    break;
-                case AdaptiveVerticalContentAlignment.Top:
-                default:
-                    break;
-            }
+            RendererUtil.ApplyVerticalContentAlignment(uiContainer, container.VerticalContentAlignment);
 
             if (hasPadding)
             {

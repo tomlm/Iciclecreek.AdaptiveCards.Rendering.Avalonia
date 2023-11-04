@@ -36,9 +36,9 @@ namespace AdaptiveCards.Rendering.Avalonia
             return FontManager.Current.DefaultFontFamily.Name;
         }
 
-        public static void ApplyVerticalContentAlignment(Control uiElement, AdaptiveCollectionElement element)
+        public static void ApplyVerticalContentAlignment(Control uiElement, AdaptiveVerticalContentAlignment alignment)
         {
-            switch (element.VerticalContentAlignment)
+            switch (alignment)
             {
                 case AdaptiveVerticalContentAlignment.Center:
                     uiElement.VerticalAlignment = VerticalAlignment.Center;
@@ -51,6 +51,23 @@ namespace AdaptiveCards.Rendering.Avalonia
                     break;
             }
         }
+
+        public static void ApplyHorizontalContentAlignment(Control uiElement, AdaptiveHorizontalContentAlignment alignment)
+        {
+            switch (alignment)
+            {
+                case AdaptiveHorizontalContentAlignment.Center:
+                    uiElement.HorizontalAlignment = HorizontalAlignment.Center;
+                    break;
+                case AdaptiveHorizontalContentAlignment.Right:
+                    uiElement.HorizontalAlignment = HorizontalAlignment.Right;
+                    break;
+                case AdaptiveHorizontalContentAlignment.Left:
+                default:
+                    break;
+            }
+        }
+
 
         public static Control ApplySelectAction(Control uiElement, AdaptiveElement element, AdaptiveRenderContext context)
         {
