@@ -15,7 +15,12 @@ namespace AdaptiveCards.Rendering.Avalonia
         {
             if (input.Style == AdaptiveChoiceInputStyle.Filtered)
             {
-                AutoCompleteBox uiAutoComplete = new AutoCompleteBox();
+                AutoCompleteBox uiAutoComplete = new AutoCompleteBox()
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    Watermark = input.Placeholder
+                };
+
                 uiAutoComplete.ItemsSource = input.Choices.Select(choice => choice.Title);
                 AdaptiveChoiceSetInputValue inputValue = new AdaptiveChoiceSetInputValue(input, uiAutoComplete);
                 context.InputValues.Add(input.Id, inputValue);
@@ -29,6 +34,9 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public static Control RenderHelper(Grid uiGrid, ComboBox uiComboBox, StackPanel uiChoices, AdaptiveChoiceSetInput input, AdaptiveRenderContext context)
         {
+            uiComboBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+            uiComboBox.PlaceholderText = input.Placeholder;
+
             var chosen = input.Value?.Split(',').Select(p => p.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToList() ?? new List<string>();
 
             uiGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
@@ -45,7 +53,10 @@ namespace AdaptiveCards.Rendering.Avalonia
 
                 if (input.IsMultiSelect == true)
                 {
-                    var uiCheckbox = new CheckBox();
+                    var uiCheckbox = new CheckBox()
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Stretch
+                    };
                     SetContent(uiCheckbox, choice.Title, input.Wrap);
                     uiCheckbox.IsChecked = chosen.Contains(choice.Value);
                     uiCheckbox.DataContext = choice;

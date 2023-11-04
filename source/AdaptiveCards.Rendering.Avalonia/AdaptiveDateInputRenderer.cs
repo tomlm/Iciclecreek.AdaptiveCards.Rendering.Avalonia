@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 using Avalonia.Controls;
+using Avalonia.Layout;
 using System;
 
 
@@ -11,7 +12,11 @@ namespace AdaptiveCards.Rendering.Avalonia
     {
         public static Control Render(AdaptiveDateInput input, AdaptiveRenderContext context)
         {
-            var datePicker = new DatePicker();
+            var datePicker = new DatePicker()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+            
             if (DateTimeOffset.TryParse(input.Value, out var date))
             {
                 datePicker.SelectedDate = date;

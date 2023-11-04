@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Avalonia.Controls;
+using Avalonia.Layout;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
@@ -9,7 +10,11 @@ namespace AdaptiveCards.Rendering.Avalonia
     {
         public static Control Render(AdaptiveToggleInput input, AdaptiveRenderContext context)
         {
-            var uiToggle = new CheckBox();
+            var uiToggle = new CheckBox()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+
             AdaptiveChoiceSetRenderer.SetContent(uiToggle, input.Title, input.Wrap);
             uiToggle.Foreground =
                 context.GetColorBrush(context.Config.ContainerStyles.Default.ForegroundColors.Default.Default);

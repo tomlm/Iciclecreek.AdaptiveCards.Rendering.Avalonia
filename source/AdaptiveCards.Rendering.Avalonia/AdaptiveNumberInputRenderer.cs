@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 using Avalonia.Controls;
+using Avalonia.Layout;
 using System;
 
 
@@ -12,7 +13,10 @@ namespace AdaptiveCards.Rendering.Avalonia
     {
         public static Control Render(AdaptiveNumberInput input, AdaptiveRenderContext context)
         {
-            var uiInput = new NumericUpDown();
+            var uiInput = new NumericUpDown()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
 
             if (!Double.IsNaN(input.Value))
             {

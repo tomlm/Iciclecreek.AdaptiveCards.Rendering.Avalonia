@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 using Avalonia.Controls;
+using Avalonia.Layout;
 using System;
 
 
@@ -11,7 +12,10 @@ namespace AdaptiveCards.Rendering.Avalonia
     {
         public static Control Render(AdaptiveTimeInput input, AdaptiveRenderContext context)
         {
-            var timePicker = new TimePicker();
+            var timePicker = new TimePicker()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
             if (TimeSpan.TryParse(input.Value, out var time))
             {
                 timePicker.SelectedTime = time;

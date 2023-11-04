@@ -3,6 +3,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Data.Converters;
+using Avalonia.Layout;
 using Avalonia.Media;
 using System;
 using System.Globalization;
@@ -90,7 +91,10 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         private static TextBlock CreateControl(AdaptiveRichTextBlock richTB, AdaptiveRenderContext context)
         {
-            TextBlock uiTextBlock = new TextBlock();
+            TextBlock uiTextBlock = new TextBlock()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
             // uiTextBlock.Style = context.GetStyle($"Adaptive.{richTB.Type}");
             uiTextBlock.TextWrapping = TextWrapping.Wrap;
             uiTextBlock.TextTrimming = TextTrimming.CharacterEllipsis;

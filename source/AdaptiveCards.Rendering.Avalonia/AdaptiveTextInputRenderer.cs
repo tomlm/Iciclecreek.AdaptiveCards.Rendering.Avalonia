@@ -38,6 +38,8 @@ namespace AdaptiveCards.Rendering.Avalonia
                     break;
             }
 
+            textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+
             textBox.Text = input.Value;
 
             if (input.IsMultiline == true)
