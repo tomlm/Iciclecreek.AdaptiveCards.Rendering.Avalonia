@@ -40,13 +40,15 @@ namespace AdaptiveCards.Rendering.Avalonia
         {
             switch (alignment)
             {
+                case AdaptiveVerticalContentAlignment.Top:
+                    uiElement.VerticalAlignment = VerticalAlignment.Top;
+                    break;
                 case AdaptiveVerticalContentAlignment.Center:
                     uiElement.VerticalAlignment = VerticalAlignment.Center;
                     break;
                 case AdaptiveVerticalContentAlignment.Bottom:
                     uiElement.VerticalAlignment = VerticalAlignment.Bottom;
                     break;
-                case AdaptiveVerticalContentAlignment.Top:
                 default:
                     break;
             }
@@ -56,13 +58,15 @@ namespace AdaptiveCards.Rendering.Avalonia
         {
             switch (alignment)
             {
+                case AdaptiveHorizontalContentAlignment.Left:
+                    uiElement.HorizontalAlignment = HorizontalAlignment.Left;
+                    break;
                 case AdaptiveHorizontalContentAlignment.Center:
                     uiElement.HorizontalAlignment = HorizontalAlignment.Center;
                     break;
                 case AdaptiveHorizontalContentAlignment.Right:
                     uiElement.HorizontalAlignment = HorizontalAlignment.Right;
                     break;
-                case AdaptiveHorizontalContentAlignment.Left:
                 default:
                     break;
             }

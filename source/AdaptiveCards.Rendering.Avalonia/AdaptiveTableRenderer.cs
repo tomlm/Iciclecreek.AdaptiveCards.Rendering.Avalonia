@@ -51,9 +51,6 @@ namespace AdaptiveCards.Rendering.Avalonia
             // This is the renderArgs that will be passed down to the children
             var childRenderArgs = new AdaptiveRenderArgs(parentRenderArgs);
 
-            //RendererUtil.ApplyVerticalContentAlignment(uiTable, table.VerticalContentAlignment);
-            //RendererUtil.ApplyHorizontalContentAlignment(uiTable, table.HorizontalContentAlignment);
-
             // uiContainer.MinHeight = table.PixelMinHeight;
             ContainerStyleConfig gridStyleConfig = context.Config.ContainerStyles.GetContainerStyleConfig(table.GridStyle);
             Brush borderBrush = context.GetColorBrush(gridStyleConfig.BackgroundColor);
