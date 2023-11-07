@@ -158,15 +158,16 @@ namespace AdaptiveCards.Rendering.Avalonia
                     Grid.SetRow(uiTitle, iRow++);
                 contentStackPanel.Children.Add(uiTitle);
             }
+            
+            if (action is AdaptiveOverflowAction)
+                uiButton.SetValue(ToolTip.TipProperty, "More options");
             else
-            {
                 uiButton.SetValue(ToolTip.TipProperty, action.Tooltip ?? action.Title);
-            }
 
             string name = context.GetType().Name.Replace("Action", String.Empty);
 
             // action alignment.
-            switch(actionsConfig.ActionAlignment)
+            switch (actionsConfig.ActionAlignment)
             {
                 case AdaptiveHorizontalAlignment.Stretch:
                     uiButton.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -188,6 +189,6 @@ namespace AdaptiveCards.Rendering.Avalonia
 
     }
 
-   
+
 }
 
