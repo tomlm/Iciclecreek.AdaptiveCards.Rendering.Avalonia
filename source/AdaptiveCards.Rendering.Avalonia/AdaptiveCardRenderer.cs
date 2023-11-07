@@ -17,7 +17,7 @@ namespace AdaptiveCards.Rendering.Avalonia
     {
         protected override AdaptiveSchemaVersion GetSupportedSchemaVersion()
         {
-            return new AdaptiveSchemaVersion(1, 6);
+            return new AdaptiveSchemaVersion(1, 5);
         }
 
         protected Action<object, AdaptiveActionEventArgs> ActionCallback;
@@ -69,8 +69,6 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public AdaptiveActionHandlers ActionHandlers { get; } = new AdaptiveActionHandlers();
 
-        //         public ResourceResolver ResourceResolvers { get; } = new ResourceResolver();
-
         public static Control RenderAdaptiveCardWrapper(AdaptiveCard card, AdaptiveRenderContext context)
         {
             var outerGrid = new Grid();
@@ -84,6 +82,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 context.CardRoot = outerGrid;
             }
 
+            // Missing schema
             var cardRtl = ((IDictionary<string, object>)card.AdditionalProperties).TryGetValue<bool?>("rtl"); //  previousContextRtl;
             bool updatedRtl = false;
 

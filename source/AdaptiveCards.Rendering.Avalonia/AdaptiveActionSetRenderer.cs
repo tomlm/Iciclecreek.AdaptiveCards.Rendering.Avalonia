@@ -23,9 +23,8 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             // outerActionSet.Style = context.GetStyle("Adaptive.Container");
 
-            // Keep track of ContainerStyle.ForegroundColors before Container is rendered
-            AdaptiveRenderArgs parentRenderArgs = context.RenderArgs;
-            AdaptiveRenderArgs elementRenderArgs = new AdaptiveRenderArgs(parentRenderArgs);
+            //// Keep track of ContainerStyle.ForegroundColors before Container is rendered
+            //AdaptiveRenderArgs elementRenderArgs = new AdaptiveRenderArgs(context.RenderArgs);
 
             AddRenderedActions(outerActionSet, actionSet.Actions, context, actionSet.InternalID);
 
