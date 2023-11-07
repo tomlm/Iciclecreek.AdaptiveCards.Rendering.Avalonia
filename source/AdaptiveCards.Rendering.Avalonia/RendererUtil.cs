@@ -41,7 +41,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             switch (alignment)
             {
                 case AdaptiveVerticalContentAlignment.Top:
-                    uiElement.VerticalAlignment = VerticalAlignment.Top;
+                    uiElement.VerticalAlignment = VerticalAlignment.Stretch;
                     break;
                 case AdaptiveVerticalContentAlignment.Center:
                     uiElement.VerticalAlignment = VerticalAlignment.Center;
@@ -50,6 +50,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                     uiElement.VerticalAlignment = VerticalAlignment.Bottom;
                     break;
                 default:
+                    uiElement.VerticalAlignment = VerticalAlignment.Stretch;
                     break;
             }
         }

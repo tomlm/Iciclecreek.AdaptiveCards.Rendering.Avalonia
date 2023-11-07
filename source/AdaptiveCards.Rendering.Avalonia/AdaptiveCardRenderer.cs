@@ -3,7 +3,10 @@
 using AsyncImageLoader.Loaders;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using System;
+using System.Collections.Generic;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -79,6 +82,20 @@ namespace AdaptiveCards.Rendering.Avalonia
             if (context.CardRoot == null)
             {
                 context.CardRoot = outerGrid;
+            }
+
+            var cardRtl = ((IDictionary<string, object>)card.AdditionalProperties).TryGetValue<bool?>("rtl"); //  previousContextRtl;
+            bool updatedRtl = false;
+
+            if (cardRtl.HasValue && cardRtl.Value == true)
+            {
+                context.Rtl = true;
+                updatedRtl = true;
+            }
+
+            if (cardRtl.HasValue)
+            {
+                outerGrid.FlowDirection = cardRtl.Value ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
             }
 
             // Reset the parent style

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace AdaptiveCardViewer.ViewModels;
 
@@ -16,6 +17,20 @@ public partial class MainViewModel : ViewModelBase
     {
         LoadHostConfig("microsoft-teams-light");
         LoadCardResource("AdaptiveCardViewer.samples.Welcome.json");
+    
+        if (Debugger.IsAttached)
+        {
+            string fullPath = @"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.5\Elements\Table.json";
+            var json = File.ReadAllText(fullPath);  
+            AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
+            this.Cards.Add(new CardModel()
+            {
+                Name = Path.GetFileName(fullPath),
+                Uri = fullPath,
+                Card = parseResult.Card,
+                HostConfig = this.HostConfig
+            });
+        }
     }
 
     public string Greeting => "Welcome to Avalonia!";

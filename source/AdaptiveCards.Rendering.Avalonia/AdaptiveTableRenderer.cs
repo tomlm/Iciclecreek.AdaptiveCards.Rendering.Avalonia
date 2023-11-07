@@ -6,6 +6,7 @@ using Avalonia.Controls.Documents;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using ExCSS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,11 +27,19 @@ namespace AdaptiveCards.Rendering.Avalonia
                     uiTable.ColumnDefinitions.Add(new ColumnDefinition(column.Width, GridUnitType.Star));
                 else
                     uiTable.ColumnDefinitions.Add(new ColumnDefinition(0, GridUnitType.Auto));
+                if (!table.ShowGridLines)
+                {
+                    uiTable.ColumnDefinitions.Add(new ColumnDefinition(context.Config.Spacing.Padding / 2, GridUnitType.Pixel));
+                }
             }
 
             foreach (var row in table.Rows)
             {
                 uiTable.RowDefinitions.Add(new RowDefinition(0, GridUnitType.Auto));
+                if (!table.ShowGridLines == true)
+                {
+                    uiTable.RowDefinitions.Add(new RowDefinition(context.Config.Spacing.Padding / 2, GridUnitType.Pixel));
+                }
             }
 
 
@@ -49,20 +58,41 @@ namespace AdaptiveCards.Rendering.Avalonia
             var parentRenderArgs = context.RenderArgs;
 
             // This is the renderArgs that will be passed down to the children
-            var childRenderArgs = new AdaptiveRenderArgs(parentRenderArgs);
-
-            // uiContainer.MinHeight = table.PixelMinHeight;
-            ContainerStyleConfig gridStyleConfig = context.Config.ContainerStyles.GetContainerStyleConfig(table.GridStyle);
-            Brush borderBrush = context.GetColorBrush(gridStyleConfig.BackgroundColor);
+            var borderColor = table.GridStyle switch
+            {
+                AdaptiveContainerStyle.Emphasis => context.RenderArgs.ForegroundColors.Default.Default,
+                AdaptiveContainerStyle.Good => context.RenderArgs.ForegroundColors.Good.Default,
+                AdaptiveContainerStyle.Attention => context.RenderArgs.ForegroundColors.Attention.Default,
+                AdaptiveContainerStyle.Warning => context.RenderArgs.ForegroundColors.Warning.Default,
+                AdaptiveContainerStyle.Accent => context.RenderArgs.ForegroundColors.Accent.Default,
+                _ => context.RenderArgs.ForegroundColors.Default.Default,
+            };
 
             // Modify context outer parent style so padding necessity can be determined
-            childRenderArgs.ParentStyle = table.GridStyle != null ? table.GridStyle.Value : default(AdaptiveContainerStyle);
-            context.RenderArgs = childRenderArgs;
+            var tableRenderArgs = new AdaptiveTableRenderArgs(parentRenderArgs)
+            {
+                Table = table,
+                BorderBursh = context.GetColorBrush(borderColor),
+                HasParentWithPadding = true
+            };
+            context.RenderArgs = tableRenderArgs;
 
-            var tableProps = (IDictionary<string, object>)table.AdditionalProperties;
+            // uiContainer.MinHeight = table.PixelMinHeight;
+
             int iRow = 0;
             foreach (var row in table.Rows)
             {
+                // Modify context outer parent style so padding necessity can be determined
+                var rowRenderArgs = new AdaptiveTableRenderArgs(tableRenderArgs)
+                {
+                    Table = table,
+                    Row = row,
+                    ParentStyle = row.Style ?? parentRenderArgs.ParentStyle,
+                    BorderBursh = tableRenderArgs.BorderBursh,
+                    HasParentWithPadding = true
+                };
+                context.RenderArgs = rowRenderArgs;
+
                 if (iRow != 0)
                 {
                     // Only the first element can bleed to the top
@@ -78,64 +108,17 @@ namespace AdaptiveCards.Rendering.Avalonia
                 int iCol = 0;
                 foreach (var cell in row.Cells)
                 {
-                    cell.Style = cell.Style ?? row.Style;
+                    cell.Style = cell.Style ?? rowRenderArgs.ParentStyle;
+
                     AdaptiveTypedElement rendereableElement = context.GetRendereableElement(cell);
 
                     // if there's an element that can be rendered, then render it, otherwise, skip
                     if (rendereableElement != null)
                     {
                         var uiCell = context.Render(rendereableElement);
+
                         if (uiCell != null)
                         {
-                            var cellProps = (IDictionary<string, object>)cell.AdditionalProperties;
-                            var cellHorizontalAlignment = cellProps.TryGetValue<AdaptiveHorizontalAlignment>("horizontalAlignment");
-
-                            var uiGrid = uiCell.GetLogicalChildren().Where(cell => cell is Grid).Cast<Grid>().FirstOrDefault();
-                            if (uiGrid != null)
-                            {
-                                uiGrid = uiGrid.GetLogicalChildren().Where(cell => cell is Grid).Cast<Grid>().FirstOrDefault();
-                                if (uiGrid != null)
-                                {
-
-                                    foreach (var uiChild in uiGrid.Children)
-                                    {
-                                        if (cell.VerticalContentAlignment != default(AdaptiveVerticalContentAlignment))
-                                            RendererUtil.ApplyVerticalContentAlignment(uiChild, cell.VerticalContentAlignment);
-                                        else if (row.VerticalContentAlignment != default(AdaptiveVerticalContentAlignment))
-                                            RendererUtil.ApplyVerticalContentAlignment(uiChild, row.VerticalContentAlignment);
-                                        else if (table.VerticalContentAlignment != default(AdaptiveVerticalContentAlignment))
-                                            RendererUtil.ApplyVerticalContentAlignment(uiChild, table.VerticalContentAlignment);
-
-                                        if (cellHorizontalAlignment != default(AdaptiveHorizontalAlignment))
-                                        {
-                                            switch (cellHorizontalAlignment)
-                                            {
-                                                case AdaptiveHorizontalAlignment.Center:
-                                                    uiChild.HorizontalAlignment = HorizontalAlignment.Center;
-                                                    break;
-                                                case AdaptiveHorizontalAlignment.Left:
-                                                    uiChild.HorizontalAlignment = HorizontalAlignment.Left;
-                                                    break;
-                                                case AdaptiveHorizontalAlignment.Right:
-                                                    uiChild.HorizontalAlignment = HorizontalAlignment.Right;
-                                                    break;
-                                                default:
-                                                    break;
-                                            }
-                                        }
-                                        else if (row.HorizontalContentAlignment != default(AdaptiveHorizontalContentAlignment))
-                                            RendererUtil.ApplyHorizontalContentAlignment(uiChild, row.HorizontalContentAlignment);
-                                        else if (table.HorizontalContentAlignment != default(AdaptiveHorizontalContentAlignment))
-                                            RendererUtil.ApplyHorizontalContentAlignment(uiChild, table.HorizontalContentAlignment);
-                                    }
-                                }
-                            }
-
-                            if (table.ShowGridLines)
-                            {
-                                uiCell = new Border() { BorderBrush = borderBrush, BorderThickness = new Thickness(1), Child = uiCell };
-                            }
-
                             uiCell.SetValue(Grid.ColumnProperty, iCol);
                             uiCell.SetValue(Grid.RowProperty, iRow);
 
@@ -143,8 +126,13 @@ namespace AdaptiveCards.Rendering.Avalonia
                         }
                     }
                     iCol++;
+                    if (!table.ShowGridLines)
+                        iCol++;
                 }
                 iRow++;
+
+                if (!table.ShowGridLines)
+                    iRow++;
             }
 
             // Revert context's value to that of outside the Container
@@ -152,7 +140,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             if (table.ShowGridLines == true)
             {
-                uiRoot = new Border() { BorderBrush = borderBrush, BorderThickness = new Thickness(1), Child = uiTable };
+                uiRoot = new Border() { BorderBrush = tableRenderArgs.BorderBursh, BorderThickness = new Thickness(1, 1, 0, 0), Child = uiTable };
             }
 
             return RendererUtil.ApplySelectAction(uiRoot, table, context);
@@ -161,4 +149,16 @@ namespace AdaptiveCards.Rendering.Avalonia
 
     }
 
+    public class AdaptiveTableRenderArgs : AdaptiveRenderArgs
+    {
+        public AdaptiveTableRenderArgs(AdaptiveRenderArgs parent) : base(parent)
+        {
+        }
+
+        public AdaptiveTable Table { get; set; }
+
+        public AdaptiveTableRow Row { get; set; }
+
+        public SolidColorBrush BorderBursh { get; set; }
+    }
 }

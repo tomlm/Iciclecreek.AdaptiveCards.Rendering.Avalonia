@@ -47,7 +47,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             Border border = new Border();
             border.Child = uiOuterContainer;
 
-            RendererUtil.ApplyVerticalContentAlignment(uiContainer, container.VerticalContentAlignment);
+            RendererUtil.ApplyVerticalContentAlignment(border, container.VerticalContentAlignment);
             uiContainer.MinHeight = container.PixelMinHeight;
 
             bool inheritsStyleFromParent = !container.Style.HasValue;
@@ -98,7 +98,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             return RendererUtil.ApplySelectAction(border, container, context);
         }
 
-        public static void AddContainerElements(Grid uiContainer, IList<AdaptiveElement> elements, AdaptiveRenderContext context)
+        public static void AddContainerElements(Grid uiContainer, IList<AdaptiveElement> elements, AdaptiveRenderContext context, Func<Control, Control> processContainerElement = null)
         {
             // Keeping track of the index so we don't have to call IndexOf function on every iteration
             int index = 0;
@@ -127,6 +127,8 @@ namespace AdaptiveCards.Rendering.Avalonia
                     Control uiElement = context.Render(rendereableElement);
                     if (uiElement != null)
                     {
+                        uiElement = processContainerElement?.Invoke(uiElement) ?? uiElement;
+
                         TagContent tag = null;
                         Grid separator = null;
                         if (cardElement.Separator && uiContainer.Children.Count > 0)

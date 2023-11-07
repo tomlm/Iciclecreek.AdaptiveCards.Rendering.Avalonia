@@ -43,7 +43,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             public string Original { get; set; }
             public string Text { get; set; }
-            
+
             public string Url { get; set; }
         }
 
@@ -54,8 +54,8 @@ namespace AdaptiveCards.Rendering.Avalonia
             marked.Options.Mangle = false;
             marked.Options.Sanitize = true;
 
-            string text = RendererUtilities.ApplyTextFunctions(textBlock.Text, context.Lang);
-
+            var text = textBlock.Text;
+            text = RendererUtilities.ApplyTextFunctions(text, context.Lang);
             text = marked.Parse(text);
             text = RendererUtilities.HandleHtmlSpaces(text);
 
@@ -65,12 +65,26 @@ namespace AdaptiveCards.Rendering.Avalonia
             // uiTextBlock.Style = context.GetStyle($"Adaptive.{textBlock.Type}");
 
             uiTextBlock.TextWrapping = TextWrapping.NoWrap;
-
             uiTextBlock.FontFamily = new FontFamily(RendererUtil.GetFontFamilyFromList(context.Config.GetFontFamily(textBlock.FontType)));
-            uiTextBlock.FontWeight = (FontWeight)context.Config.GetFontWeight(textBlock.FontType, textBlock.Weight);
-            uiTextBlock.FontSize = context.Config.GetFontSize(textBlock.FontType, textBlock.Size);
-
             uiTextBlock.TextTrimming = TextTrimming.CharacterEllipsis;
+
+            if (textBlock.Style == AdaptiveTextBlockStyle.Heading)
+            {
+                uiTextBlock.FontWeight = (FontWeight)context.Config.GetFontWeight(textBlock.FontType, AdaptiveTextWeight.Bolder);
+                uiTextBlock.FontSize = context.Config.GetFontSize(textBlock.FontType, textBlock.Size switch
+                {
+                    AdaptiveTextSize.Small => AdaptiveTextSize.Medium,
+                    AdaptiveTextSize.Medium => AdaptiveTextSize.Large,
+                    AdaptiveTextSize.Default => AdaptiveTextSize.Large,
+                    AdaptiveTextSize.Large => AdaptiveTextSize.ExtraLarge,
+                    AdaptiveTextSize.ExtraLarge => AdaptiveTextSize.ExtraLarge,
+                });
+            }
+            else
+            {
+                uiTextBlock.FontWeight = (FontWeight)context.Config.GetFontWeight(textBlock.FontType, textBlock.Weight);
+                uiTextBlock.FontSize = context.Config.GetFontSize(textBlock.FontType, textBlock.Size);
+            }
 
             if (textBlock.Italic)
             {

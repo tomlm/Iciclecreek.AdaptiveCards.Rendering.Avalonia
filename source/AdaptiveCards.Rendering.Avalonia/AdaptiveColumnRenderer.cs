@@ -71,7 +71,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             AdaptiveContainerRenderer.AddContainerElements(uiContainer, column.Items, context);
 
-            RendererUtil.ApplyVerticalContentAlignment(uiContainer, column.VerticalContentAlignment);
+            RendererUtil.ApplyVerticalContentAlignment(border, column.VerticalContentAlignment);
 
             uiContainer.MinHeight = column.PixelMinHeight;
 
