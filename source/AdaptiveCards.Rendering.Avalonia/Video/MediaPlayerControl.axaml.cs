@@ -2,7 +2,11 @@ using AsyncImageLoader;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Threading;
+using LibVLCSharp.Shared;
+using System;
 using System.Diagnostics;
+using System.Linq;
 using static System.Net.Mime.MediaTypeNames;
 using Image = Avalonia.Controls.Image;
 
@@ -23,6 +27,26 @@ namespace AdaptiveCards.Rendering.Avalonia.Video
         {
             InitializeComponent();
             this.VideoView.MediaPlayer.EnableHardwareDecoding = true;
+            this.VideoView.MediaPlayer.MediaChanged += MediaPlayer_MediaChanged;
+        }
+
+        private void MediaPlayer_MediaChanged(object? sender, MediaPlayerMediaChangedEventArgs e)
+        {
+            e.Media.ParsedChanged += Media_ParsedChanged;
+        }
+
+        private void Media_ParsedChanged(object? sender, MediaParsedChangedEventArgs e)
+        {
+            Dispatcher.UIThread.Invoke(() =>
+                {
+                    // resize viewer to match layout with aspect ratio 
+                    // we assume width is correct and calculate height based on aspect ratio
+                    var videoTrack = this.VideoView.MediaPlayer.Media.Tracks.Where(t => t.TrackType == TrackType.Video).FirstOrDefault().Data.Video;
+                    var ratio = (double)videoTrack.Height / (double)videoTrack.Width;
+                    var parent = this.Parent as Grid;
+                    this.Height = parent.Bounds.Width * ratio;
+                });
+
         }
 
         public string Source
@@ -31,7 +55,6 @@ namespace AdaptiveCards.Rendering.Avalonia.Video
             set
             {
                 this.SetAndRaise(SourceProperty, ref _source, value);
-                this.VideoView.Source = value;
             }
         }
 
@@ -41,7 +64,7 @@ namespace AdaptiveCards.Rendering.Avalonia.Video
             set
             {
                 this.SetAndRaise(PosterProperty, ref _poster, value);
-               // PosterImage.SetValue(ImageLoader.SourceProperty, _poster);
+                // PosterImage.SetValue(ImageLoader.SourceProperty, _poster);
             }
         }
 

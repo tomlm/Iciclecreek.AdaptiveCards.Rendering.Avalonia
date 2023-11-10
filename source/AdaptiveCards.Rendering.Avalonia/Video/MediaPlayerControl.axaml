@@ -15,10 +15,9 @@
     <views:VideoView x:Name="VideoView"
 		  Background="Transparent"
       Source="{Binding Source}"
-      MinWidth="200" MinHeight="200"
 			HorizontalAlignment="Stretch"
 			VerticalAlignment="Stretch">
-      <views:MediaPlayerControls x:Name="Controls" Grid.Row="1" Background="Gray" Opacity="0.8"/>
+      <views:MediaPlayerControls x:Name="Controls" Opacity="0.8"/>
     </views:VideoView>
   </Grid>
 </UserControl>
