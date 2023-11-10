@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      			 xmlns:views="using:AdaptiveCards.Rendering.Avalonia.Video"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AdaptiveCards.Rendering.Avalonia.Video.MediaPlayerControl">
+
+  <Grid
+		Background="Transparent"
+    RowDefinitions="*"
+		HorizontalAlignment="Stretch"
+		VerticalAlignment="Stretch">
+
+    <views:VideoView x:Name="VideoView"
+		  Background="Transparent"
+      Source="{Binding Source}"
+      MinWidth="200" MinHeight="200"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch">
+      <views:MediaPlayerControls x:Name="Controls" Grid.Row="1" Background="Gray" Opacity="0.8"/>
+    </views:VideoView>
+  </Grid>
+</UserControl>

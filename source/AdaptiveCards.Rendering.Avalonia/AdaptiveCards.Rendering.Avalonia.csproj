@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net60</TargetFramework>
@@ -8,16 +8,27 @@
   <ItemGroup>
     <PackageReference Include="AdaptiveCards" Version="3.1.0" />
     <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.2.1" />
-    <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia" Version="11.0.5" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.0.5" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.5" />
     <PackageReference Include="Avalonia.Svg" Version="11.0.0.3" />
     <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
+    <PackageReference Include="CSharpFunctionalExtensions" Version="2.40.3" />
+    <PackageReference Include="LibVLCSharp.Avalonia" Version="3.8.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Properties\" />
     <Folder Include="Themes\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Video\MediaPlayerControl.axaml.cs">
+      <DependentUpon>MediaPlayerControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Video\MediaPlayerControls.axaml.cs">
+      <DependentUpon>MediaPlayerControls.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

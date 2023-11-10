@@ -20,7 +20,7 @@ public partial class MainViewModel : ViewModelBase
     
         if (Debugger.IsAttached)
         {
-            string fullPath = @"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.5\Elements\Table.json";
+            string fullPath = @"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.6\Elements\Media.json";
             var json = File.ReadAllText(fullPath);  
             AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
             this.Cards.Add(new CardModel()
