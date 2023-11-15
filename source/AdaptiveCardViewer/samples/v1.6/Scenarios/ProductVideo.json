@@ -1,7 +1,7 @@
 {
 	"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
 	"type": "AdaptiveCard",
-	"version": "1.6",
+	"version": "1.5",
 	"fallbackText": "This card requires Media to be viewed. Ask your platform to update to Adaptive Cards v1.6 for this and more!",
 	"body": [
 		{

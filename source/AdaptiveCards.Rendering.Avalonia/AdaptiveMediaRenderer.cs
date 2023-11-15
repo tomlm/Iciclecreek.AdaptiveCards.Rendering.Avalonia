@@ -1,18 +1,20 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-using AdaptiveCards.Rendering.Avalonia.Video;
 using AsyncImageLoader;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
-//using LibVLCSharp.Avalonia;
-//using LibVLCSharp.Shared;
+using Avalonia.ReactiveUI;
+using Avalonia.Threading;
+using CSharpFunctionalExtensions;
+using FluentIcons.Avalonia;
+using FluentIcons.Common;
+using Iciclecreek.Avalonia.Controls.Media;
+using LibVLCSharp.Shared;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
@@ -62,33 +64,103 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             // Main element to return
 
-            // Inline playback is possible only when inline playback is allowed by the host and the chosen media source is not https
-            bool isInlinePlaybackPossible = context.Config.Media.AllowInlinePlayback;
-
             var uiMedia = new Grid();
 
-            if (isInlinePlaybackPossible)
+            #region Thumbnail button
+
+            var mediaConfig = context.Config.Media;
+            var uiThumbnailButton = new Grid
             {
-                // Media player is only created if inline playback is allowed
-                var uiMediaPlayer = new MediaPlayerControl()
-                {
-                    Source = mediaSource.Url,
-                    Poster = media.Poster,
-                };
-                uiMediaPlayer.DataContext = uiMediaPlayer;
+                Name = "thumbnailButton",
+                IsVisible = true
+            };
 
-                uiMediaPlayer.IsVisible = true;
+            /* Poster Image */
 
-                uiMedia.Children.Add(uiMediaPlayer);
+            // A poster container is necessary to handle background color and opacity mask
+            // in case poster image is not found or does not exist
+            var uiPosterContainer = new Grid()
+            {
+                Background = _controlBackgroundColor,
+            };
+
+            Image uiPosterImage = GetPosterImage(media, context);
+            if (uiPosterImage != null)
+            {
+                uiPosterContainer.Children.Add(uiPosterImage);
             }
 
+            uiThumbnailButton.Children.Add(uiPosterContainer);
+
+            // Play button
+            var uiPlayButton = RenderThumbnailPlayButton(context);
+            uiThumbnailButton.Children.Add(uiPlayButton);
+
+            // Mouse hover handlers to signify playable media element
+            uiThumbnailButton.PointerEntered += (sender, e) =>
+            {
+                uiPlayButton.Opacity = 1.0;
+            };
+            uiThumbnailButton.PointerExited += (sender, e) =>
+            {
+                uiPlayButton.Opacity = 0.2;
+            };
+            #endregion
+
+            uiMedia.Children.Add(uiThumbnailButton);
+
+            // Play the media
+            uiPlayButton.PointerReleased += (sender, e) =>
+            {
+                if (mediaConfig.AllowInlinePlayback)
+                {
+                    var videoView = new VideoView()
+                    {
+                        Content = new MediaPlayerControls()
+                        {
+                            Background = context.GetColorBrush(context.Config.ContainerStyles.Emphasis.BackgroundColor),
+                            Foreground = context.GetColorBrush(context.Config.ContainerStyles.Emphasis.ForegroundColors.Accent.Default),
+                        },
+                        ZIndex = 100
+                    };
+
+                    videoView.MediaPlayer.EnableHardwareDecoding = true;
+
+                    videoView.MediaPlayer.MediaChanged += (sender, e) =>
+                    {
+                        e.Media.ParsedChanged += (sender2, e2) =>
+                        {
+                            Dispatcher.UIThread.Invoke(() =>
+                            {
+                                // resize viewer height to match layout width respecting aspect ratio 
+                                // we assume width is correct and calculate height based on aspect ratio
+                                var videoTrack = videoView.MediaPlayer.Media.Tracks.Where(t => t.TrackType == TrackType.Video).FirstOrDefault().Data.Video;
+                                var ratio = (double)videoTrack.Height / (double)videoTrack.Width;
+                                var parent = videoView.Parent as Grid;
+                                videoView.Height = parent.Bounds.Width * ratio;
+                            });
+                        };
+                    };
+                    uiMedia.Children.Add(videoView);
+                    videoView.Source = mediaSource.Url;
+                    videoView.MediaPlayerViewModel.Play();
+                }
+                // Raise an event to send the media to host
+                else
+                {
+                    context.ClickMedia(uiPosterContainer, new AdaptiveMediaEventArgs(media));
+
+                    // Prevent nested events from triggering
+                    e.Handled = true;
+                }
+            };
 
             return uiMedia;
         }
 
         private static Control RenderThumbnailPlayButton(AdaptiveRenderContext context)
         {
-            var playButtonSize = 100;
+            var playButtonSize = 70;
 
             // Wrap in a Viewbox to control width, height, and aspect ratio
             var uiPlayButton = new Viewbox()
@@ -97,6 +169,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 Height = playButtonSize,
                 Stretch = Stretch.Fill,
                 Margin = _marginThickness,
+                Opacity = 0.2,
             };
 
             MediaConfig mediaConfig = context.Config.Media;
@@ -115,16 +188,15 @@ namespace AdaptiveCards.Rendering.Avalonia
             else
             {
                 // Otherwise, use the default play symbol
-                var content = new TextBlock()
+                uiPlayButton.Child = new SymbolIcon()
                 {
-                    Text = "⏵",
-                    FontFamily = _symbolFontFamily,
-                    Foreground = _controlForegroundColor,
+                    Symbol = Symbol.Play,
+                    IsFilled = true,
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
+                    //Background = context.GetColorBrush(context.RenderArgs.ForegroundColors.Light.Default),
+                    //Foreground = context.GetColorBrush(context.RenderArgs.ForegroundColors.Dark.Default),
                 };
-
-                uiPlayButton.Child = content;
             }
 
             return uiPlayButton;
@@ -180,32 +252,6 @@ namespace AdaptiveCards.Rendering.Avalonia
             };
         }
 
-        /** Handle visibility of playback buttons based on the current media state
-         *  - If it's playing, user can only pause
-         *  - If it's paused, user can only resume
-         *  - If it's complete, user can only replay
-         */
-        private static void HandlePlaybackButtonVisibility(MediaState currentMediaState,
-            Control pauseButton, Control resumeButton, Control replayButton)
-        {
-            pauseButton.IsVisible = false;
-            resumeButton.IsVisible = false;
-            replayButton.IsVisible = false;
-
-            if (currentMediaState == MediaState.IsPlaying)
-            {
-                pauseButton.IsVisible = true;
-            }
-            else if (currentMediaState == MediaState.IsPaused)
-            {
-                resumeButton.IsVisible = true;
-            }
-            else
-            {
-                // Video is complete
-                replayButton.IsVisible = true;
-            }
-        }
 
         private static List<string> _supportedMimeTypes = new List<string>
         {
