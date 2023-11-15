@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using System;
 using System.Collections.Generic;
 
@@ -14,7 +15,7 @@ namespace AdaptiveCards.Rendering.Avalonia
         public static readonly RoutedEvent<RoutedAdaptiveActionEventArgs> ActionEvent = RoutedEvent.Register<AdaptiveCardView, RoutedAdaptiveActionEventArgs>(nameof(Action), RoutingStrategies.Bubble);
 
         private AdaptiveHostConfig _hostConfig;
-        private AdaptiveCard _card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 7));
+        private AdaptiveCard _card = new AdaptiveCard(new AdaptiveSchemaVersion(1, 5));
 
         public AdaptiveCardView()
         {
@@ -44,6 +45,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             {
                 SetAndRaise(CardProperty, ref _card, value);
                 RenderCard();
+                // Dispatcher.UIThread.Post(() => RenderCard(), DispatcherPriority.Background);
             }
         }
 
@@ -62,7 +64,6 @@ namespace AdaptiveCards.Rendering.Avalonia
             {
                 if (_card != null)
                 {
-
                     var renderer = new AdaptiveCardRenderer(_hostConfig);
                     var renderedCard = renderer.RenderCard(_card);
                     renderedCard.OnAction += (sender, e) =>

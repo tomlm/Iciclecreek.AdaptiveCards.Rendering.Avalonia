@@ -30,6 +30,7 @@ public partial class MainView : UserControl
         var viewModel = this.DataContext as MainViewModel;
         if (viewModel != null)
         {
+            this.Scroller.ScrollToHome();
             var item = e.AddedItems[0] as ComboBoxItem;
             var ver = item.Content as string;
             if (!string.IsNullOrEmpty(ver))

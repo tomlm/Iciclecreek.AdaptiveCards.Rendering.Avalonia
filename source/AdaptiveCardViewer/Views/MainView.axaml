@@ -48,8 +48,8 @@
       </StackPanel>
     </Border>
 
-    <ScrollViewer Grid.Row="1" >
-      <ItemsControl ItemsSource="{Binding Cards}" >
+    <ScrollViewer Grid.Row="1" x:Name="Scroller" >
+      <ItemsControl ItemsSource="{Binding Cards}"  >
         <ItemsControl.ItemTemplate>
           <DataTemplate>
             <Grid RowDefinitions="Auto,*"  Margin="4"  Width="500">
