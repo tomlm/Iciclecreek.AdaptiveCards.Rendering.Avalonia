@@ -19,7 +19,6 @@ namespace AdaptiveCards.Rendering.Avalonia
 
         public AdaptiveCardView()
         {
-            this.Content = new TextBlock() { Text = "inner" };
         }
 
         /// <summary>
@@ -44,8 +43,8 @@ namespace AdaptiveCards.Rendering.Avalonia
             set
             {
                 SetAndRaise(CardProperty, ref _card, value);
-                RenderCard();
-                // Dispatcher.UIThread.Post(() => RenderCard(), DispatcherPriority.Background);
+                // RenderCard();
+                Dispatcher.UIThread.Post(() => RenderCard(), DispatcherPriority.Background);
             }
         }
 
