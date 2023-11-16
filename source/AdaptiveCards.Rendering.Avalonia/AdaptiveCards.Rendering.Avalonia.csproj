@@ -12,7 +12,7 @@
     <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.0.5" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.5" />
     <PackageReference Include="Avalonia.Svg" Version="11.0.0.4" />
-    <PackageReference Include="Iciclecreek.Avalonia.Controls.Media" Version="1.0.3" />
+    <PackageReference Include="Iciclecreek.Avalonia.Controls.Media" Version="1.0.4" />
     <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
   </ItemGroup>
 
