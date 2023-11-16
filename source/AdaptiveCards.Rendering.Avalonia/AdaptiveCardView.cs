@@ -44,7 +44,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             {
                 SetAndRaise(CardProperty, ref _card, value);
                 // RenderCard();
-                Dispatcher.UIThread.Post(() => RenderCard(), DispatcherPriority.Background);
+                Dispatcher.UIThread.Post(() => RenderCard(), DispatcherPriority.Loaded);
             }
         }
 
