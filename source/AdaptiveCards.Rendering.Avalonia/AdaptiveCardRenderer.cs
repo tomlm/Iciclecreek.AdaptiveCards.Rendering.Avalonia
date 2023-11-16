@@ -169,53 +169,5 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             return renderCard;
         }
-
-        /// <summary>
-        /// Renders an adaptive card to a PNG image. This method cannot be called from a server. Use <see cref="RenderCardToImageOnStaThreadAsync"/> instead.
-        /// </summary>
-        /// <param name="createStaThread">If true this method will create an STA thread allowing it to be called from a server.</param>
-        public async Task<RenderedAdaptiveCardImage> RenderCardToImageAsync(AdaptiveCard card, bool createStaThread, int width = 400, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (card == null) throw new ArgumentNullException(nameof(card));
-
-            if (createStaThread)
-            {
-                return await await Task.Factory.StartNewSta(async () => await RenderCardToImageInternalAsync(card, width, cancellationToken));
-            }
-            else
-            {
-                return await RenderCardToImageInternalAsync(card, width, cancellationToken);
-            }
-        }
-
-        private async Task<RenderedAdaptiveCardImage> RenderCardToImageInternalAsync(AdaptiveCard card, int width, CancellationToken cancellationToken)
-        {
-            RenderedAdaptiveCardImage renderCard = null;
-
-            try
-            {
-
-                var context = new AdaptiveRenderContext(null, null, null)
-                {
-                    ImageLoader = _imageLoader,
-                    ActionHandlers = ActionHandlers,
-                    Config = HostConfig ?? new AdaptiveHostConfig(),
-                    ElementRenderers = ElementRenderers,
-                    Lang = card.Lang,
-                    RenderArgs = new AdaptiveRenderArgs { ForegroundColors = (HostConfig != null) ? HostConfig.ContainerStyles.Default.ForegroundColors : new ContainerStylesConfig().Default.ForegroundColors }
-                };
-
-                var stream = context.Render(card).RenderToImage(width);
-                renderCard = new RenderedAdaptiveCardImage(stream, card, context.Warnings);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"RENDER Failed. {e.Message}");
-            }
-
-            return renderCard;
-        }
-
-
     }
 }
