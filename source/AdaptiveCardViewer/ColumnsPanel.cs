@@ -8,6 +8,7 @@ using Avalonia;
 using Avalonia.Controls.Templates;
 using System.Collections;
 using Avalonia.Metadata;
+using Avalonia.Layout;
 
 namespace Iciclecreek.Avalonia.Controls
 {
@@ -17,7 +18,7 @@ namespace Iciclecreek.Avalonia.Controls
         /// The default value for the <see cref="ItemsPanel"/> property.
         /// </summary>
         private static readonly FuncTemplate<Panel?> DefaultPanel =
-            new(() => new StackPanel());
+            new(() => new StackPanel() { Orientation = Orientation.Vertical });
 
         /// <summary>
         /// Defines the <see cref="ColumnSpacing"/> property.
@@ -55,9 +56,9 @@ namespace Iciclecreek.Avalonia.Controls
         {
             _grid = new Grid();
             this.Content = _grid;
-            this.GetSubject(ItemsSourceProperty).Subscribe((value) => BindColumns());
-            this.GetSubject(ColumnDefinitionsProperty).Subscribe((value) => BindColumns());
-            this.GetSubject(ColumnSpacingProperty).Subscribe((value) => BindColumns());
+            this.GetSubject(ItemsSourceProperty).Subscribe((value) => LayoutItems());
+            this.GetSubject(ColumnDefinitionsProperty).Subscribe((value) => LayoutItems());
+            this.GetSubject(ColumnSpacingProperty).Subscribe((value) => LayoutItems());
             //this.PropertyChanged += (sender, args) =>
             //{
             //    if (args.Property.Name == nameof(ItemsSource) ||
@@ -127,7 +128,7 @@ namespace Iciclecreek.Avalonia.Controls
             set => SetValue(ColumnSpacingProperty, value);
         }
 
-        private void BindColumns()
+        private void LayoutItems()
         {
             int totalColumns = this.ColumnDefinitions.Count;
             _grid.ColumnDefinitions.Clear();
