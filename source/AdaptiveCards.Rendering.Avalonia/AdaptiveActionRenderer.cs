@@ -116,6 +116,8 @@ namespace AdaptiveCards.Rendering.Avalonia
                 else
                 {
                     //Size the image to the textblock, wait until layout is complete (loaded event)
+                    uiIcon.Height = 0;
+                    uiIcon.Width = 0;
                     uiIcon.Loaded += (sender, e) =>
                     {
                         uiIcon.Height = uiTitle.Bounds.Height;
@@ -125,7 +127,7 @@ namespace AdaptiveCards.Rendering.Avalonia
 
                 // Try to resolve the image URI
                 Uri finalUri = context.Config.ResolveFinalAbsoluteUri(action.IconUrl);
-                uiIcon.SetUrlSource(finalUri, context);
+                uiIcon.SetImageSource(finalUri, context);
 
                 // Add spacing for the icon for horizontal actions
                 if (actionsConfig.IconPlacement == IconPlacement.LeftOfTitle)
@@ -158,7 +160,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                     Grid.SetRow(uiTitle, iRow++);
                 contentStackPanel.Children.Add(uiTitle);
             }
-            
+
             if (action is AdaptiveOverflowAction)
                 uiButton.SetValue(ToolTip.TipProperty, "More options");
             else

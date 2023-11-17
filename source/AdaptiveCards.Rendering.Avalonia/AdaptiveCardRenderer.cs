@@ -1,10 +1,13 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+using AsyncImageLoader;
 using AsyncImageLoader.Loaders;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -12,6 +15,55 @@ using System.Threading.Tasks;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
+    public class MyCachedImageLoader: BaseWebImageLoader
+    {
+        private readonly ConcurrentDictionary<string, Task<Bitmap?>> _memoryCache = new();
+
+        /// <inheritdoc />
+        public MyCachedImageLoader() { }
+
+        /// <inheritdoc />
+        public MyCachedImageLoader(HttpClient httpClient, bool disposeHttpClient) : base(httpClient,
+            disposeHttpClient)
+        { }
+
+        /// <inheritdoc />
+        public override async Task<Bitmap?> ProvideImageAsync(string url)
+        {
+            var bitmap = await _memoryCache.GetOrAdd(url, LoadAsync).ConfigureAwait(false);
+            // If load failed - remove from cache and return
+            // Next load attempt will try to load image again
+            if (bitmap == null) _memoryCache.TryRemove(url, out _);
+            return bitmap;
+        }
+        
+        protected override async Task<Bitmap> LoadAsync(string url)
+        {
+            try
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                byte[] array = await LoadDataFromExternalAsync(url).ConfigureAwait(continueOnCapturedContext: false);
+                if (array == null)
+                {
+                    return null;
+                }
+
+                using MemoryStream memoryStream = new MemoryStream(array);
+                Bitmap bitmap = new Bitmap(memoryStream);
+                await SaveToGlobalCache(url, array).ConfigureAwait(continueOnCapturedContext: false);
+                
+                sw.Stop();
+                if (Debugger.IsAttached)
+                    Debug.WriteLine($"Image {url} loaded in {sw.ElapsedMilliseconds} ms");
+                return bitmap;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+    }
     public class AdaptiveCardRenderer : AdaptiveCardRendererBase<Control, AdaptiveRenderContext>
     {
         protected override AdaptiveSchemaVersion GetSupportedSchemaVersion()
@@ -22,7 +74,10 @@ namespace AdaptiveCards.Rendering.Avalonia
         protected Action<object, AdaptiveActionEventArgs> ActionCallback;
         protected Action<object, MissingInputEventArgs> missingDataCallback;
 
-        protected RamCachedWebImageLoader _imageLoader = new RamCachedWebImageLoader();
+        static AdaptiveCardRenderer()
+        {
+            ImageLoader.AsyncImageLoader = new MyCachedImageLoader();
+        }
 
         public AdaptiveCardRenderer() : this(new AdaptiveHostConfig()) { }
 
@@ -153,7 +208,6 @@ namespace AdaptiveCards.Rendering.Avalonia
 
             var context = new AdaptiveRenderContext(ActionCallback, null, MediaClickCallback)
             {
-                ImageLoader = _imageLoader,
                 ActionHandlers = ActionHandlers,
                 Config = HostConfig ?? new AdaptiveHostConfig(),
                 ElementRenderers = ElementRenderers,

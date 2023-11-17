@@ -1,20 +1,15 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-using AsyncImageLoader;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.ReactiveUI;
 using Avalonia.Threading;
 using CSharpFunctionalExtensions;
 using FluentIcons.Avalonia;
 using FluentIcons.Common;
 using Iciclecreek.Avalonia.Controls.Media;
 using LibVLCSharp.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
@@ -181,7 +176,9 @@ namespace AdaptiveCards.Rendering.Avalonia
                 {
                     Height = playButtonSize,
                 };
-                content.SetImageSource(mediaConfig.PlayButton, context);
+                
+                Uri finalUri = context.Config.ResolveFinalAbsoluteUri(mediaConfig.PlayButton);
+                content.SetImageSource(finalUri, context);
 
                 uiPlayButton.Child = content;
             }
@@ -202,14 +199,7 @@ namespace AdaptiveCards.Rendering.Avalonia
             return uiPlayButton;
         }
 
-
-        /** Helper function to call async function from context */
-        private static async void SetImageSource(this Image image, string urlString, AdaptiveRenderContext context)
-        {
-            // image.Source = await context.ResolveImageSource(context.Config.ResolveFinalAbsoluteUri(urlString));
-            var imageUrl = context.Config.ResolveFinalAbsoluteUri(urlString);
-            image.SetValue(ImageLoader.SourceProperty, imageUrl.ToString());
-        }
+  
 
         /** Get poster image from either card payload or host config */
         private static Image GetPosterImage(AdaptiveMedia media, AdaptiveRenderContext context)
@@ -219,38 +209,22 @@ namespace AdaptiveCards.Rendering.Avalonia
             {
                 // Use the provided poster
                 uiPosterImage = new Image();
-                uiPosterImage.SetImageSource(media.Poster, context);
+                Uri finalUri = context.Config.ResolveFinalAbsoluteUri(media.Poster);
+                uiPosterImage.SetImageSource(finalUri, context);
             }
             else if (!string.IsNullOrEmpty(context.Config.Media.DefaultPoster)
                  && context.Config.ResolveFinalAbsoluteUri(context.Config.Media.DefaultPoster) != null)
             {
                 // Use the default poster from host
                 uiPosterImage = new Image();
-                uiPosterImage.SetImageSource(context.Config.Media.DefaultPoster, context);
+                Uri finalUri = context.Config.ResolveFinalAbsoluteUri(context.Config.Media.DefaultPoster);
+                uiPosterImage.SetImageSource(finalUri, context);
             }
 
             return uiPosterImage;
         }
 
-        /** Simple template for playback buttons */
-        private static Control RenderPlaybackButton(string text)
-        {
-            return new Viewbox()
-            {
-                Width = _childHeight,
-                Height = _childHeight,
-                Stretch = Stretch.Fill,
-                Margin = _marginThickness,
-                VerticalAlignment = VerticalAlignment.Center,
-                IsVisible = false,
-                Child = new TextBlock()
-                {
-                    Text = text,
-                    FontFamily = _symbolFontFamily,
-                    Foreground = _controlForegroundColor,
-                }
-            };
-        }
+        
 
 
         private static List<string> _supportedMimeTypes = new List<string>

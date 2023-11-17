@@ -1,11 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-using AsyncImageLoader.Loaders;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using System;
-using System.Collections.Generic;
 
 namespace AdaptiveCards.Rendering.Avalonia
 {
@@ -39,8 +36,6 @@ namespace AdaptiveCards.Rendering.Avalonia
         public AdaptiveActionHandlers ActionHandlers { get; set; }
 
         public AdaptiveFeatureRegistration FeatureRegistration { get; set; }
-
-        public RamCachedWebImageLoader ImageLoader { get; set; }
 
         public bool IsRenderingSelectAction { get; set; }
 

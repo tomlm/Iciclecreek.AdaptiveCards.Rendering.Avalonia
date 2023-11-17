@@ -35,7 +35,8 @@ public partial class MainViewModel : ViewModelBase
 
     public string Greeting => "Welcome to Avalonia!";
 
-    public ObservableCollection<CardModel> Cards { get; set; } = new ObservableCollection<CardModel>();
+    private ObservableCollection<CardModel> _cards = new ObservableCollection<CardModel>();
+    public ObservableCollection<CardModel> Cards { get => _cards ; set => SetProperty(ref _cards, value); } 
 
     private AdaptiveHostConfig _hostConfig;
     public AdaptiveHostConfig HostConfig { get => _hostConfig; set => base.SetProperty(ref _hostConfig, value); }
@@ -68,30 +69,20 @@ public partial class MainViewModel : ViewModelBase
 
     public void LoadScenarios()
     {
-        this.Cards.Clear();
-
-        foreach (var name in Assembly.GetExecutingAssembly().GetManifestResourceNames()
-            .Where(p => p.ToLower().Contains("scenarios")))
-        {
-            LoadCardResource(name);
-        }
-
+        this.Cards = new ObservableCollection<CardModel>(Assembly.GetExecutingAssembly().GetManifestResourceNames()
+            .Where(p => p.ToLower().Contains("scenarios"))
+            .Select(p => LoadCardResource(p)));
     }
 
     public void LoadVersionSamples(string ver)
     {
         ver = ver.Replace(".", "._");
-        this.Cards.Clear();
-
-        foreach (var name in Assembly.GetExecutingAssembly().GetManifestResourceNames()
-            .Where(p => p.Contains(ver) && !p.ToLower().Contains("tests")))
-        {
-            LoadCardResource(name);
-        }
-
+        this.Cards = new ObservableCollection<CardModel>(Assembly.GetExecutingAssembly().GetManifestResourceNames()
+            .Where(p => p.Contains(ver) && !p.ToLower().Contains("tests"))
+            .Select(p => LoadCardResource(p)));
     }
 
-    private void LoadCardResource(string? name)
+    private CardModel LoadCardResource(string? name)
     {
         string json = null;
         using (TextReader reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(name)))
@@ -105,19 +96,20 @@ public partial class MainViewModel : ViewModelBase
             {
                 string fullPath = GetResourcePath(name);
                 AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
-                this.Cards.Add(new CardModel()
+                return new CardModel()
                 {
                     Name = Path.GetFileName(fullPath),
                     Uri = fullPath,
                     Card = parseResult.Card,
                     HostConfig = this.HostConfig
-                });
+                };
             }
             catch (Exception err)
             {
                 Debug.WriteLine(err);
             }
         }
+        return null;
     }
 
     private static string GetResourcePath(string? name)

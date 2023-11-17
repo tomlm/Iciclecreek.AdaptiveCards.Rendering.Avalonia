@@ -22,7 +22,7 @@ namespace AdaptiveCards.Rendering.Avalonia
                 return uiImage;
             }
 
-            uiImage.SetUrlSource(finalUri, context);
+            uiImage.SetImageSource(finalUri, context);
 
             uiImage.SetHorizontalAlignment(image.HorizontalAlignment);
 

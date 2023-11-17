@@ -5,6 +5,7 @@
              xmlns:vm="clr-namespace:AdaptiveCardViewer.ViewModels"
              xmlns:ac="using:AdaptiveCards.Rendering.Avalonia"
              xmlns:panels="using:Avalonia.Labs.Panels"
+             xmlns:ice="using:Iciclecreek.Avalonia.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AdaptiveCardViewer.Views.MainView"
@@ -29,7 +30,6 @@
           <ComboBoxItem>v1.3</ComboBoxItem>
           <ComboBoxItem>v1.4</ComboBoxItem>
           <ComboBoxItem>v1.5</ComboBoxItem>
-          <ComboBoxItem>v1.6</ComboBoxItem>
         </ComboBox>
         <TextBlock VerticalAlignment="Center"  Padding="4">HostConfig</TextBlock>
         <ComboBox x:Name="HostConfig" SelectedItem="0" Width="200" SelectedIndex="0" SelectionChanged="HostConfig_SelectionChanged">
@@ -49,8 +49,8 @@
     </Border>
 
     <ScrollViewer Grid.Row="1" x:Name="Scroller" >
-      <ItemsControl ItemsSource="{Binding Cards}"  >
-        <ItemsControl.ItemTemplate>
+      <ice:ColumnsPanel ItemsSource="{Binding Cards}" ColumnDefinitions="*,*,*" >
+        <ice:ColumnsPanel.ItemTemplate>
           <DataTemplate>
             <Grid RowDefinitions="Auto,*"  Margin="4"  Width="500">
               <StackPanel Orientation="Horizontal">
@@ -64,21 +64,8 @@
               </Border>
             </Grid>
           </DataTemplate>
-        </ItemsControl.ItemTemplate>
-        <ItemsControl.ItemsPanel>
-          <ItemsPanelTemplate>
-            <StackPanel Orientation="Vertical" />
-            <!--<panels:FlexPanel
-                              Direction="Row"
-                                 JustifyContent="FlexStart"
-                                 AlignItems="Center"
-                                 AlignContent="FlexStart"
-                                 Wrap="Wrap"
-                                 ColumnSpacing="8"
-                                 RowSpacing="8" />-->
-          </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-      </ItemsControl>
+        </ice:ColumnsPanel.ItemTemplate>
+      </ice:ColumnsPanel>
     </ScrollViewer>
 
   </Grid>
