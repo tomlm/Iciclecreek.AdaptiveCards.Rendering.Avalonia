@@ -49,8 +49,13 @@
     </Border>
 
     <ScrollViewer Grid.Row="1" x:Name="Scroller" >
-      <ice:ColumnsPanel ItemsSource="{Binding Cards}" ColumnDefinitions="*,*,*" >
-        <ice:ColumnsPanel.ItemTemplate>
+      <ItemsControl ItemsSource="{Binding Cards}" >
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <ice:ColumnsPanel Margin="8" ColumnGap="8" Gap="8" ColumnWidth="600" HorizontalAlignment="Center"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
           <DataTemplate>
             <Grid RowDefinitions="Auto,*"  Margin="4"  Width="500">
               <StackPanel Orientation="Horizontal">
@@ -64,8 +69,8 @@
               </Border>
             </Grid>
           </DataTemplate>
-        </ice:ColumnsPanel.ItemTemplate>
-      </ice:ColumnsPanel>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
     </ScrollViewer>
 
   </Grid>

@@ -1,184 +1,243 @@
 ﻿using Avalonia.Controls;
-using Avalonia.ReactiveUI;
-using Avalonia.Reactive;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
-using Avalonia.Controls.Templates;
-using System.Collections;
-using Avalonia.Metadata;
-using Avalonia.Layout;
+using Avalonia.Input;
 
 namespace Iciclecreek.Avalonia.Controls
 {
-    public partial class ColumnsPanel : UserControl
+    /// <summary>
+    /// A panel which lays out its children horizontally or vertically.
+    /// </summary>
+    public class ColumnsPanel : Panel, INavigableContainer
     {
         /// <summary>
-        /// The default value for the <see cref="ItemsPanel"/> property.
+        /// Defines the <see cref="Gap"/> property.
         /// </summary>
-        private static readonly FuncTemplate<Panel?> DefaultPanel =
-            new(() => new StackPanel() { Orientation = Orientation.Vertical });
+        public static readonly StyledProperty<double> GapProperty = AvaloniaProperty.Register<ColumnsPanel, double>(nameof(Gap));
 
         /// <summary>
-        /// Defines the <see cref="ColumnSpacing"/> property.
+        /// Defines the <see cref="ColumnGap"/> property.
         /// </summary>
-        public static readonly StyledProperty<double> ColumnSpacingProperty =
-            AvaloniaProperty.Register<ColumnsPanel, double>(nameof(ColumnsPanel), 0);
+        public static readonly StyledProperty<double> ColumnGapProperty = AvaloniaProperty.Register<ColumnsPanel, double>(nameof(Gap));
 
         /// <summary>
-        /// Defines the <see cref="ColumnDefinitions"/> property.
+        /// Defines the <see cref="ColumnWidthProperty"/> property.
         /// </summary>
-        public static readonly StyledProperty<ColumnDefinitions> ColumnDefinitionsProperty =
-            AvaloniaProperty.Register<ColumnsPanel, ColumnDefinitions>(nameof(ColumnDefinitions), new ColumnDefinitions());
+        public static readonly StyledProperty<double> ColumnWidthProperty = AvaloniaProperty.Register<ColumnsPanel, double>(nameof(ColumnWidth), 200);
 
         /// <summary>
-        /// Defines the <see cref="ItemsPanel"/> property.
+        /// Initializes static members of the <see cref="ColumnsPanel"/> class.
         /// </summary>
-        public static readonly StyledProperty<ITemplate<Panel?>> ItemsPanelProperty =
-            AvaloniaProperty.Register<ColumnsPanel, ITemplate<Panel?>>(nameof(ItemsPanel), DefaultPanel);
-
-        /// <summary>
-        /// Defines the <see cref="ItemsSource"/> property.
-        /// </summary>
-        public static readonly StyledProperty<IEnumerable?> ItemsSourceProperty =
-            AvaloniaProperty.Register<ColumnsPanel, IEnumerable?>(nameof(ItemsSource));
-
-        /// <summary>
-        /// Defines the <see cref="ItemTemplate"/> property.
-        /// </summary>
-        public static readonly StyledProperty<IDataTemplate?> ItemTemplateProperty =
-            AvaloniaProperty.Register<ColumnsPanel, IDataTemplate?>(nameof(ItemTemplate));
-
-        private Grid _grid = new Grid();
-
-        public ColumnsPanel()
+        static ColumnsPanel()
         {
-            _grid = new Grid();
-            this.Content = _grid;
-            this.GetSubject(ItemsSourceProperty).Subscribe((value) => LayoutItems());
-            this.GetSubject(ColumnDefinitionsProperty).Subscribe((value) => LayoutItems());
-            this.GetSubject(ColumnSpacingProperty).Subscribe((value) => LayoutItems());
-            //this.PropertyChanged += (sender, args) =>
-            //{
-            //    if (args.Property.Name == nameof(ItemsSource) ||
-            //        args.Property.Name == nameof(ColumnDefinitions))
-            //    {
-            //        BindColumns();
-            //    }
-            //};
+            AffectsMeasure<ColumnsPanel>(GapProperty);
+            // AffectsMeasure<ColumnsPanel2>(OrientationProperty);
         }
 
         /// <summary>
-        /// The column definitions to use.
+        /// Gets or sets the size of the gap to place between child controls.
         /// </summary>
-        public ColumnDefinitions ColumnDefinitions
+        public double Gap
         {
-            get => GetValue(ColumnDefinitionsProperty);
-            set => SetValue(ColumnDefinitionsProperty, value);
+            get { return GetValue(GapProperty); }
+            set { SetValue(GapProperty, value); }
         }
 
         /// <summary>
-        /// Gets or sets the panel used to display the items.
+        /// Gets or sets the size of the gap to place between columns
         /// </summary>
-        public ITemplate<Panel?> ItemsPanel
+        public double ColumnGap
         {
-            get => GetValue(ItemsPanelProperty);
-            set => SetValue(ItemsPanelProperty, value);
+            get { return GetValue(ColumnGapProperty); }
+            set { SetValue(ColumnGapProperty, value); }
         }
 
         /// <summary>
-        /// Gets or sets a collection used to generate the content of the <see cref="ItemsControl"/>.
+        /// Gets or sets the orientation in which child controls will be layed out.
         /// </summary>
-        /// <remarks>
-        /// A common scenario is to use an <see cref="ItemsControl"/> such as a 
-        /// <see cref="ListBox"/> to display a data collection, or to bind an
-        /// <see cref="ItemsControl"/> to a collection object. To bind an <see cref="ItemsControl"/>
-        /// to a collection object, use the <see cref="ItemsSource"/> property.
-        /// 
-        /// When the <see cref="ItemsSource"/> property is set, the <see cref="Items"/> collection
-        /// is made read-only and fixed-size.
-        ///
-        /// When <see cref="ItemsSource"/> is in use, setting the property to null removes the
-        /// collection and restores usage to <see cref="Items"/>, which will be an empty 
-        /// <see cref="ItemCollection"/>.
-        /// </remarks>
-        public IEnumerable? ItemsSource
+        public double ColumnWidth
         {
-            get => GetValue(ItemsSourceProperty);
-            set => SetValue(ItemsSourceProperty, value);
+            get { return GetValue(ColumnWidthProperty); }
+            set { SetValue(ColumnWidthProperty, value); }
         }
 
         /// <summary>
-        /// Gets or sets the data template used to display the items in the control.
+        /// Gets the next control in the specified direction.
         /// </summary>
-        [InheritDataTypeFromItems(nameof(ItemsSource))]
-        public IDataTemplate? ItemTemplate
+        /// <param name="direction">The movement direction.</param>
+        /// <param name="from">The control from which movement begins.</param>
+        /// <returns>The control.</returns>
+        public IInputElement? GetControl(NavigationDirection direction, IInputElement? from, bool wrap)
         {
-            get => GetValue(ItemTemplateProperty);
-            set => SetValue(ItemTemplateProperty, value);
+            var fromControl = from as Control;
+            return (fromControl != null) ? GetControlInDirection(direction, fromControl) : null;
         }
 
         /// <summary>
-        /// Gets or sets the column spacing to use.
+        /// Gets the next control in the specified direction.
         /// </summary>
-        public double ColumnSpacing
+        /// <param name="direction">The movement direction.</param>
+        /// <param name="from">The control from which movement begins.</param>
+        /// <returns>The control.</returns>
+        protected virtual IInputElement GetControlInDirection(NavigationDirection direction, Control from)
         {
-            get => GetValue(ColumnSpacingProperty);
-            set => SetValue(ColumnSpacingProperty, value);
-        }
+            int index = Children.IndexOf((Control)from);
 
-        private void LayoutItems()
-        {
-            int totalColumns = this.ColumnDefinitions.Count;
-            _grid.ColumnDefinitions.Clear();
-            _grid.Children.Clear();
-
-            // define grid column definitions (with extra columns for spacing)
-            int iCol = 0;
-            int iGridCol = 0;
-            foreach (var columnDefinition in ColumnDefinitions)
+            switch (direction)
             {
-                _grid.ColumnDefinitions.Add(columnDefinition);
-                iCol++;
-                iGridCol++;
-                if (ColumnSpacing != 0 && iCol < totalColumns)
-                {
-                    _grid.ColumnDefinitions.Add(new ColumnDefinition(ColumnSpacing, GridUnitType.Pixel));
-                    iGridCol++;
-                }
+                case NavigationDirection.First:
+                    index = 0;
+                    break;
+                case NavigationDirection.Last:
+                    index = Children.Count - 1;
+                    break;
+                case NavigationDirection.Next:
+                    ++index;
+                    break;
+                case NavigationDirection.Previous:
+                    --index;
+                    break;
+                case NavigationDirection.Left:
+                    index = -1;
+                    break;
+                case NavigationDirection.Right:
+                    index = -1;
+                    break;
+                case NavigationDirection.Up:
+                    index = index - 1;
+                    break;
+                case NavigationDirection.Down:
+                    index = index + 1;
+                    break;
+                default:
+                    index = -1;
+                    break;
             }
 
-            // create itemscontrol to hold items for each column
-            iGridCol = 0;
-            List<ItemsControl> columns = ColumnDefinitions.Select(cd =>
+            if (index >= 0 && index < Children.Count)
             {
-                var column = new ItemsControl()
-                {
-                    ItemTemplate = this.ItemTemplate,
-                    ItemsPanel = this.ItemsPanel
-                };
-                Grid.SetColumn(column, iGridCol++);
-                if (ColumnSpacing != 0)
-                    iGridCol++;
-                return column;
-            }).ToList();
-
-            // assign each item to a column container based on the column index
-            iCol = 0;
-            foreach (var columnDefinition in ColumnDefinitions)
-            {
-                if (this.ItemsSource is IEnumerable<object> items)
-                {
-                    columns[iCol].ItemsSource = items.Where((item, index) => (index % totalColumns) == iCol);
-                }
-                iCol++;
+                return Children[index];
             }
-
-            // add the columns as the children to the grid (each column with Grid.Column set appropriately)
-            _grid.Children.AddRange(columns);
+            else
+            {
+                return null;
+            }
         }
 
+        /// <summary>
+        /// Measures the control.
+        /// </summary>
+        /// <param name="availableSize">The available size.</param>
+        /// <returns>The desired size of the control.</returns>
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            double childAvailableWidth = double.PositiveInfinity;
+            double childAvailableHeight = double.PositiveInfinity;
+
+            childAvailableWidth = availableSize.Width;
+
+            if (!double.IsNaN(Width))
+            {
+                childAvailableWidth = Width;
+            }
+
+            childAvailableWidth = Math.Min(childAvailableWidth, MaxWidth);
+            childAvailableWidth = Math.Max(childAvailableWidth, MinWidth);
+
+            var nColumns = Math.Max(1, (int)Math.Floor(childAvailableWidth / (ColumnWidth + ColumnGap)));
+
+            var columnHeights = new List<double>(nColumns);
+            for (int i = 0; i < nColumns; i++)
+                columnHeights.Add((double)0);
+
+            double measuredWidth = nColumns * (ColumnWidth + ColumnGap);
+
+            foreach (Control child in Children)
+            {
+                child.Measure(new Size(ColumnWidth, childAvailableHeight));
+                columnHeights[columnHeights.IndexOfMin()] += child.DesiredSize.Height + Gap;
+            }
+
+            var measuredHeight = columnHeights.Max() - Gap;
+            return new Size(measuredWidth, measuredHeight);
+        }
+
+        /// <summary>
+        /// Arranges the control's children.
+        /// </summary>
+        /// <param name="finalSize">The size allocated to the control.</param>
+        /// <returns>The space taken.</returns>
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            double arrangedWidth = finalSize.Width;
+            double arrangedHeight = finalSize.Height;
+            double gap = Gap;
+
+            arrangedHeight = 0;
+            var nColumns = Math.Max(1, (int)Math.Floor(arrangedWidth / (ColumnWidth + ColumnGap)));
+
+            var columnHeights = new List<double>(nColumns);
+            var columnLefts = new List<double>(nColumns);
+            for (int i = 0; i < nColumns; i++)
+            {
+                columnHeights.Add((double)0);
+                columnLefts.Add((double)0);
+            }
+
+            double left = 0;
+            for (int iCol = 0; iCol < nColumns; iCol++)
+            {
+                if (iCol > 0)
+                {
+                    columnLefts[iCol] = left;
+                }
+                left += ColumnWidth + ColumnGap;
+            }
+
+            foreach (Control child in Children)
+            {
+                double childWidth = child.DesiredSize.Width;
+                double childHeight = child.DesiredSize.Height;
+
+                //  double width = Math.Max(childWidth, arrangedWidth);
+                var minCol = columnHeights.IndexOfMin();
+                var childLeft = columnLefts[minCol];
+                var childTop = columnHeights[minCol];
+                if (arrangedWidth < ColumnWidth && nColumns == 1)
+                    childHeight = arrangedWidth / childWidth * childHeight;
+                Rect childFinal = new Rect(childLeft, childTop, Math.Min(arrangedWidth, ColumnWidth), childHeight);
+                child.Arrange(childFinal);
+                columnHeights[minCol] += childHeight + Gap;
+            }
+
+            arrangedHeight = Math.Max(arrangedHeight - gap, finalSize.Height);
+            return new Size(arrangedWidth, arrangedHeight);
+        }
+
+    }
+
+    public static class Extensions
+    {
+        public static int IndexOfMin(this IEnumerable<double> list)
+        {
+            var min = list.First();
+            int minIndex = 0;
+
+            int i = 0;
+            foreach (var item in list)
+            {
+                if (item < min)
+                {
+                    min = item;
+                    minIndex = i;
+                }
+                i++;
+            }
+
+            return minIndex;
+        }
 
     }
 }
