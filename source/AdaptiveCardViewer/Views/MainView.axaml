@@ -20,7 +20,7 @@
 
   <Grid RowDefinitions="Auto,*">
     <Border Grid.Row="0" BoxShadow="0 0 10 0 Gray" Padding="8">
-      <StackPanel Grid.Row="1" Orientation="Horizontal">
+      <WrapPanel Grid.Row="1" Orientation="Horizontal">
         <TextBlock VerticalAlignment="Center" Padding="4">Schema</TextBlock>
         <ComboBox x:Name="Version" Width="100" SelectionChanged="Version_SelectionChanged">
           <ComboBoxItem>Scenarios</ComboBoxItem>
@@ -45,7 +45,7 @@
           <ComboBoxItem>testVariantHostConfig</ComboBoxItem>
         </ComboBox>
 
-      </StackPanel>
+      </WrapPanel>
     </Border>
 
     <ScrollViewer Grid.Row="1" x:Name="Scroller" >
