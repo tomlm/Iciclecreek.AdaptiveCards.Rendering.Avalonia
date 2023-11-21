@@ -48,8 +48,8 @@
       </WrapPanel>
     </Border>
 
-    <ScrollViewer Grid.Row="1" x:Name="Scroller" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-      <ItemsControl ItemsSource="{Binding Cards}" >
+    <ScrollViewer Grid.Row="1" x:Name="Scroller" VerticalScrollBarVisibility="Auto">
+      <ItemsControl ItemsSource="{Binding Cards}" MinWidth="610">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
             <ice:ColumnsPanel Margin="8" ColumnGap="8" Gap="8" ColumnWidth="600" HorizontalAlignment="Center"/>
