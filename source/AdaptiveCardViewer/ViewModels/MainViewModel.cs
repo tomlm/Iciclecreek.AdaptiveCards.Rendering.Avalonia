@@ -16,21 +16,21 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel()
     {
         LoadHostConfig("microsoft-teams-light");
-        LoadCardResource("AdaptiveCardViewer.samples.Welcome.json");
+        this.Cards.Add(LoadCardResource("AdaptiveCardViewer.samples.Welcome.json"));
     
-        if (Debugger.IsAttached)
-        {
-            string fullPath = @"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.6\Elements\Media.json";
-            var json = File.ReadAllText(fullPath);  
-            AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
-            this.Cards.Add(new CardModel()
-            {
-                Name = Path.GetFileName(fullPath),
-                Uri = fullPath,
-                Card = parseResult.Card,
-                HostConfig = this.HostConfig
-            });
-        }
+        // if (Debugger.IsAttached)
+        // {
+        //     string fullPath = @"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.6\Elements\Media.json";
+        //     var json = File.ReadAllText(fullPath);  
+        //     AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
+        //     this.Cards.Add(new CardModel()
+        //     {
+        //         Name = Path.GetFileName(fullPath),
+        //         Uri = fullPath,
+        //         Card = parseResult.Card,
+        //         HostConfig = this.HostConfig
+        //     });
+        // }
     }
 
     public string Greeting => "Welcome to Avalonia!";

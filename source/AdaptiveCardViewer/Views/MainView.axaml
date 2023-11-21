@@ -7,7 +7,7 @@
              xmlns:panels="using:Avalonia.Labs.Panels"
              xmlns:ice="using:Iciclecreek.Avalonia.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" 
              x:Class="AdaptiveCardViewer.Views.MainView"
              x:DataType="vm:MainViewModel">
   <Design.DataContext>
@@ -48,7 +48,7 @@
       </StackPanel>
     </Border>
 
-    <ScrollViewer Grid.Row="1" x:Name="Scroller" >
+    <ScrollViewer Grid.Row="1" x:Name="Scroller" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
       <ItemsControl ItemsSource="{Binding Cards}" >
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
@@ -57,7 +57,7 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <Grid RowDefinitions="Auto,*"  Margin="4"  Width="500">
+            <Grid RowDefinitions="Auto,*"  ColumnDefinitions="*" Margin="4"  >
               <StackPanel Orientation="Horizontal">
                 <Button x:Name="OpenFile" Content="Open" Click="Edit_Click" Margin="4" Padding="4"/>
                 <Button x:Name="Compare" Content="Compare" Click="Compare_Click" Margin="4" Padding="4"/>
@@ -65,7 +65,7 @@
               </StackPanel>
 
               <Border Grid.Row="1" BorderThickness="2" CornerRadius="3" BoxShadow="0 0 10 0 Gray">
-                <ac:AdaptiveCardView Card="{Binding Card}" HostConfig="{Binding HostConfig}"/>
+                <ac:AdaptiveCardView Width="580" Card="{Binding Card}" HostConfig="{Binding HostConfig}"/>
               </Border>
             </Grid>
           </DataTemplate>
