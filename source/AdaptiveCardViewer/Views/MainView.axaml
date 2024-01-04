@@ -19,7 +19,6 @@
   <Grid RowDefinitions="Auto,*">
     <Border Grid.Row="0" BoxShadow="0 0 10 0 Gray" Padding="8">
       <WrapPanel Grid.Row="1" Orientation="Horizontal">
-        <TextBlock VerticalAlignment="Center" Padding="4">Schema</TextBlock>
         <TextBlock VerticalAlignment="Center"  Padding="4">HostConfig</TextBlock>
         <ComboBox x:Name="HostConfig" SelectedItem="0" Width="200" SelectedIndex="0" SelectionChanged="HostConfig_SelectionChanged">
           <ComboBoxItem>microsoft-teams-light</ComboBoxItem>
@@ -33,18 +32,24 @@
           <ComboBoxItem>widget-light</ComboBoxItem>
           <ComboBoxItem>testVariantHostConfig</ComboBoxItem>
         </ComboBox>
-
       </WrapPanel>
     </Border>
 
     <DockPanel Grid.Row="1">
-      <ListBox ItemsSource="{Binding Cards}" SelectedItem="{Binding SelectedCard}" >
-        <ListBox.ItemTemplate>
-          <DataTemplate x:DataType="vm:CardModel">
-            <TextBlock Text="{Binding Path=Name}"/>
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
+      <Grid RowDefinitions="Auto,*" DockPanel.Dock="Left">
+        <StackPanel Orientation="Horizontal" Margin="8">
+          <TextBlock VerticalAlignment="Center" Margin="4">Search</TextBlock>
+          <TextBox Text="{Binding SearchText}" Width="300"/>
+        </StackPanel>
+        <ListBox Grid.Row="1" 
+                 ItemsSource="{Binding FilteredCards}" SelectedItem="{Binding SelectedCard}" >
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="vm:CardModel">
+              <TextBlock Text="{Binding Path=Name}"/>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Grid>
 
       <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,*" >
         <StackPanel Orientation="Horizontal">

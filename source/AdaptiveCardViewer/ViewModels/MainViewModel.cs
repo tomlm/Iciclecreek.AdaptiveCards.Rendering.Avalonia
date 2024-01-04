@@ -1,6 +1,7 @@
 ﻿using AdaptiveCards;
 using AdaptiveCards.Rendering;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -25,6 +26,8 @@ public partial class MainViewModel : ViewModelBase
         this.Cards.Remove(welcome);
         this.Cards.Insert(0, welcome);
         this.SelectedCard = welcome;
+        this.PropertyChanged += MainViewModel_PropertyChanged; ;
+        this.FilteredCards = new ObservableCollection<CardModel>(this.Cards);
         // if (Debugger.IsAttached)
         // {
         //     string fullPath = @"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.6\Elements\Media.json";
@@ -40,10 +43,26 @@ public partial class MainViewModel : ViewModelBase
         // }
     }
 
+    private void MainViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(SearchText))
+        {
+            this.FilteredCards = new ObservableCollection<CardModel>(this.Cards.Where(p => p.Name.ToLower().Contains(this.SearchText.ToLower())));
+        }
+    }
+
     public string Greeting => "Welcome to Avalonia!";
+
+    private List<CardModel> _allCards;
 
     private ObservableCollection<CardModel> _cards = new ObservableCollection<CardModel>();
     public ObservableCollection<CardModel> Cards { get => _cards; set => SetProperty(ref _cards, value); }
+
+    private ObservableCollection<CardModel> _filteredCards = new ObservableCollection<CardModel>();
+    public ObservableCollection<CardModel> FilteredCards { get => _filteredCards; set => SetProperty(ref _filteredCards, value); }
+
+    private string _search = "";
+    public String SearchText { get => _search; set => base.SetProperty(ref _search, value); }
 
     private CardModel _selectedCard;
     public CardModel SelectedCard { get => _selectedCard; set => base.SetProperty(ref _selectedCard, value); }
