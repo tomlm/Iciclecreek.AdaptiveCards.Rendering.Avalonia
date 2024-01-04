@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Xml.Linq;
 
 namespace AdaptiveCardViewer.ViewModels;
 
@@ -16,8 +15,16 @@ public partial class MainViewModel : ViewModelBase
     public MainViewModel()
     {
         LoadHostConfig("microsoft-teams-light");
+
         this.Cards.Add(LoadCardResource("AdaptiveCardViewer.samples.Welcome.json"));
-    
+        this.Cards = new ObservableCollection<CardModel>(Assembly.GetExecutingAssembly().GetManifestResourceNames()
+            .Where(path => !path.ToLower().Contains("tests"))
+            .Select(path => LoadCardResource(path))
+            .Where(card => card != null));
+        var welcome = Cards.Single(p => p.Name.EndsWith("Welcome.json"));
+        this.Cards.Remove(welcome);
+        this.Cards.Insert(0, welcome);
+        this.SelectedCard = welcome;
         // if (Debugger.IsAttached)
         // {
         //     string fullPath = @"C:\source\github\AdaptiveCards.Rendering.Avalonia\source\AdaptiveCardViewer\samples\v1.6\Elements\Media.json";
@@ -36,7 +43,10 @@ public partial class MainViewModel : ViewModelBase
     public string Greeting => "Welcome to Avalonia!";
 
     private ObservableCollection<CardModel> _cards = new ObservableCollection<CardModel>();
-    public ObservableCollection<CardModel> Cards { get => _cards ; set => SetProperty(ref _cards, value); } 
+    public ObservableCollection<CardModel> Cards { get => _cards; set => SetProperty(ref _cards, value); }
+
+    private CardModel _selectedCard;
+    public CardModel SelectedCard { get => _selectedCard; set => base.SetProperty(ref _selectedCard, value); }
 
     private AdaptiveHostConfig _hostConfig;
     public AdaptiveHostConfig HostConfig { get => _hostConfig; set => base.SetProperty(ref _hostConfig, value); }
@@ -98,7 +108,7 @@ public partial class MainViewModel : ViewModelBase
                 AdaptiveCardParseResult parseResult = AdaptiveCard.FromJson(json);
                 return new CardModel()
                 {
-                    Name = Path.GetFileName(fullPath),
+                    Name = fullPath.Substring(fullPath.IndexOf("samples") + "samples".Length),
                     Uri = fullPath,
                     Card = parseResult.Card,
                     HostConfig = this.HostConfig

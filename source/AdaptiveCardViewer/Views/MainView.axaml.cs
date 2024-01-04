@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using AdaptiveCards;
 using AdaptiveCards.Rendering.Avalonia;
 using AdaptiveCardViewer.ViewModels;
 using Avalonia.Controls;
@@ -30,7 +31,7 @@ public partial class MainView : UserControl
         var viewModel = this.DataContext as MainViewModel;
         if (viewModel != null)
         {
-            this.Scroller.ScrollToHome();
+            // this.Scroller.ScrollToHome();
             var item = e.AddedItems[0] as ComboBoxItem;
             var ver = item.Content as string;
             if (!string.IsNullOrEmpty(ver))
@@ -42,6 +43,15 @@ public partial class MainView : UserControl
             }
         }
     }
+
+    private void Refresh_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var mainViewModel = ((Button)e.Source).DataContext as MainViewModel;
+        var card = mainViewModel.SelectedCard.Card;
+        mainViewModel.SelectedCard.Card = new AdaptiveCard();
+        mainViewModel.SelectedCard.Card = card;
+    }
+
 
     private void Edit_Click(object? sender, RoutedEventArgs e)
     {

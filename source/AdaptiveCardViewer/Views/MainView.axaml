@@ -7,7 +7,7 @@
              xmlns:panels="using:Avalonia.Labs.Panels"
              xmlns:ice="using:Iciclecreek.Avalonia.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              x:Class="AdaptiveCardViewer.Views.MainView"
              x:DataType="vm:MainViewModel">
   <Design.DataContext>
@@ -16,21 +16,10 @@
     <vm:MainViewModel />
   </Design.DataContext>
 
-
-
   <Grid RowDefinitions="Auto,*">
     <Border Grid.Row="0" BoxShadow="0 0 10 0 Gray" Padding="8">
       <WrapPanel Grid.Row="1" Orientation="Horizontal">
         <TextBlock VerticalAlignment="Center" Padding="4">Schema</TextBlock>
-        <ComboBox x:Name="Version" Width="100" SelectionChanged="Version_SelectionChanged">
-          <ComboBoxItem>Scenarios</ComboBoxItem>
-          <ComboBoxItem>v1.0</ComboBoxItem>
-          <ComboBoxItem>v1.1</ComboBoxItem>
-          <ComboBoxItem>v1.2</ComboBoxItem>
-          <ComboBoxItem>v1.3</ComboBoxItem>
-          <ComboBoxItem>v1.4</ComboBoxItem>
-          <ComboBoxItem>v1.5</ComboBoxItem>
-        </ComboBox>
         <TextBlock VerticalAlignment="Center"  Padding="4">HostConfig</TextBlock>
         <ComboBox x:Name="HostConfig" SelectedItem="0" Width="200" SelectedIndex="0" SelectionChanged="HostConfig_SelectionChanged">
           <ComboBoxItem>microsoft-teams-light</ComboBoxItem>
@@ -48,7 +37,36 @@
       </WrapPanel>
     </Border>
 
-    <ScrollViewer Grid.Row="1" x:Name="Scroller" VerticalScrollBarVisibility="Auto">
+    <DockPanel Grid.Row="1">
+      <ListBox ItemsSource="{Binding Cards}" SelectedItem="{Binding SelectedCard}" >
+        <ListBox.ItemTemplate>
+          <DataTemplate x:DataType="vm:CardModel">
+            <TextBlock Text="{Binding Path=Name}"/>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <Grid RowDefinitions="Auto,*" ColumnDefinitions="*,*" >
+        <StackPanel Orientation="Horizontal">
+          <Button x:Name="OpenFile" Content="Open" Click="Edit_Click" Margin="4" Padding="4"/>
+          <Button x:Name="Refresh" Content="Refresh" Click="Refresh_Click" Margin="4" Padding="4"/> 
+        </StackPanel>
+        <ScrollViewer Grid.Row="1" >
+          <StackPanel Orientation="Vertical" Margin="8">
+            <TextBlock FontSize="20">Avalonia Card</TextBlock>
+            <Border BorderThickness="2" CornerRadius="3" BoxShadow="5 5 10 0 Gray" Width="500">
+              <ac:AdaptiveCardView Card="{Binding SelectedCard.Card}" HostConfig="{Binding HostConfig}"/>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+        <Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto,*" Margin="8">
+          <TextBlock FontSize="20">Html Card</TextBlock>
+          <WebView Grid.Row="1" x:Name="WebView" HtmlContent="{Binding SelectedCard.HtmlCard}"/>
+        </Grid>
+      </Grid>
+    </DockPanel>
+
+    <!--<ScrollViewer Grid.Row="1" x:Name="Scroller" VerticalScrollBarVisibility="Auto">
       <ItemsControl ItemsSource="{Binding Cards}" MinWidth="610">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
@@ -71,7 +89,7 @@
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>
-    </ScrollViewer>
+    </ScrollViewer>-->
 
   </Grid>
 </UserControl>
