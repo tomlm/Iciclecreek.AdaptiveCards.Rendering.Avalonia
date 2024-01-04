@@ -55,7 +55,8 @@ public partial class MainView : UserControl
 
     private void Edit_Click(object? sender, RoutedEventArgs e)
     {
-        var cardModel = ((Button)e.Source).DataContext as CardModel;
+        var mainViewModel = ((Button)e.Source).DataContext as MainViewModel;
+        var cardModel = mainViewModel.SelectedCard;
 
         // open cardModel.Uri in default browser
         if (cardModel != null)
