@@ -30,15 +30,12 @@ jobs:
             "**/AdaptiveCards.Rendering.Avalonia.csproj"
           version: bump-build
   
-      - name: Restore dependencies
-        run: dotnet restore AdaptiveCards.Rendering.Avalonia/source/AdaptiveCards.Rendering.Avalonia.sln
-
       - name: Build
-        run: dotnet build AdaptiveCards.Rendering.Avalonia/source/AdaptiveCards.Rendering.Avalonia.sln -c Debug --no-restore 
+        run: dotnet build AdaptiveCards.Rendering.Avalonia/source/AdaptiveCards.Rendering.Avalonia/AdaptiveCards.Rendering.Avalonia.csproj -c Debug 
   
       - name: dotnet pack Crazor
         run: |
-          dotnet pack  --no-build ./AdaptiveCards.Rendering.Avalonia/source/AdaptiveCards.Rendering.Avalonia.sln -c Debug -o packages --include-symbols --property WarningLevel=0
+          dotnet pack  --no-build ./AdaptiveCards.Rendering.Avalonia/source/AdaptiveCards.Rendering.Avalonia/AdaptiveCards.Rendering.Avalonia.csproj -c Debug -o packages --include-symbols --property WarningLevel=0
           # rm packages/Adaptive*
 
       - name: Publish NuGet and symbols
