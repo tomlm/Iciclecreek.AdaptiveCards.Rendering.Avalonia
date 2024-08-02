@@ -1,5 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+using AdaptiveCards;
+using AdaptiveCards.Rendering;
 using AsyncImageLoader;
 using AsyncImageLoader.Loaders;
 using Avalonia;

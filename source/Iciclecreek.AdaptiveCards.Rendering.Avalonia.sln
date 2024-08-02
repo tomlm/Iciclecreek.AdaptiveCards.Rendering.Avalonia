@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdaptiveCardViewer.iOS", "A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdaptiveCardViewer.Browser", "AdaptiveCardViewer.Browser\AdaptiveCardViewer.Browser.csproj", "{5F8AC6CE-D6E3-4880-BA92-2E8F79B166FD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalonia.AdaptiveCards", "AdaptiveCards.Rendering.Avalonia\Avalonia.AdaptiveCards.csproj", "{85826E40-5C68-40AA-A94F-6C6158768359}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iciclecreek.AdaptiveCards.Rendering.Avalonia", "Iciclecreek.AdaptiveCards.Rendering.Avalonia\Iciclecreek.AdaptiveCards.Rendering.Avalonia.csproj", "{85826E40-5C68-40AA-A94F-6C6158768359}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
