@@ -11,14 +11,14 @@
     <Company>Iciclecreek</Company>
     <Authors>Tom Laird-McConnell</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/tomlm/Avalonia.AdaptiveCards</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/tomlm/Avalonia.AdaptiveCards/master/icon.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/tomlm/Iciclecreek.AdaptiveCards.Rendering.Avalonia</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/tomlm/Iciclecreek.AdaptiveCards.Rendering.Avalonia/master/icon.png</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <PackageTags>avalonia</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <RepositoryUrl>https://github.com/tomlm/Avalonia.AdaptiveCards</RepositoryUrl>
+    <RepositoryUrl>https://github.com/tomlm/Iciclecreek.AdaptiveCards.Rendering.Avalonia</RepositoryUrl>
     <Copyright></Copyright>
   </PropertyGroup>
 
