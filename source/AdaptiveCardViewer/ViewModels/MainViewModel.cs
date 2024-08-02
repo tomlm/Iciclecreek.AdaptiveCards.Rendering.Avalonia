@@ -18,6 +18,7 @@ public partial class MainViewModel : ViewModelBase
         LoadHostConfig("microsoft-teams-light");
 
         this.Cards.Add(LoadCardResource("AdaptiveCardViewer.samples.Welcome.json"));
+        this.Cards.Add(LoadCardResource("AdaptiveCardViewer.samples.Flow.json"));
         this.Cards = new ObservableCollection<CardModel>(Assembly.GetExecutingAssembly().GetManifestResourceNames()
             .Where(path => !path.ToLower().Contains("tests"))
             .Select(path => LoadCardResource(path))
@@ -135,7 +136,7 @@ public partial class MainViewModel : ViewModelBase
             }
             catch (Exception err)
             {
-                Debug.WriteLine(err);
+                Debug.WriteLine($"{name} : {err.Message}");
             }
         }
         return null;

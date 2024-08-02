@@ -150,10 +150,14 @@ namespace AdaptiveCards.Rendering.Avalonia
                 uiButton.Content = uiTitle;
             }
 
-            if (input.InlineAction is AdaptiveSubmitAction ||
-                input.InlineAction is AdaptiveExecuteAction)
+            if (input.InlineAction is AdaptiveSubmitAction)
             {
                 context.SubmitActionCardId[input.InlineAction as AdaptiveSubmitAction] = context.RenderArgs.ContainerCardId;
+            }
+
+            if (input.InlineAction is AdaptiveExecuteAction)
+            {
+                context.SubmitActionCardId[input.InlineAction as AdaptiveExecuteAction] = context.RenderArgs.ContainerCardId;
             }
 
             uiButton.Click += (sender, e) =>

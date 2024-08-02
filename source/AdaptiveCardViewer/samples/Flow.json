@@ -1,0 +1,169 @@
+﻿{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.4",
+  "body": [
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "id": "nameFieldLabel",
+              "text": "Name: John Smith",
+              "wrap": true
+            },
+            {
+              "type": "Input.Text",
+              "label": "Name",
+              "id": "nameField",
+              "isRequired": true,
+              "errorMessage": "Name is required",
+              "placeholder": "Enter your name",
+              "value": "John Smith",
+              "isVisible": false
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "id": "nameColumn",
+          "width": "auto",
+          "selectAction": {
+            "type": "Action.ToggleVisibility",
+            "title": "Edit",
+            "targetElements": [
+              "nameFieldLabel",
+              "nameField",
+              "nameColumn"
+            ]
+          },
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "🖉"
+            }
+          ],
+          "bleed": true,
+          "spacing": "Small",
+          "separator": true
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "id": "quantityFieldLabel",
+              "text": "Quantity: 1",
+              "wrap": true
+            },
+            {
+              "type": "Input.Number",
+              "label": "Quantity (Minimum -5, Maximum 5)",
+              "min": -5,
+              "max": 5,
+              "value": 1,
+              "id": "quantityField",
+              "isVisible": false,
+              "errorMessage": "The quantity must be between -5 and 5"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "id": "quantityColumn",
+          "width": "auto",
+          "selectAction": {
+            "type": "Action.ToggleVisibility",
+            "title": "Edit",
+            "targetElements": [
+              "quantityFieldLabel",
+              "quantityField",
+              "quantityColumn"
+            ]
+          },
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "🖉"
+            }
+          ],
+          "bleed": true,
+          "spacing": "Small",
+          "separator": true
+        }
+      ]
+    },
+    {
+      "type": "Input.Date",
+      "label": "Due Date",
+      "id": "DateVal",
+      "value": "2017-09-20"
+    },
+    {
+      "separator": true,
+      "type": "ActionSet",
+      "actions": [
+        {
+          "type": "Action.Execute",
+          "title": "Cancel"
+        },
+        {
+          "type": "Action.Execute",
+          "title": "Update"
+        },
+        {
+          "type": "Action.Execute",
+          "title": "Submit",
+          "isEnabled": false
+        }
+      ],
+      "horizontalAlignment": "Center"
+    },
+    {
+      "type": "Container",
+      "style": "emphasis",
+      "bleed": true,
+      "spacing": "Small",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "Set Name to \"John Smith\"",
+          "wrap": true,
+          "size": "Small"
+        },
+        {
+          "type": "TextBlock",
+          "text": "Set Quantity to 1.",
+          "wrap": true,
+          "size": "Small",
+          "spacing": "None"
+        },
+        {
+          "type": "Input.Text",
+          "id": "Copilot",
+          "placeholder": "Ask copilot to help",
+          "inlineAction": {
+            "type": "Action.Execute",
+            "iconUrl": "https://r.bing.com/rp/R8ErSC7kK_3o4eRM-pP2JlReVkE.png",
+            "title": "Ask Copilot for help",
+            "associatedInputs": "auto",
+            "verb": "Copilot"
+          },
+          "spacing": "Small",
+          "separator": true
+        }
+      ],
+      "separator": true
+    }
+  ]
+}
