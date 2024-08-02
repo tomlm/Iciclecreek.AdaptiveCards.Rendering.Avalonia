@@ -34,6 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AdaptiveCards.Rendering.Avalonia\Avalonia.AdaptiveCards.csproj" />
+    <ProjectReference Include="..\Avalonia.AdaptiveCards\Avalonia.AdaptiveCards.csproj" />
   </ItemGroup>
 </Project>
