@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: dotnet build AdaptiveCards.Rendering.Avalonia/source/AdaptiveCards.Rendering.Avalonia/AdaptiveCards.Rendering.Avalonia.csproj -c Debug 
   
-      - name: dotnet pack Crazor
+      - name: dotnet pack 
         run: |
           dotnet pack  --no-build ./AdaptiveCards.Rendering.Avalonia/source/AdaptiveCards.Rendering.Avalonia/AdaptiveCards.Rendering.Avalonia.csproj -c Debug -o packages --include-symbols --property WarningLevel=0
           # rm packages/Adaptive*
