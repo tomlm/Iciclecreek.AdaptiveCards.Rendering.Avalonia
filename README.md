@@ -1,5 +1,5 @@
 # Adaptive Cards Rendering library for Avalonia UI
-This library renders adaptive cards using AvaloniaUI controls.
+This library renders adaptive cards using [AvaloniaUI](https://avaloniaui.net/) controls.
 
 # (Option 1) Use AdaptiveCardView control
 Sample Model
